@@ -1,4 +1,5 @@
-﻿using ClassroomManagerAPI.Data;
+﻿using AutoMapper;
+using ClassroomManagerAPI.Data;
 using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Dto;
 using Microsoft.AspNetCore.Http;
@@ -12,11 +13,13 @@ namespace ClassroomManagerAPI.Controllers
 	{
 		private readonly AppDbContext _context;
 		private ResponseDto _response;
+		private IMapper _mapper;
 
-		public FacilityAPIController(AppDbContext context)
+		public FacilityAPIController(AppDbContext context, IMapper mapper)
 		{
 			_context = context;
 			_response = new ResponseDto();
+			_mapper = mapper;
 		}
 
 		[HttpGet]
@@ -25,7 +28,7 @@ namespace ClassroomManagerAPI.Controllers
 			try
 			{
 				IEnumerable<Facility> objList = _context.Facilities.ToList();
-				_response.Result = objList;
+				_response.Result = _mapper.Map<IEnumerable<FacilityDto>>(objList);
 			}
 			catch (Exception ex)
 			{
@@ -42,7 +45,7 @@ namespace ClassroomManagerAPI.Controllers
 			try
 			{
 				Facility obj = _context.Facilities.First(u => u.Id == id);
-				_response.Result = obj;
+				_response.Result = _mapper.Map<FacilityDto>(obj);
 			}
 			catch (Exception ex)
 			{

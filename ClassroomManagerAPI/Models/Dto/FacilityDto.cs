@@ -1,17 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ClassroomManagerAPI.Models
+namespace ClassroomManagerAPI.Models.Dto
 {
-	public class Facility
+	public class FacilityDto
 	{
-		[Key]
 		public int Id { get; set; }
-		[Required]
 		public string Name { get; set; }
-		[Required]
 		public int Count { get; set; }
 		public string Status { get; set; }
-        public string Version { get; set; }
-        public string Details { get; set; }
-    }
+		public string Version { get; set; }
+		public string Details { get; set; }
+	}
 }
