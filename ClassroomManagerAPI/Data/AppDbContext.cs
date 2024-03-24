@@ -20,7 +20,7 @@ namespace ClassroomManagerAPI.Data
 				Count = 1,
 				Status = "Vacant",
 				Version = "1.7",
-				Description = "on-built teacher provided Microphone for teaching purposes"
+				Details = "on-built teacher provided Microphone for teaching purposes"
 			});
 
 			modelBuilder.Entity<Facility>().HasData(new Facility
@@ -30,7 +30,7 @@ namespace ClassroomManagerAPI.Data
 				Count = 1,
 				Status = "Malfunctioned",
 				Version = "1.4",
-				Description = "HDMI Cables connected to projector"
+				Details = "HDMI Cables connected to projector"
 			});
 
 			modelBuilder.Entity<Facility>().HasData(new Facility
@@ -40,7 +40,7 @@ namespace ClassroomManagerAPI.Data
 				Count = 1,
 				Status = "Vacant",
 				Version = "Sony VPL 4K",
-				Description = "Projector connected to laptops via HDMI"
+				Details = "Projector connected to laptops via HDMI"
 			});
 		}
 	}
