@@ -12,6 +12,7 @@ namespace ClassroomManagerAPI
 			{
 				config.CreateMap<FacilityDto, Facility>();
 				config.CreateMap<Facility, FacilityDto>();
+				config.CreateMap<AddFacilityRequestDto, Facility>();
 			});
 			return mappingConfig;
 		} 
