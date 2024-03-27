@@ -26,7 +26,7 @@ namespace ClassroomManagerAPI.Controllers
 		}
 
 		// Get all
-		[HttpGet]
+		[HttpGet, Route("facilities")]
 		public ResponseDto GetAll()
 		{
 			try
@@ -48,7 +48,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by id
 		[HttpGet]
-		[Route("{id}")]
+		[Route("/facilities/{id}")]
 		public ResponseDto Get(int id)
 		{
 			try
@@ -68,7 +68,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by name
 		[HttpGet]
-		[Route("GetByName/{name}")]
+		[Route("facilities/GetByName/{name}")]
 		public ResponseDto GetByName(string name)
 		{
 			try
