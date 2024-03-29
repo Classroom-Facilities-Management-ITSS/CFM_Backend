@@ -48,8 +48,8 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by id
 		[HttpGet]
-		[Route("/facilities/{id}")]
-		public ResponseDto Get(int id)
+		[Route("/facilities/{id:Guid}")]
+		public ResponseDto GetById([FromRoute]Guid id)
 		{
 			try
 			{
@@ -133,7 +133,8 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Remove a facility
 		[HttpDelete]
-		public ResponseDto Delete(int id)
+		[Route("facilities/{id:Guid}")]
+		public ResponseDto Delete([FromRoute]Guid id)
 		{
 			try
 			{
