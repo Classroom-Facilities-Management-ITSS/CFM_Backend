@@ -2,6 +2,7 @@
 using ClassroomManagerAPI.Data;
 using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Dto;
+using ClassroomManagerAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -13,142 +14,148 @@ namespace ClassroomManagerAPI.Controllers
 	public class FacilityAPIController : ControllerBase
 	{
 		private readonly AppDbContext _context;
-		private ResponseDto _response;
+		private readonly IFacilityRepository _facilityRepository;
 		private readonly IMapper _mapper;
 		private readonly ILogger<FacilityAPIController> _logger;
 
-		public FacilityAPIController(AppDbContext context, IMapper mapper, ILogger<FacilityAPIController> logger)
+		public FacilityAPIController(AppDbContext context, IMapper mapper, ILogger<FacilityAPIController> logger, IFacilityRepository facilityRepository)
 		{
 			_context = context;
-			_response = new ResponseDto();
+			_facilityRepository = facilityRepository;
 			_mapper = mapper;
 			_logger = logger;
 		}
 
 		// Get all
 		[HttpGet, Route("facilities")]
-		public ResponseDto GetAll()
+		public async Task<IActionResult> GetAll()
 		{
 			try
 			{
 				//_logger.LogInformation("GetAll was invoked");
-				IEnumerable<Facility> objList = _context.Facilities.ToList();
-				_response.Result = _mapper.Map<IEnumerable<FacilityDto>>(objList);
-				//_logger.LogInformation($"Finished get all request with data: {JsonSerializer.Serialize(objList)}");
+				var facilitiesDomain = await _facilityRepository.GetAllAsync();
+				var facilitiesDto = _mapper.Map<List<FacilityDto>>(facilitiesDomain);
+
+				_logger.LogInformation($"Finished get all request with data: {JsonSerializer.Serialize(facilitiesDomain)}");
+				return Ok(facilitiesDto);
 			}
 			catch (Exception ex)
 			{
-				_response.IsSuccess = false;
-				_response.Message = ex.Message;
 				_logger.LogError(ex, ex.Message);
 				throw;
 			}
-			return _response;
 		}
 
 		// Get by id
 		[HttpGet]
 		[Route("/facilities/{id:Guid}")]
-		public ResponseDto GetById([FromRoute]Guid id)
+		public async Task<IActionResult> GetById([FromRoute]Guid id)
 		{
 			try
 			{
-				Facility obj = _context.Facilities.First(u => u.Id == id);
-				_response.Result = _mapper.Map<FacilityDto>(obj);
+				var facilityDomain = await _facilityRepository.GetByIdAsync(id);
+
+				if (facilityDomain == null)
+				{
+					return NotFound();
+				}
+
+				return Ok(_mapper.Map<FacilityDto>(facilityDomain));
 			}
 			catch (Exception ex)
 			{
-				_response.IsSuccess = false;
-				_response.Message = ex.Message;
 				_logger.LogError(ex, ex.Message);
 				throw;
 			}
-			return _response;
 		}
 
 		// Get by name
 		[HttpGet]
 		[Route("facilities/GetByName/{name}")]
-		public ResponseDto GetByName(string name)
+		public async Task<IActionResult> GetByName(string name)
 		{
 			try
 			{
-				Facility obj = _context.Facilities.FirstOrDefault(u => u.Name.ToLower() == name.ToLower());
-				if (obj == null)
+				var facilityDomain = await _facilityRepository.GetByNameAsync(name);
+				if (facilityDomain == null)
 				{
-					_response.IsSuccess = false;
+					return NotFound();
 				}
-				_response.Result = _mapper.Map<FacilityDto>(obj);
+				return Ok(_mapper.Map<FacilityDto>(facilityDomain));
 			}
 			catch (Exception ex)
 			{
-				_response.IsSuccess = false;
-				_response.Message = ex.Message;
 				_logger.LogError(ex, ex.Message);
 				throw;
 			}
-			return _response;
 		}
 
 
 		// Create facility
-		[HttpPost]
-		public ResponseDto Create([FromBody] AddFacilityRequestDto addFacilityRequestDto)
+		[HttpPost, Route("facilities/Add")]
+		public async Task<IActionResult> Create([FromBody] AddFacilityRequestDto addFacilityRequestDto)
 		{
 			try
 			{
-				Facility obj = _mapper.Map<Facility>(addFacilityRequestDto);
-				_context.Facilities.Add(obj);
-				_context.SaveChanges();
-				_response.Result = _mapper.Map<FacilityDto>(obj);
+				var facilityDomain = _mapper.Map<Facility>(addFacilityRequestDto);
+				facilityDomain = await _facilityRepository.CreateAsync(facilityDomain);
+				var facilityDto = _mapper.Map<FacilityDto>(facilityDomain);
+				return CreatedAtAction(nameof(GetById), new { id = facilityDomain.Id }, facilityDto);
 			}
 			catch (Exception ex)
 			{
-				_response.IsSuccess = false;
-				_response.Message = ex.Message;
 				_logger.LogError(ex, ex.Message);
+				throw;
 			}
-			return _response;
 		}
 
 		// Update facility
-		[HttpPut]
-		public ResponseDto Update([FromBody] FacilityDto facilityDto)
+		[HttpPut, Route("{id:Guid}")]
+		public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateFacilityRequestDto updateFacilityRequestDto)
 		{
 			try
 			{
-				Facility obj = _mapper.Map<Facility>(facilityDto);
-				_context.Facilities.Update(obj);
-				_context.SaveChanges();
-				_response.Result = _mapper.Map<FacilityDto>(obj);
+				// Map Dto to domain models
+				var facilityDomain = _mapper.Map<Facility>(updateFacilityRequestDto);
+				
+				// check if exists
+				facilityDomain = await _facilityRepository.UpdateAsync(id, facilityDomain);
+
+				if (facilityDomain == null)
+				{
+					return NotFound();
+				}
+
+				await _context.SaveChangesAsync();
+				return Ok(_mapper.Map<Facility>(facilityDomain));
 			}
 			catch (Exception ex)
 			{
-				_response.IsSuccess = false;
-				_response.Message = ex.Message;
 				_logger.LogError(ex, ex.Message);
+				throw;
 			}
-			return _response;
 		}
 
 		// Remove a facility
 		[HttpDelete]
 		[Route("facilities/{id:Guid}")]
-		public ResponseDto Delete([FromRoute]Guid id)
+		public async Task<IActionResult> Delete([FromRoute]Guid id)
 		{
 			try
 			{
-				Facility obj = _context.Facilities.First(f => f.Id == id);
-				_context.Facilities.Remove(obj);
-				_context.SaveChanges();
+				var facilityDomain = await _facilityRepository.DeleteAsync(id);
+				if (facilityDomain == null)
+				{
+					return NotFound();
+				}
+
+				return Ok(_mapper.Map<FacilityDto>(facilityDomain));
 			}
 			catch (Exception ex)
 			{
-				_response.IsSuccess = false;
-				_response.Message = ex.Message;
 				_logger.LogError(ex, ex.Message);
+				throw;
 			}
-			return _response;
 		}
 	}
 }
