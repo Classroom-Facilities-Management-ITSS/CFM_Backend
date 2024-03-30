@@ -1,6 +1,7 @@
 using AutoMapper;
 using ClassroomManagerAPI;
 using ClassroomManagerAPI.Data;
+using ClassroomManagerAPI.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -27,6 +28,9 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
 {
 	options.UseSqlServer(builder.Configuration.GetConnectionString("AuthConnectionString"));
 });
+
+builder.Services.AddScoped<IFacilityRepository, SQLFacilityRepository>();
+
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 

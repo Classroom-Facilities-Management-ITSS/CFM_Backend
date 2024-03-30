@@ -10,12 +10,11 @@ namespace ClassroomManagerAPI
 		{
 			var mappingConfig = new MapperConfiguration(config =>
 			{
-				config.CreateMap<FacilityDto, Facility>();
-				config.CreateMap<Facility, FacilityDto>();
-				config.CreateMap<AddFacilityRequestDto, Facility>();
-				config.CreateMap<ClassroomDto, Classroom>();
-				config.CreateMap<Classroom, ClassroomDto>();
-				config.CreateMap<AddClassroomRequestDto, Classroom>();
+				config.CreateMap<FacilityDto, Facility>().ReverseMap();
+				config.CreateMap<AddFacilityRequestDto, Facility>().ReverseMap();
+				config.CreateMap<ClassroomDto, Classroom>().ReverseMap();
+				config.CreateMap<AddClassroomRequestDto, Classroom>().ReverseMap();
+				config.CreateMap<UpdateFacilityRequestDto, Facility>().ReverseMap();
 			});
 			return mappingConfig;
 		} 
