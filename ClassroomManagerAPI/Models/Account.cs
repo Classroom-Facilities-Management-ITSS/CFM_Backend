@@ -10,7 +10,6 @@ namespace ClassroomManagerAPI.Models
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
-        [Required]
-        public string Role { get; set; } // char 10
+        public string Role { get; set; } 
     }
 }
