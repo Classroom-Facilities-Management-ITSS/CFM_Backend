@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ClassroomManagerAPI.Data.Utility;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClassroomManagerAPI.Models
 {
@@ -10,7 +11,7 @@ namespace ClassroomManagerAPI.Models
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
-        [Required]
-        public string Role { get; set; } // char 10
+        public string Role { get; set; } = Roles.USER;
+        public bool Active {  get; set; } = false;
     }
 }
