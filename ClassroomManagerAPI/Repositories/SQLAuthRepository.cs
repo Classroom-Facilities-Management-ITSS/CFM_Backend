@@ -113,5 +113,74 @@ namespace ClassroomManagerAPI.Repositories
 			}
 			return false;
 		}
+
+		public async Task<bool> UpdatePassword(UpdatePasswordRequestDto user)
+		{
+
+			// TODO: return different message for different errors
+			var found = this.context.Accounts!.SingleOrDefault(u => u.Email == user.Email);
+			if (found == null) return false;
+			if (user.OldPassword != user.ConfirmPassword) return false;
+			if (found.Password != user.OldPassword) return false;
+			if (found != null && found.Active)
+			{
+				var password = BCryptService.HashPassword(user.NewPassword);
+				found.Password = password;
+				this.context.Accounts.Update(found);
+				await this.context.SaveChangesAsync();
+
+				return true;
+			}
+
+			return false;	
+		}
+
+		public async Task<bool> GenerateNewPassword(string email)
+		{
+			// TODO: return different message for different errors
+			// Check if user exists
+			var user = this.context.Accounts!.SingleOrDefault(u => u.Email == email);
+			// if email exists, regenerate a new password for the user
+			if (user == null) return false;
+			if (user.Active)
+			{
+				const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+				var random = new Random();
+				var passwordChars = new char[8];
+
+				for(int i = 0; i < passwordChars.Length; i++)
+				{
+					passwordChars[i] = chars[random.Next(chars.Length)];
+				}
+
+				string passwordString = new string(passwordChars);
+
+				var password = BCryptService.HashPassword(passwordString);
+				user.Password = password;
+				this.context.Update(user);
+				await this.context.SaveChangesAsync();
+
+				// send the new password to the email 
+				var mailRequest = new MailRequest
+				{
+					toEmail = email,
+					subject = "Your new Password",
+					body = $"Use this password to login and change your password: {passwordString} "
+				};
+
+				try
+				{
+					await this.mailService.SendMail(mailRequest);
+				}
+				catch (Exception ex)
+				{
+					// Handle exception (e.g. logger)
+					throw;
+				}
+
+				return true;
+			}
+			return false;
+		}
 	}
 }

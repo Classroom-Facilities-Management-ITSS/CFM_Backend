@@ -115,5 +115,47 @@ namespace ClassroomManagerAPI.Controllers
             return File(image, "image/jpeg");
         }
 		 */
+		[HttpPut("update_password")]
+		public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequestDto updatePasswordRequestDto)
+		{
+			var result = await this.authRepository.UpdatePassword(updatePasswordRequestDto);
+			if (result)
+			{
+				return Ok(new
+				{
+					status = true,
+					message = "Password Updated Successfully"
+				});
+			} else
+			{
+				return BadRequest(new
+				{
+					status = false,
+					message = "Unable to update password."
+				});
+			}
+		}
+
+		[HttpPost("forgot_password")]
+		public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordRequestDto forgotPasswordRequestDto)
+		{
+			var result = await this.authRepository.GenerateNewPassword(forgotPasswordRequestDto.Email);
+			if (result == false)
+			{
+				return BadRequest(new
+				{
+					status = false,
+					message = "Unable to update password"
+				});
+			} else
+			{
+				return Ok(new
+				{
+					status = true,
+					message = "Password successfully generated, please check your email"
+				});
+			}
+		}
+
 	}
 }
