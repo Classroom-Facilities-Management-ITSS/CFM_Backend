@@ -16,6 +16,8 @@ namespace ClassroomManagerAPI
 				config.CreateMap<AddClassroomRequestDto, Classroom>().ReverseMap();
 				config.CreateMap<UpdateFacilityRequestDto, Facility>().ReverseMap();
 				config.CreateMap<AddUserRequestDto, Account>().ReverseMap();
+				config.CreateMap<UpdatePasswordRequestDto, Account>().ReverseMap();
+				config.CreateMap<ForgotPasswordRequestDto, Account>().ReverseMap();
 			});
 			return mappingConfig;
 		} 

@@ -7,5 +7,7 @@ namespace ClassroomManagerAPI.Repositories
 		public Task<bool> Register(AddUserRequestDto user);
 		public Task<string> LogIn(AddUserRequestDto user);
 		public Task<bool> Active(String token);
-    }
+		public Task<bool> UpdatePassword(UpdatePasswordRequestDto user);
+		public Task<bool> GenerateNewPassword(String email);
+	}
 }
