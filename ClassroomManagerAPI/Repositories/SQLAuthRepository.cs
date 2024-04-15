@@ -182,5 +182,53 @@ namespace ClassroomManagerAPI.Repositories
 			}
 			return false;
 		}
+
+		public async Task<List<Account>> GetAllAccountsAsync()
+		{
+			return await this.context.Accounts.ToListAsync();
+		}
+
+		public async Task<Account?> GetAccountByEmailAsync(string email)
+		{
+			return await this.context.Accounts.FirstOrDefaultAsync(u => u.Email == email);
+		}
+
+		public async Task<Account?> GetAccountByIdAsync(Guid id)
+		{
+			return await this.context.Accounts.FirstOrDefaultAsync(u => u.ID == id);
+		}
+
+		public async Task<Account> UpdateAsync(Guid id, Account account)
+		{
+			var existingAccount = await this.context.Accounts.FirstOrDefaultAsync(a => a.ID == id);
+
+			if (existingAccount == null)
+			{
+				return null;
+			}
+
+			existingAccount.ID = account.ID;
+			existingAccount.Email = account.Email;
+			existingAccount.Role = account.Role;
+			existingAccount.Active = account.Active;
+			existingAccount.Password = account.Password;
+
+			await this.context.SaveChangesAsync();
+			return existingAccount;
+		}
+
+		public async Task<Account> DeleteAsync(Guid id)
+		{
+			var existingAccount = await this.context.Accounts.FirstOrDefaultAsync(f => f.ID == id);
+
+			if (existingAccount == null)
+			{
+				return null;
+			}
+
+			this.context.Accounts.Remove(existingAccount);
+			await context.SaveChangesAsync();
+			return existingAccount;
+		}
 	}
 }

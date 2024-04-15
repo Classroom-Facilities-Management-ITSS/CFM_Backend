@@ -1,7 +1,10 @@
-﻿using ClassroomManagerAPI.Models.Dto;
+﻿using AutoMapper;
+using ClassroomManagerAPI.Models;
+using ClassroomManagerAPI.Models.Dto;
 using ClassroomManagerAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace ClassroomManagerAPI.Controllers
@@ -11,10 +14,14 @@ namespace ClassroomManagerAPI.Controllers
 	public class AuthController : ControllerBase
 	{
 		private readonly IAuthRepository authRepository;
+		private readonly IMapper mapper;
+		private readonly ILogger<AuthController> logger;
 
-		public AuthController(IAuthRepository authRepository)
+		public AuthController(IAuthRepository authRepository, IMapper mapper, ILogger<AuthController> logger)
         {
 			this.authRepository = authRepository;
+			this.mapper = mapper;
+			this.logger = logger;
 		}
 
 		[HttpPost("sign_in")]
@@ -155,7 +162,120 @@ namespace ClassroomManagerAPI.Controllers
 					message = "Password successfully generated, please check your email"
 				});
 			}
+			
+		}
+		// Admin listing users
+		[HttpGet("users")]
+		public async Task<IActionResult> GetAllAsync()
+		{
+			try
+			{
+				//_logger.LogInformation("GetAll was invoked");
+				var usersList = await this.authRepository.GetAllAccountsAsync();
+				var usersDto = this.mapper.Map<List<AccountDto>>(usersList);
+
+				this.logger.LogInformation($"Finished get all request with data: {JsonSerializer.Serialize(usersList)}");
+				return Ok(usersDto);
+			}
+			catch (Exception ex)
+			{
+				this.logger.LogError(ex, ex.Message);
+				throw;
+			}
 		}
 
+		// Admin searching user by Id
+		[HttpGet("users/{id:Guid}")]
+		public async Task<IActionResult> GetByIdAsync([FromRoute]Guid id)
+		{
+			try
+			{
+				//_logger.LogInformation("GetAll was invoked");
+				var user = await this.authRepository.GetAccountByIdAsync(id);
+				if (user == null)
+				{
+					return NotFound();
+				}
+				var userDto = this.mapper.Map<AccountDto>(user);
+
+				this.logger.LogInformation($"Finished get by id request with data: {JsonSerializer.Serialize(user)}");
+				return Ok(userDto);
+			}
+			catch (Exception ex)
+			{
+				this.logger.LogError(ex, ex.Message);
+				throw;
+			}
+		}
+
+		// Admin searching user by Email
+		[HttpGet("users/GetByEmail/{id:Guid}")]
+		public async Task<IActionResult> GetByEmailAsync([FromRoute]Guid id)
+		{
+			try
+			{
+				// TODO: Fix the param to be Email instead of id 
+				//_logger.LogInformation("GetByEmailAsync was invoked");
+				var userById = await this.authRepository.GetAccountByIdAsync(id);
+				if (userById == null)
+				{
+					return NotFound();
+				}
+				
+				var userByEmail = await this.authRepository.GetAccountByEmailAsync(userById.Email);
+				var userDto = this.mapper.Map<AccountDto>(userByEmail);
+
+				this.logger.LogInformation($"Finished get by email request with data: {JsonSerializer.Serialize(userByEmail)}");
+				return Ok(userDto);
+			}
+			catch (Exception ex)
+			{
+				this.logger.LogError(ex, ex.Message);
+				throw;
+			}
+		}
+
+		// Admin update user
+		[HttpPut("users/{id:Guid}")]
+		public async Task<IActionResult> UpdateAsync([FromRoute]Guid id, AccountDto accountDto)
+		{
+			try
+			{
+				var account = this.mapper.Map<Account>(accountDto);
+				account = await this.authRepository.UpdateAsync(id, account);
+
+				if (account == null)
+				{
+					return NotFound();
+				}
+				return Ok(this.mapper.Map<Account>(account));
+			}
+			catch (Exception ex)
+			{
+				this.logger.LogError(ex, ex.Message);
+				throw;
+			}
+		}
+
+		// Admin delete an user
+		[HttpDelete("users/{id:Guid}")]
+		public async Task<IActionResult> DeleteAsync([FromRoute]Guid id)
+		{
+			try
+			{
+				var account = await this.authRepository.DeleteAsync(id);
+				if (account == null)
+				{
+					return NotFound();
+				}
+
+				return Ok(this.mapper.Map<AccountDto>(account));
+			}
+			catch (Exception ex)
+			{
+				this.logger.LogError(ex, ex.Message);
+				throw;
+			}
+		}
 	}
 }
