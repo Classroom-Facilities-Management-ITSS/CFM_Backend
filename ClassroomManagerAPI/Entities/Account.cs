@@ -1,17 +1,16 @@
-﻿using ClassroomManagerAPI.Data.Utility;
+﻿using ClassroomManagerAPI.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace ClassroomManagerAPI.Models
+namespace ClassroomManagerAPI.Entities
 {
-	public class Account
-	{
-        [Key]
-        public Guid ID { get; set; }
+    public class Account : BaseEntity
+    {
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
         public string Role { get; set; } = Roles.USER;
-        public bool Active {  get; set; } = false;
+        public bool Active { get; set; } = false;
     }
 }

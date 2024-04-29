@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ClassroomManagerAPI.Models
+namespace ClassroomManagerAPI.Entities
 {
-	public class Report
-	{
-        public Guid ID { get; set; }
+    public class Report : BaseEntity
+    {
         public Guid ReporterID { get; set; }
         public string Note { get; set; }
         public Guid? ClassID { get; set; }

@@ -1,10 +1,11 @@
-﻿using ClassroomManagerAPI.Data;
-using ClassroomManagerAPI.Models;
+﻿using ClassroomManagerAPI.Configs.Infastructure;
+using ClassroomManagerAPI.Entities;
+using ClassroomManagerAPI.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClassroomManagerAPI.Repositories
 {
-	public class SQLFacilityRepository : IFacilityRepository
+    public class SQLFacilityRepository : IFacilityRepository
 	{
 		private readonly AppDbContext dbContext;
         public SQLFacilityRepository(AppDbContext dbContext)

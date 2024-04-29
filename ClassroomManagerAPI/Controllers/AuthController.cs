@@ -1,13 +1,13 @@
-﻿using ClassroomManagerAPI.Models.Dto;
-using ClassroomManagerAPI.Repositories;
-using Microsoft.AspNetCore.Http;
+﻿using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Models.Dto;
+using ClassroomManagerAPI.Repositories.IRepositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
 
 namespace ClassroomManagerAPI.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
+    [ApiVersion(Settings.APIVersion)]
+    [Route(Settings.APIDefaultRoute + "/auth")]
+    [ApiController]
 	public class AuthController : ControllerBase
 	{
 		private readonly IAuthRepository authRepository;
@@ -65,56 +65,6 @@ namespace ClassroomManagerAPI.Controllers
 			});
 		}
 
-		/*
-		[HttpPost("upload")]
-		public async Task<IActionResult> UploadProduct([FromForm] ProductDTO product)
-		{
-			try
-			{
-				var fileName = product.image.FileName;
-				string pattern = @"\.(jpg|jpeg|png|gif)$";
-				if (Regex.IsMatch(fileName, pattern, RegexOptions.IgnoreCase))
-				{
-					string newFileName = Guid.NewGuid().ToString() + "_" + fileName;
-					string filePath = Path.Combine(Directory.GetCurrentDirectory(), "Public", newFileName);
-					using (var stream = new FileStream(filePath, FileMode.Create))
-					{
-						product.image.CopyTo(stream);
-					}
-					return Ok(new
-					{
-						status = true,
-						image_name = newFileName,
-						message = "Create successfully"
-					});
-				}
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-			return BadRequest(new
-			{
-				status = false,
-				message = "Has Error"
-			});
-		}
-		*/
-
-		/*
-		 [HttpGet("{name}")]
-        public async Task<IActionResult> GetImage(string name)
-        {
-            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Public", name);
-            if (!System.IO.File.Exists(imagePath)) return NotFound(new
-            {
-                status = false,
-                message = "Image name is not correct or isn't existing!"
-            });
-            var image = System.IO.File.OpenRead(imagePath);
-            return File(image, "image/jpeg");
-        }
-		 */
 		[HttpPut("update_password")]
 		public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequestDto updatePasswordRequestDto)
 		{

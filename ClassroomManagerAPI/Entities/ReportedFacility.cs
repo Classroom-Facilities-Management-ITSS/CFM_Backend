@@ -2,12 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ClassroomManagerAPI.Models
+namespace ClassroomManagerAPI.Entities
 {
-	public class ReportedFacility
-	{
-		[Key]
-        public Guid ID { get; set; }
+    public class ReportedFacility :　BaseEntity
+    {
         public Guid ReportID { get; set; } // foreign key reference report.id
         public Guid FacilityID { get; set; } // foreign key reference facility.id
 

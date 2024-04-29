@@ -1,17 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ClassroomManagerAPI.Models
+namespace ClassroomManagerAPI.Entities
 {
-	public class Classroom
-	{
-		[Key]
-		public Guid Id { get; set; }
+    public class Classroom : BaseEntity
+    {
         [Required]
-		public string ClassNumber { get; set; }
+        public string ClassNumber { get; set; }
         public string? LastUsed { get; set; }
         public int FacilityAmount { get; set; }
         public string? Note { get; set; }
-		public Guid? ManagerId { get; set; }
+        public Guid? ManagerId { get; set; }
         //managerId int
         // foreignkey managerid references account.id
 

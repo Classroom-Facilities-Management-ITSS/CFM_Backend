@@ -1,16 +1,15 @@
 ﻿using AutoMapper;
-using Azure;
-using ClassroomManagerAPI.Data;
-using ClassroomManagerAPI.Models;
+using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Configs.Infastructure;
+using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Models.Dto;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ClassroomManagerAPI.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
+    [ApiVersion(Settings.APIVersion)]
+    [Route(Settings.APIDefaultRoute + "/classroom")]
+    [ApiController]
 	public class ClassroomAPIController : ControllerBase
 	{
 		private readonly AppDbContext context;

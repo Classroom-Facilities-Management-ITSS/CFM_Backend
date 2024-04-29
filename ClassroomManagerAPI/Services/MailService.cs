@@ -1,10 +1,10 @@
-﻿using ClassroomManagerAPI.Data.Utility;
-using MimeKit;
+﻿using MimeKit;
 using MailKit.Net.Smtp;
+using ClassroomManagerAPI.Models;
 
 namespace ClassroomManagerAPI.Services
 {
-	public class MailService : IMailService
+    public class MailService : IMailService
 	{
 		private readonly IConfiguration configuration;
 

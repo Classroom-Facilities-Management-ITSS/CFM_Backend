@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using ClassroomManagerAPI.Data;
-using ClassroomManagerAPI.Data.Utility;
+using ClassroomManagerAPI.Configs.Infastructure;
+using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Dto;
+using ClassroomManagerAPI.Repositories.IRepositories;
 using ClassroomManagerAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +13,7 @@ using System.Text;
 
 namespace ClassroomManagerAPI.Repositories
 {
-	public class SQLAuthRepository : IAuthRepository
+    public class SQLAuthRepository : IAuthRepository
 	{
 		private readonly AppDbContext context;
 		private readonly IMapper mapper;
