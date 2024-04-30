@@ -1,7 +1,7 @@
 ﻿using ClassroomManagerAPI.Entities;
+using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1;
 
 namespace ClassroomManagerAPI.Repositories
 {
@@ -62,6 +62,17 @@ namespace ClassroomManagerAPI.Repositories
                 return await _set.SingleOrDefaultAsync((T c) => c.Id == id && !c.IsDeleted).ConfigureAwait(continueOnCapturedContext: false);
             }
             catch (Exception ex) { throw; }
+        }
+
+        public async Task<PaginationModel> Pagination(int? page, int? limit)
+        {
+            page = page <= 0 ? 1 : page ?? 1;
+            limit = limit <= 0 ? 10 : limit ?? 10;
+            PaginationModel pagination = new PaginationModel();
+            var total = await _set.Where(c => !c.IsDeleted).CountAsync().ConfigureAwait(continueOnCapturedContext: false);
+            pagination.Total = (int) Math.Ceiling( total / (decimal)limit);
+            pagination.Page = (int) page;
+            return pagination;
         }
 
         public virtual async Task<T?> UpdateAsync(T entity)

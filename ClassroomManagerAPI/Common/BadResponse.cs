@@ -6,6 +6,7 @@ namespace ClassroomManagerAPI.Common
     public class BadResponse
     {
         public int? StatusCode { get; set; }
+        public string? Message { get; set; } = "Successfully";
         private string ErrorMessage { get; set; }
         public bool IsOk => string.IsNullOrEmpty(ErrorMessage);
 
@@ -18,7 +19,7 @@ namespace ClassroomManagerAPI.Common
 
         public void AddBadRequest(string message)
         {
-            ErrorMessage = message;
+            Message = ErrorMessage = message;
         }
     }
 }

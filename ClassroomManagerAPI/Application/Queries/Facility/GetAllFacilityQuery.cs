@@ -8,7 +8,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Facility
 {
-    public class GetAllFacilityQuery : PaginationModel, IRequest<Response<IEnumerable<FacilityModel>>>
+    public class GetAllFacilityQuery : FilterModel, IRequest<Response<IEnumerable<FacilityModel>>>
     {
     }
 
@@ -25,8 +25,10 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
             ArgumentNullException.ThrowIfNull(request);
             Response<IEnumerable<FacilityModel>> result = new Response<IEnumerable<FacilityModel>>();
             var facilityReult = await _facilityRepository.GetAllAsync(request.page, request.limit).ConfigureAwait(false);
-            _mapper.Map(facilityReult, result.Data);
+            result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facilityReult);
             result.StatusCode = (int) HttpStatusCode.OK;
+            result.AddPagination(await _facilityRepository.Pagination(request.page, request.limit).ConfigureAwait(false));
+            result.AddFilter(request);
             return result;
         }
     }

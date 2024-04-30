@@ -32,7 +32,7 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
                 result.StatusCode = (int) HttpStatusCode.NotFound;
                 return result;
             }
-            _mapper.Map(facility, result.Data);
+            result.Data = _mapper.Map<FacilityModel>(facility);
             result.StatusCode = (int) HttpStatusCode.OK;
             return result;
         }
