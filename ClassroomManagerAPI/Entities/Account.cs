@@ -1,4 +1,4 @@
-﻿using ClassroomManagerAPI.Models;
+﻿using ClassroomManagerAPI.Common;
 using System.ComponentModel.DataAnnotations;
 
 namespace ClassroomManagerAPI.Entities

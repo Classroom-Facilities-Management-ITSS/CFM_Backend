@@ -1,6 +1,7 @@
 ﻿using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1;
 
 namespace ClassroomManagerAPI.Repositories
 {
@@ -9,8 +10,8 @@ namespace ClassroomManagerAPI.Repositories
         private readonly DbContext _context;
         private readonly DbSet<T> _set;
 
-        public BaseRepository(DbContext context, DbSet<T> set) {
-            _context = context;
+        public BaseRepository(DbContext context) {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _set = _context.Set<T>();
         }
         public virtual async Task<T?> AddAsync(T entity)

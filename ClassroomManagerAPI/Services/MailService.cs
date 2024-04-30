@@ -1,6 +1,7 @@
 ﻿using MimeKit;
 using MailKit.Net.Smtp;
-using ClassroomManagerAPI.Models;
+using ClassroomManagerAPI.Services.IServices;
+using ClassroomManagerAPI.Common;
 
 namespace ClassroomManagerAPI.Services
 {

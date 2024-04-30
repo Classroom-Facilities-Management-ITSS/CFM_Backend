@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using ClassroomManagerAPI.Common;
+using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Configs.Infastructure;
 using ClassroomManagerAPI.Entities;
-using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Dto;
 using ClassroomManagerAPI.Repositories.IRepositories;
-using ClassroomManagerAPI.Services;
+using ClassroomManagerAPI.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,13 +20,15 @@ namespace ClassroomManagerAPI.Repositories
 		private readonly IMapper mapper;
 		private readonly IConfiguration configuration;
 		private readonly IMailService mailService;
+		private readonly IBCryptService bCryptService;
 
-		public SQLAuthRepository(AppDbContext context, IMapper mapper, IConfiguration configuration, IMailService mailService)
+		public SQLAuthRepository(AppDbContext context, IMapper mapper, IConfiguration configuration, IMailService mailService, IBCryptService bCryptService)
         {
 			this.context = context;
 			this.mapper = mapper;
 			this.configuration = configuration;
 			this.mailService = mailService;
+			this.bCryptService = bCryptService;
 		}
 
 		private string generateToken(dynamic authClaims)
@@ -67,7 +70,7 @@ namespace ClassroomManagerAPI.Repositories
 		{
 			var found = this.context.Accounts!.SingleOrDefault(u => u.Email == user.Email);
 			if (found == null) return string.Empty;
-			if (found.Active && BCryptService.verifyPassword(user.Password, found.Password))
+			if (found.Active && bCryptService.verifyPassword(user.Password, found.Password))
 			{
 				var authClaims = new List<Claim>()
 				{
@@ -86,7 +89,7 @@ namespace ClassroomManagerAPI.Repositories
 			var found = this.context.Accounts!.SingleOrDefault(u => u.Email == user.Email);
 			if (found == null)
 			{
-				user.Password = BCryptService.HashPassword(user.Password);
+				user.Password = bCryptService.HashPassword(user.Password);
 				var newUser = mapper.Map<Account>(user);
 				await this.context.Accounts!.AddAsync(newUser);
 				await this.context.SaveChangesAsync();
@@ -96,7 +99,7 @@ namespace ClassroomManagerAPI.Repositories
 					new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
 				};
 				var token = generateToken(authClaims);
-				var pathHtml = Path.Combine(Directory.GetCurrentDirectory(), "Views/verify.html");
+				var pathHtml = Path.Combine(Directory.GetCurrentDirectory(), Settings.ResourcesVerify);
 				string htmlContent = File.ReadAllText(pathHtml);
 				string replacedHtmlContent = htmlContent
 				.Replace("{{token}}", token)
@@ -125,7 +128,7 @@ namespace ClassroomManagerAPI.Repositories
 			if (found.Password != user.OldPassword) return false;
 			if (found != null && found.Active)
 			{
-				var password = BCryptService.HashPassword(user.NewPassword);
+				var password = bCryptService.HashPassword(user.NewPassword);
 				found.Password = password;
 				this.context.Accounts.Update(found);
 				await this.context.SaveChangesAsync();
@@ -145,7 +148,7 @@ namespace ClassroomManagerAPI.Repositories
 			if (user == null) return false;
 			if (user.Active)
 			{
-				const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+				var chars = configuration["resetKey"];
 				var random = new Random();
 				var passwordChars = new char[8];
 
@@ -156,7 +159,7 @@ namespace ClassroomManagerAPI.Repositories
 
 				string passwordString = new string(passwordChars);
 
-				var password = BCryptService.HashPassword(passwordString);
+				var password = bCryptService.HashPassword(passwordString);
 				user.Password = password;
 				this.context.Update(user);
 				await this.context.SaveChangesAsync();

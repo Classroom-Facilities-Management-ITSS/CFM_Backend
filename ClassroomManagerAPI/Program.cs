@@ -2,6 +2,7 @@ using ClassroomManagerAPI.Configs.Infastructure;
 using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using ClassroomManagerAPI.Services;
+using ClassroomManagerAPI.Services.IServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -11,6 +12,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+#region logger_config
 var logger = new LoggerConfiguration()
 	.WriteTo.Console()
 	.MinimumLevel.Information()
@@ -18,22 +20,21 @@ var logger = new LoggerConfiguration()
 
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
+#endregion
 
+#region cors
 builder.Services.AddCors(options => options.AddDefaultPolicy(
     policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod())
 );
+#endregion
 
+#region service_dependency
 builder.Services.AddAutoMapper(typeof(Program));
-
+builder.Services.AddMvc();
+builder.Services.AddApiVersioning(options => options.ReportApiVersions = true);
 builder.Services.AddDbContext<AppDbContext>();
-
-builder.Services.AddScoped<IFacilityRepository, SQLFacilityRepository>();
-builder.Services.AddScoped<IAuthRepository, SQLAuthRepository>();
-builder.Services.AddScoped<IMailService, MailService>();
-
-
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
@@ -62,8 +63,6 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
-
-
 builder.Services.AddAuthentication(options => {
 	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -80,7 +79,14 @@ builder.Services.AddAuthentication(options => {
 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
 	};
 });
+#endregion
 
+#region api_lifecycle
+builder.Services.AddScoped<IFacilityRepository, FacilityRepository>();
+builder.Services.AddScoped<IAuthRepository, SQLAuthRepository>();
+builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IBCryptService, BCryptService>();
+#endregion
 
 var app = builder.Build();
 
