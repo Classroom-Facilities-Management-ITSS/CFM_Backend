@@ -24,8 +24,8 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
         {
             ArgumentNullException.ThrowIfNull(request);
             Response<IEnumerable<FacilityModel>> result = new Response<IEnumerable<FacilityModel>>();
-            var facilityReult = await _facilityRepository.GetAllAsync(request.page, request.limit).ConfigureAwait(false);
-            result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facilityReult);
+            var facilityResult = await _facilityRepository.GetAllAsync(request.page, request.limit).ConfigureAwait(false);
+            result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facilityResult);
             result.StatusCode = (int) HttpStatusCode.OK;
             result.AddPagination(await _facilityRepository.Pagination(request.page, request.limit).ConfigureAwait(false));
             result.AddFilter(request);

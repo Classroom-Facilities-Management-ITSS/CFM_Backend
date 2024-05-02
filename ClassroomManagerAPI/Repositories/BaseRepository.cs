@@ -50,7 +50,7 @@ namespace ClassroomManagerAPI.Repositories
             int skip = (int)(limit * (page - 1));
             try
             {
-                return await _set.Where((T c) => !c.IsDeleted).Take((int) limit).Skip(skip).ToListAsync().ConfigureAwait(continueOnCapturedContext: false);
+                return await _set.Where((T c) => !c.IsDeleted).Skip(skip).Take((int) limit).ToListAsync().ConfigureAwait(continueOnCapturedContext: false);
             }catch (Exception ex) { throw; }
         }
 

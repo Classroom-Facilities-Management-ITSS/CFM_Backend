@@ -2,7 +2,7 @@
 using ClassroomManagerAPI.Application.Queries.Facility;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Entities;
+using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Facility;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -63,13 +63,13 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by name
 		[HttpGet("search")]
-        [ProducesResponseType(typeof(Response<FacilityModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Response<IEnumerable<FacilityModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> GetByName(string name)
+        public async Task<IActionResult> GetByName([FromQuery] SearchFacilityNameQuery search)
 		{
 			try
 			{
-				var result = await _mediator.Send(new SearchFacilityNameQuery { Name = name }).ConfigureAwait(false);
+				var result = await _mediator.Send(search).ConfigureAwait(false);
 				return result.GetResult();
 			}
 			catch (Exception ex)

@@ -4,6 +4,6 @@ namespace ClassroomManagerAPI.Repositories.IRepositories
 {
     public interface IFacilityRepository : IBaseRepository<Facility?>
     {
-        public Task<Facility?> GetByNameAsync(string name);
+        public Task<IEnumerable<Facility>> GetByNameAsync(string name, int? page, int? limit);
     }
 }

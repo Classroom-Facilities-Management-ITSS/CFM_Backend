@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
+using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -7,12 +8,12 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Facility
 {
-    public class SearchFacilityNameQuery : IRequest<Response<FacilityModel>>
+    public class SearchFacilityNameQuery : FilterModel ,IRequest<Response<IEnumerable<FacilityModel>>>
     {
         public string Name { get; set; }
     }
 
-    public class SearchNameQueryHandler : IRequestHandler<SearchFacilityNameQuery, Response<FacilityModel>>
+    public class SearchNameQueryHandler : IRequestHandler<SearchFacilityNameQuery, Response<IEnumerable<FacilityModel>>>
     {
         private readonly IFacilityRepository _facilityRepository;
         private readonly IMapper _mapper;
@@ -22,19 +23,16 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
             _mapper = mapper;
         }
 
-        public async Task<Response<FacilityModel>> Handle(SearchFacilityNameQuery request, CancellationToken cancellationToken)
+        public async Task<Response<IEnumerable<FacilityModel>>> Handle(SearchFacilityNameQuery request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            Response<FacilityModel> result = new Response<FacilityModel>();
-            var facility = await _facilityRepository.GetByNameAsync(request.Name).ConfigureAwait(false);
-            if (facility == null)
-            {
-                result.AddBadRequest($"Facility with name {request.Name} not existing");
-                result.StatusCode = (int)HttpStatusCode.NotFound;
-                return result;
-            }
-            result.Data = _mapper.Map<FacilityModel>(facility);
+            Response<IEnumerable<FacilityModel>> result = new Response<IEnumerable<FacilityModel>>();
+            var facility = await _facilityRepository.GetByNameAsync(request.Name, request.page, request.limit).ConfigureAwait(false);
+
+            result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facility);
             result.StatusCode = (int)HttpStatusCode.OK;
+            result.AddPagination(await _facilityRepository.Pagination(request.page, request.limit).ConfigureAwait(false));
+            result.AddFilter(new FilterModel { page = request.page , limit = request.limit });
             return result;
         }
     }

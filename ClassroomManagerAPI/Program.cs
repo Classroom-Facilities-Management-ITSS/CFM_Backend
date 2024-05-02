@@ -83,7 +83,7 @@ builder.Services.AddAuthentication(options => {
 
 #region api_lifecycle
 builder.Services.AddScoped<IFacilityRepository, FacilityRepository>();
-builder.Services.AddScoped<IAuthRepository, SQLAuthRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IBCryptService, BCryptService>();
 #endregion

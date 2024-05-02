@@ -14,7 +14,7 @@ using System.Text;
 
 namespace ClassroomManagerAPI.Repositories
 {
-    public class SQLAuthRepository : IAuthRepository
+    public class AuthRepository : IAuthRepository
 	{
 		private readonly AppDbContext context;
 		private readonly IMapper mapper;
@@ -22,7 +22,7 @@ namespace ClassroomManagerAPI.Repositories
 		private readonly IMailService mailService;
 		private readonly IBCryptService bCryptService;
 
-		public SQLAuthRepository(AppDbContext context, IMapper mapper, IConfiguration configuration, IMailService mailService, IBCryptService bCryptService)
+		public AuthRepository(AppDbContext context, IMapper mapper, IConfiguration configuration, IMailService mailService, IBCryptService bCryptService)
         {
 			this.context = context;
 			this.mapper = mapper;
