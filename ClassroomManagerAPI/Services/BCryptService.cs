@@ -1,13 +1,15 @@
-﻿namespace ClassroomManagerAPI.Services
+﻿using ClassroomManagerAPI.Services.IServices;
+
+namespace ClassroomManagerAPI.Services
 {
-	public class BCryptService
+    public class BCryptService : IBCryptService
 	{
-		public static string HashPassword(string password)
+		public string HashPassword(string password)
 		{
 			return BCrypt.Net.BCrypt.HashPassword(password);
 		}
 
-		public static bool verifyPassword(string password, string hashedPassword)
+		public bool verifyPassword(string password, string hashedPassword)
 		{
 			return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
 		}

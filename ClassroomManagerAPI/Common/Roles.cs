@@ -1,4 +1,4 @@
-﻿namespace ClassroomManagerAPI.Models
+﻿namespace ClassroomManagerAPI.Common
 {
     public class Roles
     {

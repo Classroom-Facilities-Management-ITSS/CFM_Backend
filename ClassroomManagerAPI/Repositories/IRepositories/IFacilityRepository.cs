@@ -2,13 +2,8 @@
 
 namespace ClassroomManagerAPI.Repositories.IRepositories
 {
-    public interface IFacilityRepository
+    public interface IFacilityRepository : IBaseRepository<Facility?>
     {
-        Task<List<Facility>> GetAllAsync();
-        Task<Facility?> GetByIdAsync(Guid id);
-        Task<Facility?> GetByNameAsync(string name);
-        Task<Facility> CreateAsync(Facility facility);
-        Task<Facility?> UpdateAsync(Guid id, Facility facility);
-        Task<Facility> DeleteAsync(Guid id);
+        public Task<IEnumerable<Facility>> GetByNameAsync(string name, int? page, int? limit);
     }
 }

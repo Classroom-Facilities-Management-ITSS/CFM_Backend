@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using ClassroomManagerAPI.Models.Dto;
 using ClassroomManagerAPI.Entities;
+using ClassroomManagerAPI.Models.Facility;
 
 namespace ClassroomManagerAPI.Configs.Mappers
 {
@@ -8,9 +8,9 @@ namespace ClassroomManagerAPI.Configs.Mappers
     {
         public FacilityMapper()
         {
-            CreateMap<FacilityDto, Facility>().ReverseMap();
-            CreateMap<AddFacilityRequestDto, Facility>().ReverseMap();
-            CreateMap<UpdateFacilityRequestDto, Facility>().ReverseMap();
+            CreateMap<FacilityModel, Facility>().ReverseMap();
+            CreateMap<AddFacilityModel, Facility>().ReverseMap();
+            CreateMap<UpdateFacilityModel, Facility>().ReverseMap();
         }
     }
 }

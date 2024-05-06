@@ -1,4 +1,5 @@
 ﻿using ClassroomManagerAPI.Entities;
+using ClassroomManagerAPI.Models;
 
 namespace ClassroomManagerAPI.Repositories.IRepositories
 {
@@ -9,6 +10,6 @@ namespace ClassroomManagerAPI.Repositories.IRepositories
         Task<T?> UpdateAsync(T entity);
         Task<bool> DeleteAsync(Guid id);
         Task<IEnumerable<T>> GetAllAsync(int? page, int? limit);
-
+        Task<PaginationModel> Pagination(int? page, int? limit);
     }
 }

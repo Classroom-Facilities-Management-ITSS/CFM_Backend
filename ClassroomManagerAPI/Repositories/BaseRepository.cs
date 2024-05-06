@@ -1,6 +1,8 @@
 ﻿using ClassroomManagerAPI.Entities;
+using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace ClassroomManagerAPI.Repositories
 {
@@ -9,8 +11,8 @@ namespace ClassroomManagerAPI.Repositories
         private readonly DbContext _context;
         private readonly DbSet<T> _set;
 
-        public BaseRepository(DbContext context, DbSet<T> set) {
-            _context = context;
+        public BaseRepository(DbContext context) {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _set = _context.Set<T>();
         }
         public virtual async Task<T?> AddAsync(T entity)
@@ -49,7 +51,7 @@ namespace ClassroomManagerAPI.Repositories
             int skip = (int)(limit * (page - 1));
             try
             {
-                return await _set.Where((T c) => !c.IsDeleted).Take((int) limit).Skip(skip).ToListAsync().ConfigureAwait(continueOnCapturedContext: false);
+                return await _set.Where((T c) => !c.IsDeleted).Skip(skip).Take((int) limit).ToListAsync().ConfigureAwait(continueOnCapturedContext: false);
             }catch (Exception ex) { throw; }
         }
 
@@ -63,6 +65,17 @@ namespace ClassroomManagerAPI.Repositories
             catch (Exception ex) { throw; }
         }
 
+        public async Task<PaginationModel> Pagination(int? page, int? limit)
+        {
+            page = page <= 0 ? 1 : page ?? 1;
+            limit = limit <= 0 ? 10 : limit ?? 10;
+            PaginationModel pagination = new PaginationModel();
+            var total = await _set.Where(c => !c.IsDeleted).CountAsync().ConfigureAwait(continueOnCapturedContext: false);
+            pagination.Total = (int) Math.Ceiling( total / (decimal)limit);
+            pagination.Page = (int) page;
+            return pagination;
+        }
+
         public virtual async Task<T?> UpdateAsync(T entity)
         {
             try
@@ -72,9 +85,18 @@ namespace ClassroomManagerAPI.Repositories
                 else
                 {
                     entity.UpdatedAt = DateTime.Now;
-                    var updateEntity = _set.Update(entity);
+                    PropertyInfo[] properties = e.GetType().GetProperties();
+                    foreach (var property in properties)
+                    {
+                        if (property.CanRead && property.CanWrite && property.Name != "Id")
+                        {
+                            object value = property.GetValue(entity);
+                            property.SetValue(e, value);
+                        }
+                    }
+                    var updatedEntity = _set.Update(e);
                     await _context.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
-                    return updateEntity.Entity;
+                    return updatedEntity.Entity;
                 }
             }
             catch (Exception ex) { throw; }

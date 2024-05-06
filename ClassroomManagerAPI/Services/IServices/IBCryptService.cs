@@ -1,4 +1,4 @@
-﻿namespace ClassroomManagerAPI.Services
+﻿namespace ClassroomManagerAPI.Services.IServices
 {
     public interface IBCryptService
     {
