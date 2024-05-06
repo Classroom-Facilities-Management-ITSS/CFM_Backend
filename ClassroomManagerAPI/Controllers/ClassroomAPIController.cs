@@ -1,9 +1,17 @@
 ﻿using AutoMapper;
+using ClassroomManagerAPI.Application.Commands.Classroom;
+using ClassroomManagerAPI.Application.Commands.Facility;
+using ClassroomManagerAPI.Application.Queries.Classroom;
+using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Configs.Infastructure;
 using ClassroomManagerAPI.Entities;
+using ClassroomManagerAPI.Models.Classroom;
 using ClassroomManagerAPI.Models.Dto;
+using ClassroomManagerAPI.Models.Facility;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace ClassroomManagerAPI.Controllers
 {
@@ -12,59 +20,52 @@ namespace ClassroomManagerAPI.Controllers
     [ApiController]
 	public class ClassroomAPIController : ControllerBase
 	{
-		private readonly AppDbContext context;
-		private ResponseDto response;
-		private readonly IMapper mapper;
-		private readonly ILogger<ClassroomAPIController> logger;
+		private readonly IMediator _mediator;
+		private readonly ILogger<ClassroomAPIController> _logger;
 
-		public ClassroomAPIController(AppDbContext context, IMapper mapper, ILogger<ClassroomAPIController> logger)
+		public ClassroomAPIController(ILogger<ClassroomAPIController> logger, IMediator mediator)
         {
-			this.context = context;
-			this.response = new ResponseDto();
-			this.mapper = mapper;
-			this.logger = logger;
+			_logger = logger;
+			_mediator = mediator;
 		}
 
 		// Get all classrooms
-		[HttpGet, Route("classrooms")]
-		public ResponseDto GetAll()
+		[HttpGet]
+		[ProducesResponseType(typeof(Response<IEnumerable<ClassroomModel>>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> GetAll([FromQuery] GetAllClassroomQuery query)
 		{
 			try
 			{
 				//_logger.LogInformation("GetAll was invoked");
-				IEnumerable<Classroom> objList = context.Classrooms.ToList();
-				response.Result = mapper.Map<IEnumerable<ClassroomDto>>(objList);
+				var result = await _mediator.Send(query).ConfigureAwait(false);
+				return result.GetResult();
 				//_logger.LogInformation($"Finished get all request with data: {JsonSerializer.Serialize(objList)}");
 			}
 			catch (Exception ex)
 			{
-				response.IsSuccess = false;
-				response.Message = ex.Message;
-				logger.LogError(ex, ex.Message);
+				_logger.LogError(ex, ex.Message);
 				throw;
 			}
 			return response;
 		}
 
 		// Get by number
-		[HttpGet]
-		[Route("classrooms/GetByName/{number}")]
-		public ResponseDto GetByName(string number)
+		[HttpGet("{classrooomNumber}")]
+		[ProducesResponseType(typeof(Response<ClassroomModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> GetByNumber(string classroomNumber)
 		{
 			try
 			{
-				Classroom obj = context.Classrooms.FirstOrDefault(u => u.ClassNumber.ToLower() == number.ToLower());
-				if (obj == null)
-				{
-					response.IsSuccess = false;
-				}
+				var result = await _mediator.Send(new GetByClassroomNumberQuery { ClassNumber = classroomNumber }).ConfigureAwait(false);
+				return result?.GetResult();
+			}
 				response.Result = mapper.Map<ClassroomDto>(obj);
 			}
 			catch (Exception ex)
 			{
-				response.IsSuccess = false;
-				response.Message = ex.Message;
-				logger.LogError(ex, ex.Message);
+				_logger.LogError(ex, ex.Message);
 				throw;
 			}
 			return response;
@@ -72,66 +73,58 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Create classroom
 		[HttpPost]
-		public ResponseDto Create([FromBody] AddClassroomRequestDto addClassroomRequestDto)
+		[ProducesResponseType(typeof(Response<ClassroomModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> Create([FromBody] AddClassroomCommand addClassroomCommand)
 		{
 			try
 			{
-				Classroom obj = mapper.Map<Classroom>(addClassroomRequestDto);
-				context.Classrooms.Add(obj);
-				context.SaveChanges();
-				response.Result = mapper.Map<ClassroomDto>(obj);
+				var result = await _mediator.Send(addClassroomCommand).ConfigureAwait(false);
+				return result.GetResult();
 			}
 			catch (Exception ex)
 			{
-				response.IsSuccess = false;
-				response.Message = ex.Message;
-				logger.LogError(ex, ex.Message);
+				_logger.LogError(ex, ex.Message);
+				throw;
 			}
 			return response;
 		}
 
 		// Update a classroom
-		[HttpPut]
-		public ResponseDto Update([FromBody] ClassroomDto classroomDto)
+		[HttpPut("{id}")]
+		[ProducesResponseType(typeof(Response<ClassroomModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateFacilityCommand updateFacilityCommand )
 		{
 			try
 			{
-				Classroom existingClassroom = context.Classrooms.FirstOrDefault(c => c.ClassNumber == classroomDto.ClassNumber);
-				if (existingClassroom == null)
-				{
-					// Handle case where the classroom with the specified Id is not found
-					// Return appropriate response or throw exception
-				}
-				mapper.Map(classroomDto, existingClassroom);
-				context.Classrooms.Update(existingClassroom);
-				context.SaveChanges();
-				response.Result = mapper.Map<ClassroomDto>(existingClassroom);
+				updateFacilityCommand.Id = id;
+				var result = await _mediator.Send(updateFacilityCommand).ConfigureAwait(false);
+				return result.GetResult();
 			}
 			catch (Exception ex)
 			{
-				response.IsSuccess = false;
-				response.Message = ex.Message;
-				logger.LogError(ex, ex.Message);
+				_logger.LogError(ex, ex.Message);
+				throw;
 			}
 			return response;
 		}
 
 		// Remove a classroom
-		[HttpDelete]
-		[Route("classrooms/{number}")]
-		public ResponseDto Delete(string number)
+		[HttpDelete("{id}")]
+		[ProducesResponseType(typeof(Response<ClassroomModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> Delete(Guid id)
 		{
 			try
 			{
-				Classroom obj = context.Classrooms.First(f => f.ClassNumber == number);
-				context.Classrooms.Remove(obj);
-				context.SaveChanges();
+				var result = await _mediator.Send(new DeleteClassroomCommand { Id = id }).ConfigureAwait(false);
+				return result.GetResult();
 			}
 			catch (Exception ex)
 			{
-				response.IsSuccess = false;
-				response.Message = ex.Message;
-				logger.LogError(ex, ex.Message);
+				_logger.LogError(ex, ex.Message);
+				throw;
 			}
 			return response;
 		}
