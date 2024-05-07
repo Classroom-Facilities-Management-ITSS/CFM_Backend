@@ -81,11 +81,17 @@ builder.Services.AddAuthentication(options => {
 });
 #endregion
 
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 #region api_lifecycle
 builder.Services.AddScoped<IFacilityRepository, FacilityRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IBCryptService, BCryptService>();
+builder.Services.AddScoped<IClassroomRepository, ClassroomRepository>();
 #endregion
 
 var app = builder.Build();
