@@ -89,12 +89,12 @@ namespace ClassroomManagerAPI.Controllers
 		[HttpPut("{id}")]
 		[ProducesResponseType(typeof(Response<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateFacilityCommand updateFacilityCommand )
+		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateClassroomCommand updateClassroomCommand )
 		{
 			try
 			{
-				updateFacilityCommand.Id = id;
-				var result = await _mediator.Send(updateFacilityCommand).ConfigureAwait(false);
+				updateClassroomCommand.Id = id;
+				var result = await _mediator.Send(updateClassroomCommand).ConfigureAwait(false);
 				return result.GetResult();
 			}
 			catch (Exception ex)

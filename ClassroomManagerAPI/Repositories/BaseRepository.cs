@@ -2,6 +2,7 @@
 using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace ClassroomManagerAPI.Repositories
 {
@@ -84,7 +85,16 @@ namespace ClassroomManagerAPI.Repositories
                 else
                 {
                     entity.UpdatedAt = DateTime.Now;
-                    var updateEntity = _set.Update(entity);
+                    PropertyInfo[] properties = e.GetType().GetProperties();
+                    foreach (var property  in properties)
+                    {
+                        if (property.CanRead && property.CanWrite && property.Name != "Id")
+                        {
+                            object value = property.GetValue(entity);
+                            property.SetValue(e, value);
+                        }
+                    }
+                    var updateEntity = _set.Update(e);
                     await _context.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return updateEntity.Entity;
                 }
