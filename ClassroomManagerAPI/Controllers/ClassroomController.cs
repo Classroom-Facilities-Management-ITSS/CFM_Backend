@@ -18,12 +18,12 @@ namespace ClassroomManagerAPI.Controllers
     [ApiVersion(Settings.APIVersion)]
     [Route(Settings.APIDefaultRoute + "/classroom")]
     [ApiController]
-	public class ClassroomAPIController : ControllerBase
+	public class ClassroomController : ControllerBase
 	{
 		private readonly IMediator _mediator;
-		private readonly ILogger<ClassroomAPIController> _logger;
+		private readonly ILogger<ClassroomController> _logger;
 
-		public ClassroomAPIController(ILogger<ClassroomAPIController> logger, IMediator mediator)
+		public ClassroomController(ILogger<ClassroomController> logger, IMediator mediator)
         {
 			_logger = logger;
 			_mediator = mediator;
@@ -47,7 +47,6 @@ namespace ClassroomManagerAPI.Controllers
 				_logger.LogError(ex, ex.Message);
 				throw;
 			}
-			return response;
 		}
 
 		// Get by number
@@ -61,14 +60,11 @@ namespace ClassroomManagerAPI.Controllers
 				var result = await _mediator.Send(new GetByClassroomNumberQuery { ClassNumber = classroomNumber }).ConfigureAwait(false);
 				return result?.GetResult();
 			}
-				response.Result = mapper.Map<ClassroomDto>(obj);
-			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, ex.Message);
 				throw;
 			}
-			return response;
 		}
 
 		// Create classroom
@@ -87,7 +83,6 @@ namespace ClassroomManagerAPI.Controllers
 				_logger.LogError(ex, ex.Message);
 				throw;
 			}
-			return response;
 		}
 
 		// Update a classroom
@@ -107,7 +102,6 @@ namespace ClassroomManagerAPI.Controllers
 				_logger.LogError(ex, ex.Message);
 				throw;
 			}
-			return response;
 		}
 
 		// Remove a classroom
@@ -126,7 +120,6 @@ namespace ClassroomManagerAPI.Controllers
 				_logger.LogError(ex, ex.Message);
 				throw;
 			}
-			return response;
 		}
 	}
 }
