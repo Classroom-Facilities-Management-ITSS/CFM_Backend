@@ -86,7 +86,7 @@ namespace ClassroomManagerAPI.Repositories
                 {
                     entity.UpdatedAt = DateTime.Now;
                     PropertyInfo[] properties = e.GetType().GetProperties();
-                    foreach (var property  in properties)
+                    foreach (var property in properties)
                     {
                         if (property.CanRead && property.CanWrite && property.Name != "Id")
                         {
@@ -94,9 +94,9 @@ namespace ClassroomManagerAPI.Repositories
                             property.SetValue(e, value);
                         }
                     }
-                    var updateEntity = _set.Update(e);
+                    var updatedEntity = _set.Update(e);
                     await _context.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
-                    return updateEntity.Entity;
+                    return updatedEntity.Entity;
                 }
             }
             catch (Exception ex) { throw; }

@@ -13,11 +13,11 @@ namespace ClassroomManagerAPI.Repositories
 			this.dbContext = dbContext;
 		}
 
-		public async Task<Classroom?> GetByNumberAsync(string ClassNumber)
+		public async Task<Classroom?> GetByAddressAsync(string address)
 		{
 			try
 			{
-				return await dbContext.Classrooms.Where(c => c.ClassNumber == ClassNumber && !c.IsDeleted).FirstOrDefaultAsync().ConfigureAwait(false);
+				return await dbContext.Classrooms.Where(c => c.Address == address && !c.IsDeleted).FirstOrDefaultAsync().ConfigureAwait(false);
 			}
 			catch (Exception ex)
 			{
