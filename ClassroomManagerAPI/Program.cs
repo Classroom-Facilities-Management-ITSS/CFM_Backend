@@ -92,6 +92,7 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IBCryptService, BCryptService>();
 builder.Services.AddScoped<IClassroomRepository, ClassroomRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 #endregion
 
 var app = builder.Build();

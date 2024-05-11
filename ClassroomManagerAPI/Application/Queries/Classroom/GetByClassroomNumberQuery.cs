@@ -29,7 +29,7 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			Response<ClassroomModel> result = new Response<ClassroomModel>();
-			var classroom = await _classroomRepository.GetByNumberAsync(request.ClassNumber);
+			var classroom = await _classroomRepository.GetByAddressAsync(request.ClassNumber);
 			if (classroom == null)
 			{
 				result.AddBadRequest($"Classroomo with number {request.ClassNumber} not existing");

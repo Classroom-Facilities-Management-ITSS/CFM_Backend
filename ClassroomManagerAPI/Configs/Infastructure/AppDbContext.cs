@@ -95,7 +95,7 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                 new Classroom
                 {
                     Id = Guid.Parse("be72d844-8670-48e6-9d6b-859d407f2a5f"),
-                    ClassNumber = "401",
+                    Address = "401",
                     LastUsed = null,
                     FacilityAmount = 1,
                     Note = null
@@ -103,7 +103,7 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                 new Classroom
                 {
                     Id = Guid.Parse("42d228cd-fa56-49ba-b429-f753e34a01f0"),
-                    ClassNumber = "402",
+                    Address = "402",
                     LastUsed = null,
                     FacilityAmount = 2,
                     Note = null
