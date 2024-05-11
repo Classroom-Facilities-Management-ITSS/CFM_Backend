@@ -12,13 +12,17 @@ namespace ClassroomManagerAPI.Configs.Infastructure
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Classroom> Classrooms { get; set; }
         public DbSet<Report> Reports { get; set; }
-        public ReportedFacility ReportedFacilities { get; set; }
+        public DbSet<UserInfo> Users { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ArgumentNullException.ThrowIfNull(modelBuilder);
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountConfiguration());
+            modelBuilder.ApplyConfiguration(new UserInfoConfiguration());
+            modelBuilder.ApplyConfiguration(new ClassroomConfiguration());
+            modelBuilder.ApplyConfiguration(new ReportConfiguration());
+            modelBuilder.ApplyConfiguration(new FacilityConfigurarion());
             base.OnModelCreating(modelBuilder);
             FacilitySeed(modelBuilder);
             ClassroomSeed(modelBuilder);
@@ -55,10 +59,10 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                 new Facility
                 {
                     Id = Guid.Parse("9b09d606-e706-4156-b065-2d3962d5ccae"),
-                    ClassID = Guid.Parse("be72d844-8670-48e6-9d6b-859d407f2a5f"),
+                    ClassroomId = Guid.Parse("be72d844-8670-48e6-9d6b-859d407f2a5f"),
                     Name = "Microphone",
                     Count = 1,
-                    Status = "Vacant",
+                    Status = Enums.FacilityStatusEnum.NEW,
                     Version = "1.7",
                     Note = "on-built teacher provided Microphone for teaching purposes"
                 },
@@ -66,9 +70,9 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                 {
                     Id = Guid.Parse("30d8a6ad-479c-42d7-b0f8-1e8f5270524c"),
                     Name = "HDMI Cables",
-                    ClassID = Guid.Parse("42d228cd-fa56-49ba-b429-f753e34a01f0"),
+                    ClassroomId = Guid.Parse("42d228cd-fa56-49ba-b429-f753e34a01f0"),
                     Count = 1,
-                    Status = "Malfunctioned",
+                    Status = Enums.FacilityStatusEnum.OLD,
                     Version = "1.4",
                     Note = "HDMI Cables connected to projector"
                 },
@@ -76,9 +80,9 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                 {
                     Id = Guid.Parse("86843949-bb17-41e1-9d44-385d9d8c76c4"),
                     Name = "Projector",
-                    ClassID = Guid.Parse("42d228cd-fa56-49ba-b429-f753e34a01f0"),
+                    ClassroomId = Guid.Parse("42d228cd-fa56-49ba-b429-f753e34a01f0"),
                     Count = 1,
-                    Status = "Vacant",
+                    Status = Enums.FacilityStatusEnum.FIXING,
                     Version = "Sony VPL 4K",
                     Note = "Projector connected to laptops via HDMI"
                 }
@@ -95,7 +99,7 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                 new Classroom
                 {
                     Id = Guid.Parse("be72d844-8670-48e6-9d6b-859d407f2a5f"),
-                    ClassNumber = "401",
+                    Address = "D9-401",
                     LastUsed = null,
                     FacilityAmount = 1,
                     Note = null
@@ -103,7 +107,7 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                 new Classroom
                 {
                     Id = Guid.Parse("42d228cd-fa56-49ba-b429-f753e34a01f0"),
-                    ClassNumber = "402",
+                    Address = "D9-402",
                     LastUsed = null,
                     FacilityAmount = 2,
                     Note = null

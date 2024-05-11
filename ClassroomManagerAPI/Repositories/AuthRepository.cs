@@ -74,6 +74,7 @@ namespace ClassroomManagerAPI.Repositories
 			{
 				var authClaims = new List<Claim>()
 				{
+					new Claim(ClaimTypes.NameIdentifier, found.Id.ToString()),
 					new Claim(ClaimTypes.Email, user.Email),
 					new Claim(ClaimTypes.Role, found.Role),
 					new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
@@ -124,8 +125,8 @@ namespace ClassroomManagerAPI.Repositories
 			// TODO: return different message for different errors
 			var found = this.context.Accounts!.SingleOrDefault(u => u.Email == user.Email);
 			if (found == null) return false;
-			if (user.OldPassword != user.ConfirmPassword) return false;
-			if (found.Password != user.OldPassword) return false;
+			if (user.NewPassword != user.ConfirmPassword) return false;
+			if (!bCryptService.verifyPassword(user.OldPassword, found.Password)) return false;
 			if (found != null && found.Active)
 			{
 				var password = bCryptService.HashPassword(user.NewPassword);

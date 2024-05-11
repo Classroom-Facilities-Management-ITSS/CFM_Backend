@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ClassroomManagerAPI.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClassroomManagerAPI.Models.Classroom
 {
 	public class AddClassroomModel
 	{
-		[Required]
+		[Required(ErrorMessage = nameof(ErrorSystemEnum.Required))]
 		public string ClassNumber { get; set; }
 		public string? LastUsed { get; set; }
 		public int FacilityAmount { get; set; }

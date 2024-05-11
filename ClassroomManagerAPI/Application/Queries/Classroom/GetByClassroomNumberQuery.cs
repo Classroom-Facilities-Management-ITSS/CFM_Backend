@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Classroom;
 using ClassroomManagerAPI.Models.Facility;
@@ -29,10 +30,10 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			Response<ClassroomModel> result = new Response<ClassroomModel>();
-			var classroom = await _classroomRepository.GetByNumberAsync(request.ClassNumber);
+			var classroom = await _classroomRepository.GetByAddressAsync(request.ClassNumber);
 			if (classroom == null)
 			{
-				result.AddBadRequest($"Classroomo with number {request.ClassNumber} not existing");
+				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
 				result.StatusCode = (int)HttpStatusCode.NotFound;
 				return result;
 			}

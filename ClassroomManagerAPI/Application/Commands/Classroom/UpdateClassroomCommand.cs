@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Classroom;
 using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
@@ -31,8 +32,8 @@ namespace ClassroomManagerAPI.Application.Commands.Classroom
 			var updatedClassroom = await classroomRepository.UpdateAsync(classroom).ConfigureAwait(false);
 			if (updatedClassroom == null)
 			{
-				result.AddBadRequest($"Classroom with id {request.Id} not existing");
-				result.StatusCode = (int)HttpStatusCode.NotFound;
+                result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
+                result.StatusCode = (int)HttpStatusCode.NotFound;
 				return result;
 			}
 			result.StatusCode = (int)HttpStatusCode.OK;

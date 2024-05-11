@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -28,7 +29,7 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
             var facility = await _facilityRepository.GetByIDAsync(request.Id);
             if(facility == null)
             {
-                result.AddBadRequest($"Facility with id {request.Id} not existing");
+                result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
                 result.StatusCode = (int) HttpStatusCode.NotFound;
                 return result;
             }

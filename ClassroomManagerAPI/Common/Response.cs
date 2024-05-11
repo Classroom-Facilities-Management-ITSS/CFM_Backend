@@ -1,6 +1,5 @@
 ﻿using ClassroomManagerAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Net;
 
 namespace ClassroomManagerAPI.Common

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using System.Net;
@@ -27,7 +28,7 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
             var deletedFacility = await _facilityRepository.DeleteAsync(request.Id).ConfigureAwait(false);
             if(!deletedFacility)
             {
-                result.AddBadRequest($"Facility with id {request.Id} not existing");
+                result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
                 result.StatusCode = (int) HttpStatusCode.NotFound;
                 return result;
             }

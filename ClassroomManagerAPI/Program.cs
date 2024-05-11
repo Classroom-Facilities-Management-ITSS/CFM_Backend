@@ -1,3 +1,4 @@
+using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Configs.Infastructure;
 using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
@@ -29,6 +30,7 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(
 #endregion
 
 #region service_dependency
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMvc();
 builder.Services.AddApiVersioning(options => options.ReportApiVersions = true);
@@ -87,11 +89,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 #region api_lifecycle
+builder.Services.AddSingleton<AuthContext>();
 builder.Services.AddScoped<IFacilityRepository, FacilityRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IBCryptService, BCryptService>();
 builder.Services.AddScoped<IClassroomRepository, ClassroomRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 #endregion
 
 var app = builder.Build();

@@ -1,23 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using ClassroomManagerAPI.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClassroomManagerAPI.Entities
 {
     public class Facility : BaseEntity
     {
-        [Required]
+        [Required(ErrorMessage = nameof(ErrorSystemEnum.Required))]
         public string Name { get; set; }
-        [Required]
+        [Required(ErrorMessage = nameof(ErrorSystemEnum.Required))]
         public int Count { get; set; }
-        public string Status { get; set; }
+        public FacilityStatusEnum Status { get; set; }
         public string Version { get; set; }
         public string? Note { get; set; }
-        public Guid? ClassID { get; set; }
-
-        // Navigation property for related Classroom
-        [ForeignKey(nameof(ClassID))]
+        public Guid? ClassroomId { get; set; }
         public Classroom? Classroom { get; set; }
-        public ICollection<ReportedFacility>? ReportedFacilities { get; set; }
 
     }
 }
