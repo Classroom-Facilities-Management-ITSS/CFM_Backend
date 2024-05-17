@@ -1,7 +1,10 @@
 ﻿using ClassroomManagerAPI.Application.Queries;
+using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Models.User;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace ClassroomManagerAPI.Controllers
 {
@@ -16,8 +19,11 @@ namespace ClassroomManagerAPI.Controllers
             _mediator = mediator;
             _logger = logger;
         }
+
         [HttpGet]
-        public async Task<IActionResult> getFileSystem()
+        [ProducesResponseType(typeof(Response<UserModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> getMyProfile()
         {
             try
             {

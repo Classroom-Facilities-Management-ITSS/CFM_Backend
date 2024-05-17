@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ClassroomManagerAPI.Enums;
 
 namespace ClassroomManagerAPI.Models.Facility
 {
     public class AddFacilityModel
     {
-        [Required]
         public string Name { get; set; }
-        [Required]
         public int Count { get; set; }
         public string Status { get; set; }
         public string Version { get; set; }

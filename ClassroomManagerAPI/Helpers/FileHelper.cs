@@ -10,16 +10,16 @@
                 while(true)
                 {
                     string newFilename = Path.Join(Guid.NewGuid().ToString(),".",extensionName) ;
-                    if (File.Exists(newFilename))
+                    fileName = Path.Combine(Directory.GetCurrentDirectory(), "Public", newFilename);
+                    if (File.Exists(fileName))
                     {
                         continue;
                     }
-                    fileName = Path.Combine(Directory.GetCurrentDirectory(),"Public",newFilename);
                     using(var stream = new FileStream(fileName, FileMode.Create))
                     {
                         file.CopyTo(stream);
                     }
-                    return fileName;
+                    return newFilename;
                 }
             }catch (Exception e)
             {
