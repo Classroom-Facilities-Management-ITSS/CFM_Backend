@@ -7,7 +7,7 @@
         ImportFileRequired,
         Required,
         MaxLength,
-        Min,
+        MinLength,
         DataNotExist,
         DataAlreadyExist
     }

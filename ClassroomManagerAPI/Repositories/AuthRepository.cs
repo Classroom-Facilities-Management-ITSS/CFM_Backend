@@ -3,8 +3,10 @@ using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Configs.Infastructure;
 using ClassroomManagerAPI.Entities;
+using ClassroomManagerAPI.Models.Auth;
 using ClassroomManagerAPI.Models.Dto;
 using ClassroomManagerAPI.Repositories.IRepositories;
+using ClassroomManagerAPI.Services;
 using ClassroomManagerAPI.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,111 +16,41 @@ using System.Text;
 
 namespace ClassroomManagerAPI.Repositories
 {
-    public class AuthRepository : IAuthRepository
+    public class AuthRepository : IAuthRepository 
 	{
-		private readonly AppDbContext context;
-		private readonly IMapper mapper;
-		private readonly IConfiguration configuration;
-		private readonly IMailService mailService;
-		private readonly IBCryptService bCryptService;
+		private readonly AppDbContext _context;
+		private readonly IMapper _mapper;
+		private readonly IConfiguration _configuration;
+		private readonly IMailService _mailService;
+		private readonly IBCryptService _bCryptService;
 
 		public AuthRepository(AppDbContext context, IMapper mapper, IConfiguration configuration, IMailService mailService, IBCryptService bCryptService)
         {
-			this.context = context;
-			this.mapper = mapper;
-			this.configuration = configuration;
-			this.mailService = mailService;
-			this.bCryptService = bCryptService;
+			_context = context;
 		}
+		
 
-		private string generateToken(dynamic authClaims)
+		
+		public async Task<Account> LogIn(Account account)
 		{
-			var authenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"]));
-			var token = new JwtSecurityToken(
-				issuer: this.configuration["Jwt:Issuer"],
-				audience: this.configuration["Jwt:Audience"],
-				expires: DateTime.Now.AddDays(30),
-				claims: authClaims,
-				signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha256)
-			);
-			return new JwtSecurityTokenHandler().WriteToken(token);
-		}
+			ArgumentNullException.ThrowIfNull(account, "Account");
+			return _context.Accounts!.SingleOrDefault(u => u.Email == account.Email && !u.IsDeleted);
+		} 
 
-		private string decodeToken(String token)
+		public async Task<Guid> Register(Account account)
 		{
-			var tokenHandler = new JwtSecurityTokenHandler();
-			var result = tokenHandler.ReadToken(token) as JwtSecurityToken;
-			if (result != null)
-			{
-				return result.Claims.First(claim => claim.Type.Contains("email")).Value;
-			}
-			return string.Empty;
-		}
-        public async Task<bool> Active(string token)
-		{
-			var email = decodeToken(token);
-			if (string.IsNullOrEmpty(email)) return false;
-			var found = await this.context.Accounts!.SingleOrDefaultAsync(u => u.Email == email);
-			if (found == null) return false;
-			found.Active = true;
-			this.context.Accounts!.Update(found);
-			await this.context.SaveChangesAsync();
-			return true;
-		}
+			ArgumentNullException.ThrowIfNull(account, "newAccount");
 
-		public async Task<string> LogIn(AddUserRequestDto user)
-		{
-			var found = this.context.Accounts!.SingleOrDefault(u => u.Email == user.Email);
-			if (found == null) return string.Empty;
-			if (found.Active && bCryptService.verifyPassword(user.Password, found.Password))
-			{
-				var authClaims = new List<Claim>()
-				{
-					new Claim(ClaimTypes.NameIdentifier, found.Id.ToString()),
-					new Claim(ClaimTypes.Email, user.Email),
-					new Claim(ClaimTypes.Role, found.Role),
-					new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-				};
-				return generateToken(authClaims);
-
-			}
-			return string.Empty;
-		}
-
-		public async Task<bool> Register(AddUserRequestDto user)
-		{
-			var found = this.context.Accounts!.SingleOrDefault(u => u.Email == user.Email);
+			var found = _context.Accounts!.SingleOrDefault(u => u.Email == account.Email && !u.IsDeleted);
 			if (found == null)
 			{
-				user.Password = bCryptService.HashPassword(user.Password);
-				var newUser = mapper.Map<Account>(user);
-				await this.context.Accounts!.AddAsync(newUser);
-				await this.context.SaveChangesAsync();
-				var authClaims = new List<Claim>()
-				{
-					new Claim(ClaimTypes.Email, user.Email),
-					new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-				};
-				var token = generateToken(authClaims);
-				var pathHtml = Path.Combine(Directory.GetCurrentDirectory(), Settings.ResourcesVerify);
-				string htmlContent = File.ReadAllText(pathHtml);
-				string replacedHtmlContent = htmlContent
-				.Replace("{{token}}", token)
-				.Replace("{{email}}", user.Email);
-				MailRequest mailRequest = new MailRequest();
-				mailRequest.toEmail = user.Email;
-				mailRequest.body = replacedHtmlContent;
-				mailRequest.subject = "Verify Account";
-				try
-				{
-					await this.mailService.SendMail(mailRequest);
-				}
-				catch (Exception ex) { throw; }
-				return true;
+				var created =  await _context.Accounts!.AddAsync(account);
+				await _context.SaveChangesAsync(); 
+				return created.Entity.Id;
 			}
-			return false;
+			return Guid.Empty;
 		}
-
+		/*
 		public async Task<bool> UpdatePassword(UpdatePasswordRequestDto user)
 		{
 
@@ -139,7 +71,7 @@ namespace ClassroomManagerAPI.Repositories
 
 			return false;	
 		}
-
+		
 		public async Task<bool> GenerateNewPassword(string email)
 		{
 			// TODO: return different message for different errors
@@ -187,5 +119,18 @@ namespace ClassroomManagerAPI.Repositories
 			}
 			return false;
 		}
+
+		 public async Task<bool> Active(string token)
+		{
+			var email = decodeToken(token);
+			if (string.IsNullOrEmpty(email)) return false;
+			var found = await this.context.Accounts!.SingleOrDefaultAsync(u => u.Email == email);
+			if (found == null) return false;
+			found.Active = true;
+			this.context.Accounts!.Update(found);
+			await this.context.SaveChangesAsync();
+			return true;
+		}
+		*/
 	}
 }

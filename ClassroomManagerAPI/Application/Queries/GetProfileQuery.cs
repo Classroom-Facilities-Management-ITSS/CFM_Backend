@@ -2,10 +2,7 @@
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Configs.Infastructure;
-using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Enums;
-using ClassroomManagerAPI.Helpers;
-using ClassroomManagerAPI.Models.Account;
 using ClassroomManagerAPI.Models.User;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +10,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries
 {
-    public class GetProfileQuery : IRequest<Response<UserModel>>
+	public class GetProfileQuery : IRequest<Response<UserModel>>
     {
     }
 
