@@ -122,6 +122,7 @@ builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IBCryptService, BCryptService>();
 builder.Services.AddScoped<IClassroomRepository, ClassroomRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 #endregion
 

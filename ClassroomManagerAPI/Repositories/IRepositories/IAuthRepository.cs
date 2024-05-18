@@ -1,13 +1,17 @@
-﻿using ClassroomManagerAPI.Models.Dto;
+﻿using ClassroomManagerAPI.Entities;
+using ClassroomManagerAPI.Models.Auth;
+using ClassroomManagerAPI.Models.Dto;
 
 namespace ClassroomManagerAPI.Repositories.IRepositories
 {
-    public interface IAuthRepository
+    public interface IAuthRepository : IBaseRepository<Account>
     {
-        public Task<bool> Register(AddUserRequestDto user);
-        public Task<string> LogIn(AddUserRequestDto user);
-        public Task<bool> Active(string token);
-        public Task<bool> UpdatePassword(UpdatePasswordRequestDto user);
-        public Task<bool> GenerateNewPassword(string email);
-    }
+        public Task<Guid> Register(Account user);
+        
+        public Task<Account> LogIn(Account user);
+		public Task<bool> Active(string email);
+        public Task<Account> GetByEmailAsync(string email);		
+        public Task<bool> GenerateNewPassword(string email); 
+
+	}
 }

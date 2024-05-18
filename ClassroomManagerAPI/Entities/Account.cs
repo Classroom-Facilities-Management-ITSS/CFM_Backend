@@ -11,7 +11,7 @@ namespace ClassroomManagerAPI.Entities
         public string Email { get; set; }
         [Required(ErrorMessage = nameof(ErrorSystemEnum.Required))]
         public string Password { get; set; }
-        public string Role { get; set; } = Roles.USER;
+        public RoleEnum Role { get; set; } = RoleEnum.USER;
         public bool Active { get; set; } = false;
 
         public UserInfo? UserInfo { get; set; }

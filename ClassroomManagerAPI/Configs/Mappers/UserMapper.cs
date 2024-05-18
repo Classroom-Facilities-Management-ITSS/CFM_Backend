@@ -2,6 +2,7 @@
 using ClassroomManagerAPI.Models.Dto;
 using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Models.User;
+using ClassroomManagerAPI.Models.Auth;
 
 namespace ClassroomManagerAPI.Configs.Mappers
 {
@@ -9,9 +10,6 @@ namespace ClassroomManagerAPI.Configs.Mappers
     {
         public UserMapper() {
             CreateMap<UserModel, UserInfo>().ReverseMap();
-            CreateMap<AddUserRequestDto, Account>().ReverseMap();
-            CreateMap<UpdatePasswordRequestDto, Account>().ReverseMap();
-            CreateMap<ForgotPasswordRequestDto, Account>().ReverseMap();
         }
     }
 }

@@ -32,7 +32,6 @@ namespace ClassroomManagerAPI.Application.Commands.Account
 			result.StatusCode = (int)HttpStatusCode.Created;
 			result.Data = _mapper.Map<AccountModel>(createdAccount);
 			return result;
-
 		}
 	}
 }
