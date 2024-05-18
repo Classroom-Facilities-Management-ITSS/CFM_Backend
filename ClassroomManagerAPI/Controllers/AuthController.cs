@@ -1,4 +1,5 @@
 ﻿using ClassroomManagerAPI.Application.Commands.Auth;
+using ClassroomManagerAPI.Application.Queries.Auth;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Models.Account;
@@ -44,63 +45,37 @@ namespace ClassroomManagerAPI.Controllers
 			return result.GetResult();
 		}
 
-		/*
+
 		[HttpGet("active")]
-		public async Task<IActionResult> AuthActive(string token)
+		[ProducesResponseType(typeof(Response<RegisterModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> AuthActive([FromQuery] AuthActiveQuery query)
 		{
-			if (await this.authRepository.Active(token)) return Ok(new
-			{
-				status = true,
-				message = "Active your account successfully"
-			});
-			return BadRequest(new
-			{
-				status = false,
-				message = "Active account fail"
-			});
+			var result = await _mediator.Send(query).ConfigureAwait(false);
+
+			return result.GetResult();
 		}
 
+		
+
 		[HttpPut("update_password")]
-		public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequestDto updatePasswordRequestDto)
+		[ProducesResponseType(typeof(Response<AuthModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> UpdatePassword([FromBody] AuthUpdatePasswordCommand command)
 		{
-			var result = await this.authRepository.UpdatePassword(updatePasswordRequestDto);
-			if (result)
-			{
-				return Ok(new
-				{
-					status = true,
-					message = "Password Updated Successfully"
-				});
-			} else
-			{
-				return BadRequest(new
-				{
-					status = false,
-					message = "Unable to update password."
-				});
-			}
+			var result = await _mediator.Send(command).ConfigureAwait(false);
+
+			return result.GetResult();
 		}
 
 		[HttpPost("forgot_password")]
-		public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordRequestDto forgotPasswordRequestDto)
+		[ProducesResponseType(typeof(Response<AuthModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> ForgotPassword([FromBody] AuthGeneratePasswordCommand command)
 		{
-			var result = await this.authRepository.GenerateNewPassword(forgotPasswordRequestDto.Email);
-			if (result == false)
-			{
-				return BadRequest(new
-				{
-					status = false,
-					message = "Unable to update password"
-				});
-			} else
-			{
-				return Ok(new
-				{
-					status = true,
-					message = "Password successfully generated, please check your email"
-				});
-			}
+			var result = await _mediator.Send(command).ConfigureAwait(false);
+
+			return result.GetResult();
 		}
-		*/
 	}
 }

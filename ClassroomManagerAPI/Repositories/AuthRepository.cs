@@ -16,21 +16,24 @@ using System.Text;
 
 namespace ClassroomManagerAPI.Repositories
 {
-    public class AuthRepository : IAuthRepository 
+    public class AuthRepository : BaseRepository<Account> , IAuthRepository 
 	{
 		private readonly AppDbContext _context;
-		private readonly IMapper _mapper;
-		private readonly IConfiguration _configuration;
-		private readonly IMailService _mailService;
-		private readonly IBCryptService _bCryptService;
 
-		public AuthRepository(AppDbContext context, IMapper mapper, IConfiguration configuration, IMailService mailService, IBCryptService bCryptService)
+		public AuthRepository(AppDbContext context) : base(context)
         {
 			_context = context;
 		}
-		
+		public async Task<bool> Active(string email)
+		{
+			var found = await _context.Accounts!.SingleOrDefaultAsync(u => u.Email == email).ConfigureAwait(false);
+			if (found == null) return false;
+			found.Active = true;
+			_context.Accounts!.Update(found);
+			await _context.SaveChangesAsync().ConfigureAwait(false);
+			return true;
+		}
 
-		
 		public async Task<Account> LogIn(Account account)
 		{
 			ArgumentNullException.ThrowIfNull(account, "Account");
@@ -50,87 +53,26 @@ namespace ClassroomManagerAPI.Repositories
 			}
 			return Guid.Empty;
 		}
-		/*
-		public async Task<bool> UpdatePassword(UpdatePasswordRequestDto user)
+		
+		public async Task<Account> GetByEmailAsync(string email)
 		{
-
-			// TODO: return different message for different errors
-			var found = this.context.Accounts!.SingleOrDefault(u => u.Email == user.Email);
-			if (found == null) return false;
-			if (user.NewPassword != user.ConfirmPassword) return false;
-			if (!bCryptService.verifyPassword(user.OldPassword, found.Password)) return false;
-			if (found != null && found.Active)
-			{
-				var password = bCryptService.HashPassword(user.NewPassword);
-				found.Password = password;
-				this.context.Accounts.Update(found);
-				await this.context.SaveChangesAsync();
-
-				return true;
-			}
-
-			return false;	
+			ArgumentNullException.ThrowIfNullOrEmpty(email, "email");
+			return await _context.Accounts!.SingleOrDefaultAsync(u => u.Email == email && u.Active).ConfigureAwait(false);
 		}
 		
 		public async Task<bool> GenerateNewPassword(string email)
 		{
-			// TODO: return different message for different errors
 			// Check if user exists
-			var user = this.context.Accounts!.SingleOrDefault(u => u.Email == email);
+			var user = this._context.Accounts!.SingleOrDefault(u => u.Email == email);
 			// if email exists, regenerate a new password for the user
 			if (user == null) return false;
 			if (user.Active)
 			{
-				var chars = configuration["resetKey"];
-				var random = new Random();
-				var passwordChars = new char[8];
-
-				for(int i = 0; i < passwordChars.Length; i++)
-				{
-					passwordChars[i] = chars[random.Next(chars.Length)];
-				}
-
-				string passwordString = new string(passwordChars);
-
-				var password = bCryptService.HashPassword(passwordString);
-				user.Password = password;
-				this.context.Update(user);
-				await this.context.SaveChangesAsync();
-
-				// send the new password to the email 
-				var mailRequest = new MailRequest
-				{
-					toEmail = email,
-					subject = "Your new Password",
-					body = $"Use this password to login and change your password: {passwordString} "
-				};
-
-				try
-				{
-					await this.mailService.SendMail(mailRequest);
-				}
-				catch (Exception ex)
-				{
-					// Handle exception (e.g. logger)
-					throw;
-				}
-
+				_context.Update(user);
+				await _context.SaveChangesAsync();
 				return true;
 			}
 			return false;
-		}
-
-		 public async Task<bool> Active(string token)
-		{
-			var email = decodeToken(token);
-			if (string.IsNullOrEmpty(email)) return false;
-			var found = await this.context.Accounts!.SingleOrDefaultAsync(u => u.Email == email);
-			if (found == null) return false;
-			found.Active = true;
-			this.context.Accounts!.Update(found);
-			await this.context.SaveChangesAsync();
-			return true;
-		}
-		*/
+		}	
 	}
 }

@@ -6,6 +6,8 @@
 		AccountAlreadyExist,
 		TokenExpired,
 		InvalidPassword,
-		AccountNotActive
+		AccountNotActive,
+		PasswordsNotMatch,
+		OldPasswordMatching
 	}
 }
