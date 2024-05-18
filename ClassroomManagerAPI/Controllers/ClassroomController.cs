@@ -1,14 +1,8 @@
-﻿using AutoMapper;
-using ClassroomManagerAPI.Application.Commands.Classroom;
-using ClassroomManagerAPI.Application.Commands.Facility;
+﻿using ClassroomManagerAPI.Application.Commands.Classroom;
 using ClassroomManagerAPI.Application.Queries.Classroom;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Configs.Infastructure;
-using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Models.Classroom;
-using ClassroomManagerAPI.Models.Dto;
-using ClassroomManagerAPI.Models.Facility;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

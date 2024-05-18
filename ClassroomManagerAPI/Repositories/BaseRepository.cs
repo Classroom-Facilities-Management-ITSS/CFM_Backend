@@ -65,7 +65,28 @@ namespace ClassroomManagerAPI.Repositories
             catch (Exception ex) { throw; }
         }
 
-        public async Task<PaginationModel> Pagination(int? page, int? limit)
+        public virtual async Task<int> GetCountAsync()
+        {
+            return await _set.CountAsync().ConfigureAwait(continueOnCapturedContext : false);
+        }
+
+        public virtual async Task<StatisticModel> GetStatisticAsync()
+        {
+            var count = await GetCountAsync().ConfigureAwait(false);
+            var now = DateTime.Now.Date;
+            var yesterday = DateTime.Now.Date.AddDays(-1);
+            var lastMonth = DateTime.Now.Date.AddMonths(-1);
+            var createByDay = await _set.Where(c => c.CreatedAt >= yesterday).CountAsync().ConfigureAwait(continueOnCapturedContext: false);
+            var createByMonth = await _set.Where(c => c.CreatedAt >= lastMonth).CountAsync().ConfigureAwait(continueOnCapturedContext: false);
+            return new StatisticModel
+            {
+                Count = count,
+                NewCreateByDay = createByDay,
+                NewCreateByMonth = createByMonth
+            };
+        }
+
+        public virtual async Task<PaginationModel> Pagination(int? page, int? limit)
         {
             page = page <= 0 ? 1 : page ?? 1;
             limit = limit <= 0 ? 10 : limit ?? 10;

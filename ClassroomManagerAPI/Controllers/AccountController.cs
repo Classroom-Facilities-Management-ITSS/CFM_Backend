@@ -9,8 +9,8 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Controllers
 {
-	[ApiVersion(Settings.APIVersion)]
-	[Route(Settings.APIDefaultRoute + "/account")]
+    [ApiVersion(Settings.APIVersion)]
+    [Route(Settings.APIDefaultRoute + "/account")]
 	[ApiController]
 	public class AccountController : ControllerBase
 	{
