@@ -11,5 +11,7 @@ namespace ClassroomManagerAPI.Repositories.IRepositories
         Task<bool> DeleteAsync(Guid id);
         Task<IEnumerable<T>> GetAllAsync(int? page, int? limit);
         Task<PaginationModel> Pagination(int? page, int? limit);
+        Task<int> GetCountAsync();
+        Task<StatisticModel> GetStatisticAsync();
     }
 }

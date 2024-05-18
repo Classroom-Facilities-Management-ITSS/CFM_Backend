@@ -2,17 +2,15 @@
 using ClassroomManagerAPI.Application.Queries.Facility;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Facility;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-
 namespace ClassroomManagerAPI.Controllers
 {
-	[ApiVersion(Settings.APIVersion)]
-	[Route(Settings.APIDefaultRoute + "/facility")]
+    [ApiVersion(Settings.APIVersion)]
+    [Route(Settings.APIDefaultRoute + "/facility")]
 	[ApiController]
 	public class FacilityController : ControllerBase
 	{
