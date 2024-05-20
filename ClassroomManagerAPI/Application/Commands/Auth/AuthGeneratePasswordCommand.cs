@@ -1,14 +1,16 @@
 ﻿using ClassroomManagerAPI.Common;
+using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Repositories.IRepositories;
-using ClassroomManagerAPI.Services;
 using ClassroomManagerAPI.Services.IServices;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClassroomManagerAPI.Application.Commands.Auth
 {
-	public class AuthGeneratePasswordCommand : IRequest<Response<bool>>
+    public class AuthGeneratePasswordCommand : IRequest<Response<bool>>
 	{
+		[EmailAddress]
         public string Email { get; set; }
     }
 
@@ -52,15 +54,20 @@ namespace ClassroomManagerAPI.Application.Commands.Auth
 			var password = _bCryptService.HashPassword(passwordString);
 			found.Password = password;
 			await _authRepository.UpdateAsync(found).ConfigureAwait(false);
+            var pathHtml = Path.Combine(Directory.GetCurrentDirectory(), Settings.ResourecesChangePassword);
+            string htmlContent = File.ReadAllText(pathHtml);
+            string replacedHtmlContent = htmlContent
+			.Replace("{{email}}", request.Email)
+            .Replace("{{password}}", passwordString);
 
-			var mailRequest = new MailRequest
+            var mailRequest = new MailRequest
 			{
 				toEmail = request.Email,
 				subject = "Your new Password",
-				body = $"Use this password to login and change your password: {passwordString} "
+				body = replacedHtmlContent
 			};
 
-			await this._mailService.SendMail(mailRequest);
+			await _mailService.SendMail(mailRequest);
 
 			response.Data = true;
 			response.StatusCode = StatusCodes.Status200OK;

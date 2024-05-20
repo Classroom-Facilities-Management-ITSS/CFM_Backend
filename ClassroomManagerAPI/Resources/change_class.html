@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -150,7 +150,7 @@
                     line-height: 48px;
                   "
                 >
-                  XÁC NHẬN TÀI KHOẢN
+                  THÔNG BÁO ĐỔI PHÒNG HỌC
                 </h1>
               </td>
             </tr>
@@ -169,27 +169,33 @@
             style="max-width: 600px"
           >
             <tr>
-                <td align="left"
-                    bgcolor="#ffffff"
-                    style="
+              <td
+                align="left"
+                bgcolor="#ffffff"
+                style="
                   padding: 24px;
                   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
                   font-size: 16px;
                   line-height: 24px;
-                ">
-                    <p style="margin: 20">
-                        Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.
-                    </p>
-                    <p style="margin: 20">
-                        Bạn đang yêu cầu sử dụng mail này để kích hoạt tài khoản.
-                    </p>
-                    <p style="margin: 20">
-                        Mật khẩu dùng sử dụng sau khi kích hoạt là : {{password}}.
-                    </p>
-                    <p style="margin: 20">
-                        Vui lòng ấn vào đường link dưới đây để xác nhận email:
-                    </p>
-                </td>
+                "
+              >
+                <p style="margin: 20">
+                  Do một số trục trặc phòng học hoặc yêu cầu của giảng viên nên
+                  bạn đã được chỉ định đổi phòng dạy học qua địa điển khác.
+                </p>
+                <p style="margin: 20">
+                  Tiết học {{subject}} diễn ra vào ngày {{schedule}} sẽ
+                  được chuyển qua phòng {{class_room}}.
+                </p>
+                <p style="margin: 20">
+                  Xin hãy lưu ý thông báo lại cho sinh viên để không bị nhầm
+                  phòng học.
+                </p>
+                <p style="margin: 20">
+                  Xin cảm phiền bạn vì sự thay đổi này. Chúc bạn hoàn thành tốt
+                  công việc.
+                </p>
+              </td>
             </tr>
             <tr>
               <td align="left" bgcolor="#ffffff">
@@ -205,7 +211,7 @@
                           >
                             <a
                               id="activeAccount"
-                              href="http://localhost:4200/active?token={{token}}"
+                              href="http://localhost:4200"
                               target="_blank"
                               style="
                                 display: inline-block;
@@ -217,7 +223,7 @@
                                 text-decoration: none;
                                 border-radius: 6px;
                               "
-                              >Xác nhận tài khoản</a
+                              >Đăng nhập</a
                             >
                           </td>
                         </tr>

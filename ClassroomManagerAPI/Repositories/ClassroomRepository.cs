@@ -17,7 +17,7 @@ namespace ClassroomManagerAPI.Repositories
 		{
 			try
 			{
-				return await dbContext.Classrooms.Where(c => c.Address == address && !c.IsDeleted).FirstOrDefaultAsync().ConfigureAwait(false);
+				return await dbContext.Classrooms.Include(x => x.Facilities).Include(x => x.Reports).Where(c => c.Address == address && !c.IsDeleted).FirstOrDefaultAsync().ConfigureAwait(false);
 			}
 			catch (Exception ex)
 			{

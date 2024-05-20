@@ -65,19 +65,15 @@ namespace ClassroomManagerAPI.Application.Commands.Auth
 			var pathHtml = Path.Combine(Directory.GetCurrentDirectory(), Settings.ResourcesVerify);
 			string htmlContent = File.ReadAllText(pathHtml);
 			string replacedHtmlContent = htmlContent
+			.Replace("{{password}}", request.Password)
 			.Replace("{{token}}", token)
 			.Replace("{{email}}", newModel.Email);
 			MailRequest mailRequest = new MailRequest();
 			mailRequest.toEmail = newModel.Email;
 			mailRequest.body = replacedHtmlContent;
 			mailRequest.subject = "Verify Account";
-			try
-			{
-				await _mailService.SendMail(mailRequest);
-			}
-			catch (Exception ex) { throw; }
-
-			result.Data = "Account created successfully!";
+            await _mailService.SendMail(mailRequest);
+            result.Data = "Account created successfully!";
 			result.StatusCode = StatusCodes.Status201Created;		
 			return result;
 		}

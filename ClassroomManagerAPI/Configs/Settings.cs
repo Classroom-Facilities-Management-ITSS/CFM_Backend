@@ -8,5 +8,7 @@
         public const string APIDefaultRoute = "api/v{version:apiVersion}";
         public const string SettingFileName = "appsettings.json";
         public const string ResourcesVerify = "Resources/verify.html";
+        public const string ResourecesChangePassword = "Resources/change_password.html";
+        public const string ResourecesChangeClass = "Resources/change_class.html";
     }
 }
