@@ -8,11 +8,11 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Classroom
 {
-	public class GetAllClassroomQuery : FilterModel, IRequest<Response<IEnumerable<ClassroomModel>>>
+	public class GetAllClassroomQuery : FilterModel, IRequest<ResponseMethod<IEnumerable<ClassroomModel>>>
 	{
 	}
 
-	public class GetAllQueryHandler : IRequestHandler<GetAllClassroomQuery, Response<IEnumerable<ClassroomModel>>>
+	public class GetAllQueryHandler : IRequestHandler<GetAllClassroomQuery, ResponseMethod<IEnumerable<ClassroomModel>>>
 	{
 		private readonly IClassroomRepository _classroomRepository;
 		private readonly IMapper _mapper;
@@ -21,10 +21,10 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
             _classroomRepository = classroomRepository;
 			_mapper = mapper;
         }
-        public async Task<Response<IEnumerable<ClassroomModel>>> Handle(GetAllClassroomQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<IEnumerable<ClassroomModel>>> Handle(GetAllClassroomQuery request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			Response<IEnumerable<ClassroomModel>> result = new Response<IEnumerable<ClassroomModel>>();
+			ResponseMethod<IEnumerable<ClassroomModel>> result = new ResponseMethod<IEnumerable<ClassroomModel>>();
 			var classroomResult = await _classroomRepository.GetAllAsync(request.page, request.limit).ConfigureAwait(false);
 			result.Data = _mapper.Map<IEnumerable<ClassroomModel>>(classroomResult);
 			result.StatusCode = (int) HttpStatusCode.OK;

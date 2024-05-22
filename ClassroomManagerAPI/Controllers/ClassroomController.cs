@@ -25,7 +25,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get all classrooms
 		[HttpGet]
-		[ProducesResponseType(typeof(Response<IEnumerable<ClassroomModel>>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ClassroomModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetAll([FromQuery] GetAllClassroomQuery query)
 		{
@@ -45,7 +45,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by number
 		[HttpGet("{classrooomNumber}")]
-		[ProducesResponseType(typeof(Response<ClassroomModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetByNumber(string classroomNumber)
 		{
@@ -63,7 +63,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Create classroom
 		[HttpPost]
-		[ProducesResponseType(typeof(Response<ClassroomModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Create([FromBody] AddClassroomCommand addClassroomCommand)
 		{
@@ -81,7 +81,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Update a classroom
 		[HttpPut("{id}")]
-		[ProducesResponseType(typeof(Response<ClassroomModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateClassroomCommand updateClassroomCommand )
 		{
@@ -100,7 +100,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Remove a classroom
 		[HttpDelete("{id}")]
-		[ProducesResponseType(typeof(Response<ClassroomModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Delete(Guid id)
 		{

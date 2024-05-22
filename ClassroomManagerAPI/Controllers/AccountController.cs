@@ -25,7 +25,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Get all accounts
 		[HttpGet]
-		[ProducesResponseType(typeof(Response<IEnumerable<AccountModel>>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<AccountModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetAll([FromQuery] GetAllAccountQuery query)
 		{
@@ -43,7 +43,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Create an account
 		[HttpPost]
-		[ProducesResponseType(typeof(Response<AccountModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Create([FromBody] AddAccountCommand command)
 		{
@@ -61,7 +61,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Update an account
 		[HttpPut("{id}")]
-		[ProducesResponseType(typeof(Response<AccountModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAccountCommand command)
 		{
@@ -81,7 +81,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Remove an account
 		[HttpDelete("{id}")]
-		[ProducesResponseType(typeof(Response<AccountModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Delete(Guid id)
 		{

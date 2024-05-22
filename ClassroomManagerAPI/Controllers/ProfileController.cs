@@ -21,7 +21,7 @@ namespace ClassroomManagerAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(Response<UserModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseMethod<UserModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> getMyProfile()
         {

@@ -8,11 +8,11 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Classroom
 {
-	public class DeleteClassroomCommand : IRequest<Response<string>>
+	public class DeleteClassroomCommand : IRequest<ResponseMethod<string>>
 	{
 		public Guid Id { get; set; }
 	}
-	public class DeleteClassroomCommandHandler : IRequestHandler<DeleteClassroomCommand, Response<string>>
+	public class DeleteClassroomCommandHandler : IRequestHandler<DeleteClassroomCommand, ResponseMethod<string>>
 	{
 		private readonly IMapper mapper;
 		private readonly IClassroomRepository classroomRepository;
@@ -23,10 +23,10 @@ namespace ClassroomManagerAPI.Application.Commands.Classroom
 			this.classroomRepository = classroomRepository;
 		}
 
-		public async Task<Response<string>> Handle(DeleteClassroomCommand request, CancellationToken cancellationToken)
+		public async Task<ResponseMethod<string>> Handle(DeleteClassroomCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			Response<string> result = new Response<string>();
+			ResponseMethod<string> result = new ResponseMethod<string>();
 			var deletedClassrooom = await classroomRepository.DeleteAsync(request.Id).ConfigureAwait(false);
 			if (!deletedClassrooom)
 			{

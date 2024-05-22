@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ClassroomManagerAPI.Models.Dto;
 using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Models.Classroom;
 

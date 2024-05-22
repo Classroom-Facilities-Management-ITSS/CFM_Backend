@@ -2,10 +2,7 @@
 using ClassroomManagerAPI.Application.Queries.Auth;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Models.Account;
 using ClassroomManagerAPI.Models.Auth;
-using ClassroomManagerAPI.Models.Dto;
-using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -26,7 +23,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		
 		[HttpPost("sign_in")]
-		[ProducesResponseType(typeof(Response<AuthModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<AuthModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> AuthLogIn([FromBody] AuthLoginCommand command)
 		{
@@ -36,7 +33,7 @@ namespace ClassroomManagerAPI.Controllers
 		}
 		
 		[HttpPost("sign_up")]
-		[ProducesResponseType(typeof(Response<RegisterModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<RegisterModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> AuthRegister([FromBody] AuthRegisterCommand command)
 		{
@@ -47,7 +44,7 @@ namespace ClassroomManagerAPI.Controllers
 
 
 		[HttpGet("active")]
-		[ProducesResponseType(typeof(Response<RegisterModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<RegisterModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> AuthActive([FromQuery] AuthActiveQuery query)
 		{
@@ -59,7 +56,7 @@ namespace ClassroomManagerAPI.Controllers
 		
 
 		[HttpPut("update_password")]
-		[ProducesResponseType(typeof(Response<AuthModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<AuthModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> UpdatePassword([FromBody] AuthUpdatePasswordCommand command)
 		{
@@ -69,7 +66,7 @@ namespace ClassroomManagerAPI.Controllers
 		}
 
 		[HttpPost("forgot_password")]
-		[ProducesResponseType(typeof(Response<AuthModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<AuthModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> ForgotPassword([FromBody] AuthGeneratePasswordCommand command)
 		{

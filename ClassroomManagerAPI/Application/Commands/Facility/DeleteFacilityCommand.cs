@@ -7,12 +7,12 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Facility
 {
-    public class DeleteFacilityCommand : IRequest<Response<string>>
+    public class DeleteFacilityCommand : IRequest<ResponseMethod<string>>
     {
         public Guid Id { get; set; }
     }
 
-    public class DeleteFacilityCommandHandler : IRequestHandler<DeleteFacilityCommand, Response<string>>
+    public class DeleteFacilityCommandHandler : IRequestHandler<DeleteFacilityCommand, ResponseMethod<string>>
     {
         private readonly IFacilityRepository _facilityRepository;
         private readonly IMapper _mapper;
@@ -21,10 +21,10 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
             _facilityRepository = facilityRepository;
             _mapper = mapper;
         }
-        public async Task<Response<string>> Handle(DeleteFacilityCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<string>> Handle(DeleteFacilityCommand request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            Response<string> result = new Response<string>();
+            ResponseMethod<string> result = new ResponseMethod<string>();
             var deletedFacility = await _facilityRepository.DeleteAsync(request.Id).ConfigureAwait(false);
             if(!deletedFacility)
             {

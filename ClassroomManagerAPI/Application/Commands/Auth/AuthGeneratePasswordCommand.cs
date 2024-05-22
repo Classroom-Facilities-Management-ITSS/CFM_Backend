@@ -8,13 +8,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ClassroomManagerAPI.Application.Commands.Auth
 {
-    public class AuthGeneratePasswordCommand : IRequest<Response<bool>>
+    public class AuthGeneratePasswordCommand : IRequest<ResponseMethod<bool>>
 	{
 		[EmailAddress]
         public string Email { get; set; }
     }
 
-	public class AuthGeneratePasswordCommandHandler : IRequestHandler<AuthGeneratePasswordCommand, Response<bool>>
+	public class AuthGeneratePasswordCommandHandler : IRequestHandler<AuthGeneratePasswordCommand, ResponseMethod<bool>>
 	{
 		private readonly IConfiguration _configuration;
 		private readonly IAuthRepository _authRepository;
@@ -28,10 +28,10 @@ namespace ClassroomManagerAPI.Application.Commands.Auth
 			_bCryptService = bCryptService;
 			_mailService = mailService;
 		}
-        public async Task<Response<bool>> Handle(AuthGeneratePasswordCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<bool>> Handle(AuthGeneratePasswordCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			var response = new Response<bool>();
+			var response = new ResponseMethod<bool>();
 			var chars = _configuration["resetKey"];
 			var random = new Random();
 			var passwordChars = new char[8];

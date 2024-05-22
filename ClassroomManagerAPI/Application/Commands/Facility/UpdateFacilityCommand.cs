@@ -8,11 +8,11 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Facility
 {
-    public class UpdateFacilityCommand : UpdateFacilityModel ,IRequest<Response<string>>
+    public class UpdateFacilityCommand : UpdateFacilityModel ,IRequest<ResponseMethod<string>>
     {
     }
 
-    public class UpdateFacilityCommandHandler : IRequestHandler<UpdateFacilityCommand, Response<string>>
+    public class UpdateFacilityCommandHandler : IRequestHandler<UpdateFacilityCommand, ResponseMethod<string>>
     {
         private readonly IFacilityRepository _facilityRepository;
         private readonly IMapper _mapper;
@@ -21,10 +21,10 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
             _facilityRepository = facilityRepository;
             _mapper = mapper;
         }
-        public async Task<Response<string>> Handle(UpdateFacilityCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<string>> Handle(UpdateFacilityCommand request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            Response<string> result = new Response<string>();
+            ResponseMethod<string> result = new ResponseMethod<string>();
             var facility = _mapper.Map<Entities.Facility>(request);
             var updatedFacility = await _facilityRepository.UpdateAsync(facility).ConfigureAwait(false);
             if (updatedFacility == null)

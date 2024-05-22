@@ -8,12 +8,12 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Facility
 {
-    public class SearchFacilityNameQuery : FilterModel ,IRequest<Response<IEnumerable<FacilityModel>>>
+    public class SearchFacilityNameQuery : FilterModel ,IRequest<ResponseMethod<IEnumerable<FacilityModel>>>
     {
         public string Name { get; set; }
     }
 
-    public class SearchNameQueryHandler : IRequestHandler<SearchFacilityNameQuery, Response<IEnumerable<FacilityModel>>>
+    public class SearchNameQueryHandler : IRequestHandler<SearchFacilityNameQuery, ResponseMethod<IEnumerable<FacilityModel>>>
     {
         private readonly IFacilityRepository _facilityRepository;
         private readonly IMapper _mapper;
@@ -23,10 +23,10 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
             _mapper = mapper;
         }
 
-        public async Task<Response<IEnumerable<FacilityModel>>> Handle(SearchFacilityNameQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<IEnumerable<FacilityModel>>> Handle(SearchFacilityNameQuery request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            Response<IEnumerable<FacilityModel>> result = new Response<IEnumerable<FacilityModel>>();
+            ResponseMethod<IEnumerable<FacilityModel>> result = new ResponseMethod<IEnumerable<FacilityModel>>();
             var facility = await _facilityRepository.GetByNameAsync(request.Name, request.page, request.limit).ConfigureAwait(false);
 
             result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facility);

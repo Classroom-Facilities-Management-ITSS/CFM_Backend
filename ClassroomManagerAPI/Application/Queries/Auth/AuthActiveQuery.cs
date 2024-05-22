@@ -6,12 +6,12 @@ using MediatR;
 
 namespace ClassroomManagerAPI.Application.Queries.Auth
 {
-	public class AuthActiveQuery : IRequest<Response<bool>>
+	public class AuthActiveQuery : IRequest<ResponseMethod<bool>>
 	{
         public string token { get; set; }
     }
 
-	public class ActiveQueryHandler : IRequestHandler<AuthActiveQuery, Response<bool>>
+	public class ActiveQueryHandler : IRequestHandler<AuthActiveQuery, ResponseMethod<bool>>
 	{
 		private readonly ITokenService _tokenService;
 		private readonly IAuthRepository _authRepository;
@@ -21,10 +21,10 @@ namespace ClassroomManagerAPI.Application.Queries.Auth
 			_tokenService = tokenService;
 			_authRepository = authRepository;
 		}
-        public async Task<Response<bool>> Handle(AuthActiveQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<bool>> Handle(AuthActiveQuery request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			Response<bool> response = new Response<bool>();
+			ResponseMethod<bool> response = new ResponseMethod<bool>();
 			var email = _tokenService.decodeToken(request.token);
 			if (!await _authRepository.Active(email))
 			{

@@ -10,11 +10,11 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries
 {
-	public class GetProfileQuery : IRequest<Response<UserModel>>
+	public class GetProfileQuery : IRequest<ResponseMethod<UserModel>>
     {
     }
 
-    public class GetProfileQueryHandler : IRequestHandler<GetProfileQuery, Response<UserModel>>
+    public class GetProfileQueryHandler : IRequestHandler<GetProfileQuery, ResponseMethod<UserModel>>
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -26,10 +26,10 @@ namespace ClassroomManagerAPI.Application.Queries
             _mapper = mapper;
             _authContext = authContext;
         }
-        public async Task<Response<UserModel>> Handle(GetProfileQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<UserModel>> Handle(GetProfileQuery request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            Response<UserModel> result = new Response<UserModel>();
+            ResponseMethod<UserModel> result = new ResponseMethod<UserModel>();
             var id = _authContext.GetCurrentId();
             if( id == null)
             {

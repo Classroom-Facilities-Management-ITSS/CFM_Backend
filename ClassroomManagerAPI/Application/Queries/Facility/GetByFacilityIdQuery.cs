@@ -8,12 +8,12 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Facility
 {
-    public class GetByFacilityIdQuery : IRequest<Response<FacilityModel>>
+    public class GetByFacilityIdQuery : IRequest<ResponseMethod<FacilityModel>>
     {
         public Guid Id { get; set; }
     }
 
-    public class GetByIdQueryHandler : IRequestHandler<GetByFacilityIdQuery,Response<FacilityModel>>
+    public class GetByIdQueryHandler : IRequestHandler<GetByFacilityIdQuery,ResponseMethod<FacilityModel>>
     {
         private readonly IFacilityRepository _facilityRepository;
         private readonly IMapper _mapper;
@@ -22,10 +22,10 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
             _facilityRepository = facilityRepository;
             _mapper = mapper;
         }
-        public async Task<Response<FacilityModel>> Handle(GetByFacilityIdQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<FacilityModel>> Handle(GetByFacilityIdQuery request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            Response<FacilityModel> result = new Response<FacilityModel>();
+            ResponseMethod<FacilityModel> result = new ResponseMethod<FacilityModel>();
             var facility = await _facilityRepository.GetByIDAsync(request.Id);
             if(facility == null)
             {

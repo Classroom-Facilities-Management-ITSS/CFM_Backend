@@ -1,6 +1,4 @@
 ﻿using ClassroomManagerAPI.Entities;
-using ClassroomManagerAPI.Models.Auth;
-using ClassroomManagerAPI.Models.Dto;
 
 namespace ClassroomManagerAPI.Repositories.IRepositories
 {

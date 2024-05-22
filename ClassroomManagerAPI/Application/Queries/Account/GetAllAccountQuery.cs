@@ -9,10 +9,10 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Account
 {
-	public class GetAllAccountQuery : FilterModel, IRequest<Response<IEnumerable<AccountModel>>>
+	public class GetAllAccountQuery : FilterModel, IRequest<ResponseMethod<IEnumerable<AccountModel>>>
 	{
 	}
-	public class GetAllQueryHandler : IRequestHandler<GetAllAccountQuery, Response<IEnumerable<AccountModel>>>
+	public class GetAllQueryHandler : IRequestHandler<GetAllAccountQuery, ResponseMethod<IEnumerable<AccountModel>>>
 	{
 		private readonly IAccountRepository _accountRepository;
 		private readonly IMapper _mapper;
@@ -22,10 +22,10 @@ namespace ClassroomManagerAPI.Application.Queries.Account
 			_mapper = mapper;
 		}
 
-		public async Task<Response<IEnumerable<AccountModel>>> Handle(GetAllAccountQuery request, CancellationToken cancellationToken)
+		public async Task<ResponseMethod<IEnumerable<AccountModel>>> Handle(GetAllAccountQuery request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			Response<IEnumerable<AccountModel>> result = new Response<IEnumerable<AccountModel>>();
+			ResponseMethod<IEnumerable<AccountModel>> result = new ResponseMethod<IEnumerable<AccountModel>>();
 			var accountResult = await _accountRepository.GetAllAsync(request.page, request.limit).ConfigureAwait(false);
 			result.Data = _mapper.Map<IEnumerable<AccountModel>>(accountResult);
 			result.StatusCode = (int)HttpStatusCode.OK;

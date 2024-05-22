@@ -7,11 +7,11 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Facility
 {
-    public class AddFacilityCommand : AddFacilityModel, IRequest<Response<FacilityModel>>
+    public class AddFacilityCommand : AddFacilityModel, IRequest<ResponseMethod<FacilityModel>>
     {
     }
 
-    public class AddFacilityCommandHandler : IRequestHandler<AddFacilityCommand, Response<FacilityModel>>
+    public class AddFacilityCommandHandler : IRequestHandler<AddFacilityCommand, ResponseMethod<FacilityModel>>
     {
         private readonly IFacilityRepository _facilityRepository;
         private readonly IMapper _mapper;
@@ -21,10 +21,10 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
             _mapper = mapper;
         }
 
-        public async Task<Response<FacilityModel>> Handle(AddFacilityCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<FacilityModel>> Handle(AddFacilityCommand request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            Response<FacilityModel> result = new Response<FacilityModel>();
+            ResponseMethod<FacilityModel> result = new ResponseMethod<FacilityModel>();
             var newFacillity = _mapper.Map<Entities.Facility>(request);
             var createdFacility = await _facilityRepository.AddAsync(newFacillity).ConfigureAwait(false);
             result.StatusCode = (int) HttpStatusCode.Created;

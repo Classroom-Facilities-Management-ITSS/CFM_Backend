@@ -9,7 +9,7 @@
                 var extensionName = Path.GetExtension(fileName);
                 while(true)
                 {
-                    string newFilename = Path.Join(Guid.NewGuid().ToString(),".",extensionName) ;
+                    string newFilename = Guid.NewGuid().ToString()+extensionName ;
                     fileName = Path.Combine(Directory.GetCurrentDirectory(), "Public", newFilename);
                     if (File.Exists(fileName))
                     {
@@ -32,6 +32,21 @@
             var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Public", fileName);
             if(!File.Exists(imagePath)) return null;
             return File.OpenRead(imagePath);
+        }
+
+        public static bool removeFile(string fileName)
+        {
+            try
+            {
+                var file = Path.Combine(Directory.GetCurrentDirectory(), "Public", fileName);
+                if(!File.Exists(file)) return false;
+                File.Delete(file);
+                return true;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
         }
     }
 }

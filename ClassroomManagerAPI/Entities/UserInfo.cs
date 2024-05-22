@@ -18,6 +18,7 @@ namespace ClassroomManagerAPI.Entities
 		public DateTime? Dob { get; set; }
 		public string? Avatar { get; set; }
 		public Account? Account { get; set; }
+		public string? Department { get; set; }
 
 		public Guid? AccountId { get; set; }
     }

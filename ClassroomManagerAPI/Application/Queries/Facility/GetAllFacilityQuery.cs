@@ -8,11 +8,11 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Facility
 {
-    public class GetAllFacilityQuery : FilterModel, IRequest<Response<IEnumerable<FacilityModel>>>
+    public class GetAllFacilityQuery : FilterModel, IRequest<ResponseMethod<IEnumerable<FacilityModel>>>
     {
     }
 
-    public class GetAllQueryHandler : IRequestHandler<GetAllFacilityQuery, Response<IEnumerable<FacilityModel>>>
+    public class GetAllQueryHandler : IRequestHandler<GetAllFacilityQuery, ResponseMethod<IEnumerable<FacilityModel>>>
     {
         private readonly IFacilityRepository _facilityRepository;
         private readonly IMapper _mapper;
@@ -20,10 +20,10 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
             _facilityRepository = facilityRepository;
             _mapper = mapper;
         }
-        public async Task<Response<IEnumerable<FacilityModel>>> Handle(GetAllFacilityQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<IEnumerable<FacilityModel>>> Handle(GetAllFacilityQuery request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            Response<IEnumerable<FacilityModel>> result = new Response<IEnumerable<FacilityModel>>();
+            ResponseMethod<IEnumerable<FacilityModel>> result = new ResponseMethod<IEnumerable<FacilityModel>>();
             var facilityResult = await _facilityRepository.GetAllAsync(request.page, request.limit).ConfigureAwait(false);
             result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facilityResult);
             result.StatusCode = (int) HttpStatusCode.OK;

@@ -4,7 +4,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Common
 {
-    public class Response<T> : BadResponse
+    public class ResponseMethod<T> : BadResponse
     {
         public T? Data { get; set; }
         private bool AddPage {  get; set; } = false;

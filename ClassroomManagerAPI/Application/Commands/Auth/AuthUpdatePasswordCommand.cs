@@ -8,12 +8,12 @@ using MediatR;
 
 namespace ClassroomManagerAPI.Application.Commands.Auth
 {
-	public class AuthUpdatePasswordCommand : UpdateModel, IRequest<Response<string>>
+	public class AuthUpdatePasswordCommand : UpdateModel, IRequest<ResponseMethod<string>>
 	{
 
 	}
 
-	public class UpdatePasswordCommandHandler : IRequestHandler<AuthUpdatePasswordCommand, Response<string>>
+	public class UpdatePasswordCommandHandler : IRequestHandler<AuthUpdatePasswordCommand, ResponseMethod<string>>
 	{
 		private readonly IAuthRepository _authRepository;
 		private readonly AuthContext _authContext;
@@ -25,10 +25,10 @@ namespace ClassroomManagerAPI.Application.Commands.Auth
 			_authContext = authContext;
 			_bCryptService = bCryptService;
 		}
-		public async Task<Response<string>> Handle(AuthUpdatePasswordCommand request, CancellationToken cancellationToken)
+		public async Task<ResponseMethod<string>> Handle(AuthUpdatePasswordCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			Response<string> response = new Response<string>();
+			ResponseMethod<string> response = new ResponseMethod<string>();
 			if (String.IsNullOrEmpty(request.Email))
 			{
 				request.Email = _authContext.GetCurrentEmail();

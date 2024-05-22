@@ -13,12 +13,12 @@ using System.Security.Claims;
 
 namespace ClassroomManagerAPI.Application.Commands.Auth
 {
-	public class AuthRegisterCommand : RegisterModel, IRequest<Response<string>>
+	public class AuthRegisterCommand : RegisterModel, IRequest<ResponseMethod<string>>
 	{
 
 	}
 
-	public class RegisterCommandHandler : IRequestHandler<AuthRegisterCommand, Response<string>>
+	public class RegisterCommandHandler : IRequestHandler<AuthRegisterCommand, ResponseMethod<string>>
 	{
 		private readonly IAuthRepository _authRepository;
 		private readonly IMapper _mapper;
@@ -41,10 +41,10 @@ namespace ClassroomManagerAPI.Application.Commands.Auth
 			_tokenService = tokenService;
 			_mailService = mailService;
 		}
-        public async Task<Response<string>> Handle(AuthRegisterCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<string>> Handle(AuthRegisterCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			Response<string> result = new Response<string>();
+			ResponseMethod<string> result = new ResponseMethod<string>();
 			var newModel = _mapper.Map<Entities.Account>(request);
 			newModel.Password = _bCryptService.HashPassword(request.Password);
 			

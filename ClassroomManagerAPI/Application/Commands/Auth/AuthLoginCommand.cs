@@ -11,11 +11,11 @@ using System.Security.Claims;
 
 namespace ClassroomManagerAPI.Application.Commands.Auth
 {
-	public class AuthLoginCommand : LoginModel, IRequest<Response<AuthModel>>
+	public class AuthLoginCommand : LoginModel, IRequest<ResponseMethod<AuthModel>>
 	{
 	}
 
-	public class LoginCommandHandler : IRequestHandler<AuthLoginCommand, Response<AuthModel>>
+	public class LoginCommandHandler : IRequestHandler<AuthLoginCommand, ResponseMethod<AuthModel>>
 	{
 		private readonly IMapper _mapper;
 		private readonly IAuthRepository _authRepository;
@@ -32,10 +32,10 @@ namespace ClassroomManagerAPI.Application.Commands.Auth
 			_bCryptService = bCryptService;
 			_tokenService = tokenService;
 		}
-        public async Task<Response<AuthModel>> Handle(AuthLoginCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<AuthModel>> Handle(AuthLoginCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			Response<AuthModel> result = new Response<AuthModel>();
+			ResponseMethod<AuthModel> result = new ResponseMethod<AuthModel>();
 			var newModel = _mapper.Map<Entities.Account>(request);
 
 			var loginModel = await _authRepository.LogIn(newModel).ConfigureAwait(false);

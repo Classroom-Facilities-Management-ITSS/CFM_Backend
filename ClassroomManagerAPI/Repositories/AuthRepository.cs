@@ -1,18 +1,7 @@
-﻿using AutoMapper;
-using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Configs.Infastructure;
+﻿using ClassroomManagerAPI.Configs.Infastructure;
 using ClassroomManagerAPI.Entities;
-using ClassroomManagerAPI.Models.Auth;
-using ClassroomManagerAPI.Models.Dto;
 using ClassroomManagerAPI.Repositories.IRepositories;
-using ClassroomManagerAPI.Services;
-using ClassroomManagerAPI.Services.IServices;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace ClassroomManagerAPI.Repositories
 {

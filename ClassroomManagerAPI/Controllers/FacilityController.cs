@@ -25,7 +25,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get all
 		[HttpGet]
-		[ProducesResponseType(typeof(Response<IEnumerable<FacilityModel>>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<FacilityModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetAll([FromQuery] GetAllFacilityQuery query)
 		{
@@ -43,7 +43,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by id
 		[HttpGet("{id}")]
-        [ProducesResponseType(typeof(Response<FacilityModel>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseMethod<FacilityModel>), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> GetById(Guid id)
 		{
@@ -61,7 +61,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by name
 		[HttpGet("search")]
-        [ProducesResponseType(typeof(Response<IEnumerable<FacilityModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseMethod<IEnumerable<FacilityModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> GetByName([FromQuery] SearchFacilityNameQuery search)
 		{
@@ -80,7 +80,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Create facility
 		[HttpPost]
-        [ProducesResponseType(typeof(Response<FacilityModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseMethod<FacilityModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Create([FromBody] AddFacilityCommand command)
 		{
@@ -98,7 +98,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Update facility
 		[HttpPut("{id}")]
-        [ProducesResponseType(typeof(Response<FacilityModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseMethod<FacilityModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateFacilityCommand command)
 		{
@@ -118,7 +118,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Remove a facility
 		[HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Response<FacilityModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseMethod<FacilityModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Delete(Guid id)
 		{

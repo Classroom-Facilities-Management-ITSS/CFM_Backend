@@ -9,11 +9,11 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Classroom
 {
-	public class UpdateClassroomCommand : UpdateClassroomModel, IRequest<Response<string>>
+	public class UpdateClassroomCommand : UpdateClassroomModel, IRequest<ResponseMethod<string>>
 	{
 	}
 
-	public class UpdateClassroomCommandHandler : IRequestHandler<UpdateClassroomCommand, Response<string>>
+	public class UpdateClassroomCommandHandler : IRequestHandler<UpdateClassroomCommand, ResponseMethod<string>>
 	{
 		private readonly IMapper mapper;
 		private readonly IClassroomRepository classroomRepository;
@@ -24,10 +24,10 @@ namespace ClassroomManagerAPI.Application.Commands.Classroom
 			this.classroomRepository = classroomRepository;
 		}
 
-		public async Task<Response<string>> Handle(UpdateClassroomCommand request, CancellationToken cancellationToken)
+		public async Task<ResponseMethod<string>> Handle(UpdateClassroomCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			Response<string> result = new Response<string>();
+			ResponseMethod<string> result = new ResponseMethod<string>();
 			var classroom = mapper.Map<Entities.Classroom>(request);
 			var updatedClassroom = await classroomRepository.UpdateAsync(classroom).ConfigureAwait(false);
 			if (updatedClassroom == null)

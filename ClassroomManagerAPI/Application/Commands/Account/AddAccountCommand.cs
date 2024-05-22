@@ -9,11 +9,11 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Account
 {
-	public class AddAccountCommand : AddAccountModel, IRequest<Response<AccountModel>>
+	public class AddAccountCommand : AddAccountModel, IRequest<ResponseMethod<AccountModel>>
 	{
 	}
 
-	public class AddAccountCommandHandler : IRequestHandler<AddAccountCommand, Response<AccountModel>>
+	public class AddAccountCommandHandler : IRequestHandler<AddAccountCommand, ResponseMethod<AccountModel>>
 	{
 		private readonly IMapper _mapper;
 		private readonly IAccountRepository _accountRepository;
@@ -23,10 +23,10 @@ namespace ClassroomManagerAPI.Application.Commands.Account
 			_mapper = mapper;
 			_accountRepository = accountRepository;
 		}
-        public async Task<Response<AccountModel>> Handle(AddAccountCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<AccountModel>> Handle(AddAccountCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			Response<AccountModel> result = new Response<AccountModel>();
+			ResponseMethod<AccountModel> result = new ResponseMethod<AccountModel>();
 			var newAccount = _mapper.Map<Entities.Account>(request);
 			var createdAccount = await _accountRepository.AddAsync(newAccount).ConfigureAwait(false);
 			result.StatusCode = (int)HttpStatusCode.Created;
