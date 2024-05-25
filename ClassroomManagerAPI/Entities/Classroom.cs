@@ -19,5 +19,6 @@ namespace ClassroomManagerAPI.Entities
         // Navigation property for related facilities
         public ICollection<Facility>? Facilities { get; set; }
         public ICollection<Report>? Reports { get; set; }
+        public ICollection<Schedule> Schedules { get; set; }
     }
 }

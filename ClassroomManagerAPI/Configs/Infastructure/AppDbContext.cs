@@ -13,6 +13,7 @@ namespace ClassroomManagerAPI.Configs.Infastructure
         public DbSet<Classroom> Classrooms { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<UserInfo> Users { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,6 +24,7 @@ namespace ClassroomManagerAPI.Configs.Infastructure
             modelBuilder.ApplyConfiguration(new ClassroomConfiguration());
             modelBuilder.ApplyConfiguration(new ReportConfiguration());
             modelBuilder.ApplyConfiguration(new FacilityConfigurarion());
+            modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
             base.OnModelCreating(modelBuilder);
             FacilitySeed(modelBuilder);
             ClassroomSeed(modelBuilder);

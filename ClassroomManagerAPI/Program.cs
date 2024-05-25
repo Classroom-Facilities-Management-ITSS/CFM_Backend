@@ -4,6 +4,7 @@ using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using ClassroomManagerAPI.Services;
 using ClassroomManagerAPI.Services.IServices;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -106,6 +107,13 @@ builder.Services.AddAuthentication(options => {
 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
 	};
 });
+builder.Services.AddHangfire(config =>
+{
+    config.UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString(Settings.DefaultConnection));
+});
+builder.Services.AddHangfireServer();
 builder.Services.AddControllers().AddJsonOptions(delegate (JsonOptions options)
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -135,6 +143,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseHangfireDashboard("/dashboard");
 
 app.UseAuthorization();
 

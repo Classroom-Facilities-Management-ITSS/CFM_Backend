@@ -16,5 +16,6 @@ namespace ClassroomManagerAPI.Entities
 
         public UserInfo? UserInfo { get; set; }
         public ICollection<Report>? Reports { get; set; }
+        public ICollection<Schedule> Schedules { get; set; }
     }
 }
