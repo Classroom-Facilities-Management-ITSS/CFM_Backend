@@ -1,8 +1,10 @@
 ﻿using ClassroomManagerAPI.Application.Commands.Account;
 using ClassroomManagerAPI.Application.Queries.Account;
+using ClassroomManagerAPI.Application.Queries.Facility;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Models.Account;
+using ClassroomManagerAPI.Models.Facility;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -32,6 +34,43 @@ namespace ClassroomManagerAPI.Controllers
 			try
 			{
 				var result = await _mediator.Send(query).ConfigureAwait(false);
+				return result.GetResult();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, ex.Message);
+				throw;
+			}
+		}
+
+		// Get by id
+		[HttpGet("{id:guid}")]
+		[ProducesResponseType(typeof(Response<AccountModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> GetById(Guid id)
+		{
+			try
+			{
+				var result = await _mediator.Send(new GetAccountByIdQuery { Id = id }).ConfigureAwait(false);
+				return result.GetResult();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, ex.Message);
+				throw;
+			}
+		}
+
+
+		// Get by name
+		[HttpGet("search")]
+		[ProducesResponseType(typeof(Response<IEnumerable<AccountModel>>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> GetByName([FromQuery] SearchAccountByEmailQuery search)
+		{
+			try
+			{
+				var result = await _mediator.Send(search).ConfigureAwait(false);
 				return result.GetResult();
 			}
 			catch (Exception ex)
