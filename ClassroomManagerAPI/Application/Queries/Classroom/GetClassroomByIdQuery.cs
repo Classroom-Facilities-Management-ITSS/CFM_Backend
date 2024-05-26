@@ -4,6 +4,7 @@ using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Classroom;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Classroom
@@ -27,7 +28,12 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<ClassroomModel> result = new ResponseMethod<ClassroomModel>();
-			var classroom = await _classroomRepository.GetByIDAsync(request.Id);
+			//TODO: query including Facilities ID and Reports ID
+			var classroom = await _classroomRepository.Queryable()
+				.Include(c => c.Facilities)
+				.Include(c => c.Reports)
+				.FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken)
+				.ConfigureAwait(false);
 			if(classroom == null)
 			{
 				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));

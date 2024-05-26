@@ -1,6 +1,7 @@
 ﻿namespace ClassroomManagerAPI.Models.Report
 {
-	public class UpdateReportModel : ReportModel
+	public class UpdateReportModel : AddReportModel
 	{
-	}
+        public Guid Id { get; set; }
+    }
 }

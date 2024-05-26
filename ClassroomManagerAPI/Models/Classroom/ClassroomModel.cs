@@ -6,7 +6,7 @@ namespace ClassroomManagerAPI.Models.Classroom
 	public class ClassroomModel : AddClassroomModel
 	{
 		public Guid? Id { get; set; }
-		public IList<FacilityModel> Facilities { get; set; }
-		public IList<ReportModel> Reports { get; set; }
+		public virtual IList<FacilityModel> Facilities { get; set; }
+		public virtual IList<ReportModel> Reports { get; set; }
 	}
 }
