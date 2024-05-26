@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ClassroomManagerAPI.Application.Queries.Facility;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Account;
@@ -9,7 +8,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Account
 {
-	public class GetAllAccountQuery : FilterModel, IRequest<ResponseMethod<IEnumerable<AccountModel>>>
+    public class GetAllAccountQuery : FilterModel, IRequest<ResponseMethod<IEnumerable<AccountModel>>>
 	{
 	}
 	public class GetAllQueryHandler : IRequestHandler<GetAllAccountQuery, ResponseMethod<IEnumerable<AccountModel>>>

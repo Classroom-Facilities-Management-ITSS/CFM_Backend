@@ -19,7 +19,7 @@ namespace ClassroomManagerAPI.Services
         }
         public async Task ReccuringJob(string email)
         {
-            _recurringJob.AddOrUpdate(Guid.NewGuid().ToString(), () => Console.WriteLine("Hello"), Cron.Daily);
+            _recurringJob.AddOrUpdate(Guid.NewGuid().ToString(), () => Console.WriteLine("Hello"), Cron.Daily(6));
         }
 
         public void RemoveRecurringAllJob()

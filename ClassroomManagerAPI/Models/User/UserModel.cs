@@ -1,6 +1,4 @@
-﻿using ClassroomManagerAPI.Models.Account;
-
-namespace ClassroomManagerAPI.Models.User
+﻿namespace ClassroomManagerAPI.Models.User
 {
     public class UserModel
     {
@@ -13,7 +11,5 @@ namespace ClassroomManagerAPI.Models.User
         }
         public DateTime? Dob { get; set; }
         public string Avatar { get; set; }
-        public Guid? AccountId { get; set; }
-        public AccountModel Account { get; set; }
     }
 }

@@ -8,12 +8,12 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Classroom
 {
-	public class GetClassroomByIdQuery : IRequest<Response<ClassroomModel>>
+	public class GetClassroomByIdQuery : IRequest<ResponseMethod<ClassroomModel>>
 	{
 		public Guid Id { get; set; }
 	}
 
-	public class GetByIdQueryHandler : IRequestHandler<GetClassroomByIdQuery, Response<ClassroomModel>>
+	public class GetByIdQueryHandler : IRequestHandler<GetClassroomByIdQuery, ResponseMethod<ClassroomModel>>
 	{
 		private readonly IMapper _mapper;
 		private readonly IClassroomRepository _classroomRepository;
@@ -23,10 +23,10 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 			_mapper = mapper;
 			_classroomRepository = classroomRepository;
 		}
-        public async Task<Response<ClassroomModel>> Handle(GetClassroomByIdQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<ClassroomModel>> Handle(GetClassroomByIdQuery request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			Response<ClassroomModel> result = new Response<ClassroomModel>();
+			ResponseMethod<ClassroomModel> result = new ResponseMethod<ClassroomModel>();
 			var classroom = await _classroomRepository.GetByIDAsync(request.Id);
 			if(classroom == null)
 			{

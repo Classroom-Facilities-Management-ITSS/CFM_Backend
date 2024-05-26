@@ -52,7 +52,7 @@ namespace ClassroomManagerAPI.Controllers
 		{
 			try
 			{
-				var result = await _mediator.Send(new GetByClassroomNumberQuery { ClassNumber = classroomNumber }).ConfigureAwait(false);
+				var result = await _mediator.Send(new SearchClassroomQuery { ClassNumber = classroomNumber }).ConfigureAwait(false);
 				return result?.GetResult();
 			}
 			catch (Exception ex)
@@ -64,7 +64,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by id
 		[HttpGet("{id:guid}")]
-		[ProducesResponseType(typeof(Response<ClassroomModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetById(Guid id)
 		{

@@ -11,12 +11,12 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Classroom
 {
-	public class GetByClassroomNumberQuery : IRequest<ResponseMethod<ClassroomModel>>
+	public class SearchClassroomQuery : IRequest<ResponseMethod<ClassroomModel>>
 	{
 		public string ClassNumber { get; set; }
 	}
 
-	public class GetByClassroomNumberQueryHandler : IRequestHandler<GetByClassroomNumberQuery, ResponseMethod<ClassroomModel>>
+	public class GetByClassroomNumberQueryHandler : IRequestHandler<SearchClassroomQuery, ResponseMethod<ClassroomModel>>
 	{
 		private readonly IMapper _mapper;
 		private readonly IClassroomRepository _classroomRepository;
@@ -26,7 +26,7 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 			_mapper = mapper;
 			_classroomRepository = classroomRepository;
 		}
-        public async Task<ResponseMethod<ClassroomModel>> Handle(GetByClassroomNumberQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<ClassroomModel>> Handle(SearchClassroomQuery request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<ClassroomModel> result = new ResponseMethod<ClassroomModel>();

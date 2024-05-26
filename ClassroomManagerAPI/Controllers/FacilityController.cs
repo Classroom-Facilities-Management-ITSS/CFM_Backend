@@ -63,7 +63,7 @@ namespace ClassroomManagerAPI.Controllers
 		[HttpGet("search")]
         [ProducesResponseType(typeof(ResponseMethod<IEnumerable<FacilityModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> GetByName([FromQuery] SearchFacilityNameQuery search)
+        public async Task<IActionResult> GetByName([FromQuery] SearchFacilityQuery search)
 		{
 			try
 			{

@@ -4,6 +4,7 @@ using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Configs.Infastructure;
 using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.User;
+using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -16,13 +17,13 @@ namespace ClassroomManagerAPI.Application.Queries
 
     public class GetProfileQueryHandler : IRequestHandler<GetProfileQuery, ResponseMethod<UserModel>>
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IAccountRepository _accountRepository;
         private readonly IMapper _mapper;
         private readonly AuthContext _authContext;
 
-        public GetProfileQueryHandler(AppDbContext dbContext, IMapper mapper, AuthContext authContext)
+        public GetProfileQueryHandler(IAccountRepository accountRepository, IMapper mapper, AuthContext authContext)
         {
-            _dbContext = dbContext;
+            _accountRepository = accountRepository;
             _mapper = mapper;
             _authContext = authContext;
         }
@@ -38,9 +39,7 @@ namespace ClassroomManagerAPI.Application.Queries
                 return result;
             }
 
-            var account = await _dbContext.Users.Include(x => x.Account).ToListAsync(cancellationToken);
-
-            var user = account.FirstOrDefault(u => u.AccountId.ToString() == id);
+            var user = await _accountRepository.Queryable().Include(x => x.UserInfo).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
             if(user == null )
             {

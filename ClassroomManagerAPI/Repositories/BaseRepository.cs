@@ -44,6 +44,17 @@ namespace ClassroomManagerAPI.Repositories
             }catch (Exception ex) { throw; }
         }
 
+        public virtual IEnumerable<T?> GetPaginationEntity(IEnumerable<T> entity, int? page, int? limit)
+        {
+            page = page <= 0 ? 1 : page ?? 1;
+            limit = limit <= 0 ? 10 : limit ?? 10;
+            int skip = (int)(limit * (page - 1));
+            try
+            {
+                return  entity.Where((T c) => !c.IsDeleted).Skip(skip).Take((int) limit).ToList();
+            }catch (Exception ex) { throw; }
+        }
+
         public virtual async Task<IEnumerable<T>> GetAllAsync(int? page, int? limit)
         {
             page = page <=0 ? 1 : page ?? 1;
@@ -97,6 +108,12 @@ namespace ClassroomManagerAPI.Repositories
             return pagination;
         }
 
+        public virtual IQueryable<T?> Queryable()
+        {
+            IQueryable<T> queryable = _set.AsQueryable();
+            return queryable;
+        }
+
         public virtual async Task<T?> UpdateAsync(T entity)
         {
             try
@@ -121,6 +138,17 @@ namespace ClassroomManagerAPI.Repositories
                 }
             }
             catch (Exception ex) { throw; }
+        }
+
+        public PaginationModel PaginationEntity(IEnumerable<T> entity, int? page, int? limit)
+        {
+            page = page <= 0 ? 1 : page ?? 1;
+            limit = limit <= 0 ? 10 : limit ?? 10;
+            PaginationModel pagination = new PaginationModel();
+            var total = entity.Where(x => !x.IsDeleted).Count();
+            pagination.Total = (int)Math.Ceiling(total / (decimal)limit);
+            pagination.Page = (int)page;
+            return pagination;
         }
     }
 }

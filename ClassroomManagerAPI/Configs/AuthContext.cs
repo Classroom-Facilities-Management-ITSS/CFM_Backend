@@ -18,9 +18,9 @@ namespace ClassroomManagerAPI.Configs
             return User?.FindFirst(ClaimTypes.Email)?.Value;
         }
 
-        public string GetCurrentId()
-        {
-            return User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        public Guid GetCurrentId()
+        {           
+            return Guid.Parse(User?.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         }
 
         public string GetCurrentRole()
