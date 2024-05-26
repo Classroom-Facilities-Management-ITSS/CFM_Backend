@@ -9,6 +9,8 @@ namespace ClassroomManagerAPI.Configs.Mappers
         public ReportMapper()
         {
             CreateMap<ReportModel, Report>().ReverseMap();
+            CreateMap<AddReportModel, Report>().ReverseMap();
+            CreateMap<UpdateReportModel, Report>().ReverseMap();
         }
     }
 }

@@ -3,14 +3,11 @@ using ClassroomManagerAPI.Models.Classroom;
 
 namespace ClassroomManagerAPI.Models.Report
 {
-    public class ReportModel
+    public class ReportModel : AddReportModel
     {
-        public string? Note { get; set; }
-
-        public AccountModel? Account { get; set; }
-        public Guid? AccountId { get; set; }
+        public Guid Id { get; set; }
+        public AccountModel? Account { get; set; }        
         public ClassroomModel? Classroom { get; set; }
-        public Guid? ClassroomId { get; set; }
         public IList<Guid>? ReportFacilities { get; set; }
     }
 }

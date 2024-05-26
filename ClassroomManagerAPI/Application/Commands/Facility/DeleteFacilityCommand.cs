@@ -15,11 +15,9 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
     public class DeleteFacilityCommandHandler : IRequestHandler<DeleteFacilityCommand, ResponseMethod<string>>
     {
         private readonly IFacilityRepository _facilityRepository;
-        private readonly IMapper _mapper;
-        public DeleteFacilityCommandHandler(IMapper mapper, IFacilityRepository facilityRepository)
+        public DeleteFacilityCommandHandler(IFacilityRepository facilityRepository)
         {
             _facilityRepository = facilityRepository;
-            _mapper = mapper;
         }
         public async Task<ResponseMethod<string>> Handle(DeleteFacilityCommand request, CancellationToken cancellationToken)
         {

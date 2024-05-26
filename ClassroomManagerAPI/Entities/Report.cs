@@ -6,9 +6,6 @@ namespace ClassroomManagerAPI.Entities
     {
         public string? Note { get; set; }
 
-        //foreign key reporterid int references account.id
-        //foreign key classid references classroom.id
-
         // Navigation Properties
         
         public Account? Account { get; set; }
