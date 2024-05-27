@@ -1,11 +1,11 @@
 ﻿using ClassroomManagerAPI.Application.Commands.Facility;
-using ClassroomManagerAPI.Application.Commands.Report;
+using ClassroomManagerAPI.Application.Commands.Schedule;
 using ClassroomManagerAPI.Application.Queries.Facility;
-using ClassroomManagerAPI.Application.Queries.Report;
+using ClassroomManagerAPI.Application.Queries.Schedule;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Models.Facility;
-using ClassroomManagerAPI.Models.Report;
+using ClassroomManagerAPI.Models.Schedule;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,24 +14,23 @@ using System.Net;
 namespace ClassroomManagerAPI.Controllers
 {
 	[ApiVersion(Settings.APIVersion)]
-	[Route(Settings.APIDefaultRoute + "/report")]
+	[Route(Settings.APIDefaultRoute + "/schedule")]
 	[ApiController]
-	public class ReportController : ControllerBase
+	public class ScheduleController : ControllerBase
 	{
-		private readonly ILogger<ReportController> _logger;
 		private readonly IMediator _mediator;
+		private readonly ILogger<ScheduleController> _logger;
 
-		public ReportController(ILogger<ReportController> logger, IMediator mediator)
-        {
-			_logger = logger;
+		public ScheduleController(ILogger<ScheduleController> logger, IMediator mediator)
+		{
 			_mediator = mediator;
+			_logger = logger;
 		}
-
-		//Get all
+		// Get all
 		[HttpGet]
-		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ReportModel>>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ScheduleModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> GetAll([FromQuery] GetAllReportsQuery query)
+		public async Task<IActionResult> GetAll([FromQuery] GetAllScheduleQuery query)
 		{
 			try
 			{
@@ -45,15 +44,15 @@ namespace ClassroomManagerAPI.Controllers
 			}
 		}
 
-		//get by id
+		// Get by id
 		[HttpGet("{id}")]
-		[ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetById(Guid id)
 		{
 			try
 			{
-				var result = await _mediator.Send(new GetByReportIdQuery { Id = id }).ConfigureAwait(false);
+				var result = await _mediator.Send(new GetScheduleByIdQuery { Id = id }).ConfigureAwait(false);
 				return result.GetResult();
 			}
 			catch (Exception ex)
@@ -62,30 +61,14 @@ namespace ClassroomManagerAPI.Controllers
 				throw;
 			}
 		}
+		// Search
 
-		//Get by classroom address
-		[HttpGet("search")]
-		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ReportModel>>), (int)HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> GetByName([FromQuery] SearchReportQuery search)
-		{
-			try
-			{
-				var result = await _mediator.Send(search).ConfigureAwait(false);
-				return result.GetResult();
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, ex.Message);
-				throw;
-			}
-		}
 
-		//Create
+		// Create 
 		[HttpPost]
-		[ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> Create([FromBody] AddReportCommand command)
+		public async Task<IActionResult> Create([FromBody] AddScheduleCommand command)
 		{
 			try
 			{
@@ -98,16 +81,16 @@ namespace ClassroomManagerAPI.Controllers
 				throw;
 			}
 		}
-
-		//Update
+		// Update 
 		[HttpPut("{id}")]
-		[ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateReportCommand command)
+		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateScheduleCommand command)
 		{
 			try
 			{
 				command.Id = id;
+				// Map Dto to domain models
 				var result = await _mediator.Send(command).ConfigureAwait(false);
 				return result.GetResult();
 			}
@@ -117,16 +100,15 @@ namespace ClassroomManagerAPI.Controllers
 				throw;
 			}
 		}
-
-		//Delete
+		// Remove
 		[HttpDelete("{id}")]
-		[ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Delete(Guid id)
 		{
 			try
 			{
-				var result = await _mediator.Send(new DeleteReportCommand { Id = id }).ConfigureAwait(false);
+				var result = await _mediator.Send(new DeleteScheduleCommand { Id = id }).ConfigureAwait(false);
 				return result.GetResult();
 			}
 			catch (Exception ex)
