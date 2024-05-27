@@ -7,18 +7,18 @@ namespace ClassroomManagerAPI.Repositories
 {
     public class AccountRepository : BaseRepository<Account> , IAccountRepository
     {
-		private readonly AppDbContext dbContext;
+		private readonly AppDbContext _dbContext;
 
 		public AccountRepository(AppDbContext dbContext) : base(dbContext)
         {
-            this.dbContext = dbContext;
+            _dbContext = dbContext;
 		}
 
 		public async Task<Account?> GetByEmailAsync(string email)
 		{
 			try
 			{
-				return await dbContext.Accounts.Where(c => c.Email == email && !c.IsDeleted).FirstOrDefaultAsync().ConfigureAwait(false);
+				return await _dbContext.Accounts.Where(c => c.Email == email && !c.IsDeleted).FirstOrDefaultAsync().ConfigureAwait(false);
 			}
 			catch (Exception ex)
 			{

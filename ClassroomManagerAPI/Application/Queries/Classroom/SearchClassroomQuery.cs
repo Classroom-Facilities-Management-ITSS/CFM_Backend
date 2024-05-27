@@ -11,7 +11,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Classroom
 {
-	public class SearchClassroomQuery : IRequest<ResponseMethod<ClassroomModel>>
+	public class SearchClassroomQuery : FilterModel, IRequest<ResponseMethod<ClassroomModel>>
 	{
 		public string ClassNumber { get; set; }
 	}
@@ -30,7 +30,7 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<ClassroomModel> result = new ResponseMethod<ClassroomModel>();
-			var classroom = await _classroomRepository.GetByAddressAsync(request.ClassNumber);
+			var classroom = await _classroomRepository.GetByAddressAsync(request.ClassNumber, request.page, request.limit);
 			if (classroom == null)
 			{
 				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));

@@ -8,9 +8,9 @@ namespace ClassroomManagerAPI.Repositories
 {
     public class FacilityRepository : BaseRepository<Facility>, IFacilityRepository
 	{
-		private readonly AppDbContext dbContext;
+		private readonly AppDbContext _dbContext;
         public FacilityRepository(AppDbContext dbContext) : base(dbContext) { 
-			this.dbContext = dbContext;
+			_dbContext = dbContext;
 		}
 
         public async Task<IEnumerable<Facility>> GetByNameAsync(string name, int? page, int? limit)
@@ -20,7 +20,7 @@ namespace ClassroomManagerAPI.Repositories
             int skip = (int)(limit * (page - 1));
             try
             {
-                return await dbContext.Facilities.Where(c => c.Name == name && !c.IsDeleted).Skip(skip).Take((int)limit).ToListAsync().ConfigureAwait(continueOnCapturedContext: false);
+                return await _dbContext.Facilities.Where(c => c.Name == name && !c.IsDeleted).Skip(skip).Take((int)limit).ToListAsync().ConfigureAwait(continueOnCapturedContext: false);
             }
             catch (Exception ex) { throw; }
         }
