@@ -7,6 +7,7 @@
         /// </summary>
         OPEN,
         CLOSED,
-        STUDYING
+        STUDYING,
+        FIXING
     }
 }

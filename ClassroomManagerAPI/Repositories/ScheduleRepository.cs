@@ -1,7 +1,6 @@
 ﻿using ClassroomManagerAPI.Configs.Infastructure;
 using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Repositories.IRepositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace ClassroomManagerAPI.Repositories
 {

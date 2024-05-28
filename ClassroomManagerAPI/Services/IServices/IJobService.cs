@@ -2,7 +2,8 @@
 {
     public interface IJobService
     {
-        public Task ReccuringJob(string email);
+        public void ReccuringJobHourly();
+        public void RecurringJobDaily();
         public void RemoveRecurringAllJob();
     }
 }

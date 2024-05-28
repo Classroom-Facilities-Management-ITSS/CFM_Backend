@@ -13,20 +13,18 @@ namespace ClassroomManagerAPI.Application.Commands.Classroom
 	}
 	public class DeleteClassroomCommandHandler : IRequestHandler<DeleteClassroomCommand, ResponseMethod<string>>
 	{
-		private readonly IMapper mapper;
-		private readonly IClassroomRepository classroomRepository;
+		private readonly IClassroomRepository _classroomRepository;
 
-		public DeleteClassroomCommandHandler(IMapper mapper, IClassroomRepository classroomRepository)
+		public DeleteClassroomCommandHandler(IClassroomRepository classroomRepository)
         {
-			this.mapper = mapper;
-			this.classroomRepository = classroomRepository;
+			_classroomRepository = classroomRepository;
 		}
 
 		public async Task<ResponseMethod<string>> Handle(DeleteClassroomCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<string> result = new ResponseMethod<string>();
-			var deletedClassrooom = await classroomRepository.DeleteAsync(request.Id).ConfigureAwait(false);
+			var deletedClassrooom = await _classroomRepository.DeleteAsync(request.Id).ConfigureAwait(false);
 			if (!deletedClassrooom)
 			{
                 result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));

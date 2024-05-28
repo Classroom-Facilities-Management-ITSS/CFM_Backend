@@ -1,6 +1,4 @@
 ﻿using ClassroomManagerAPI.Entities;
-using ClassroomManagerAPI.Enums;
-using ClassroomManagerAPI.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -21,9 +19,6 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                 .WithMany(x => x.Schedules)
                 .HasForeignKey(x => x.AccountId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Property(e => e.Status)
-                .HasConversion(v => v.ToString(), v => v.EnumParse<ScheduleStatusEnum>());
         }
     }
 }

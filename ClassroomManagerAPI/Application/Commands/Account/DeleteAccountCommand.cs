@@ -13,21 +13,19 @@ namespace ClassroomManagerAPI.Application.Commands.Account
 	}
 	public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand, ResponseMethod<string>>
 	{
-		private readonly IMapper mapper;
-		private readonly IAccountRepository accountRepository;
+		private readonly IAccountRepository _accountRepository;
 
-		public DeleteAccountCommandHandler(IMapper mapper, IAccountRepository accountRepository)
+		public DeleteAccountCommandHandler(IAccountRepository accountRepository)
 		{
-			this.mapper = mapper;
-			this.accountRepository = accountRepository;
+			_accountRepository = accountRepository;
 		}
 
 		public async Task<ResponseMethod<string>> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<string> result = new ResponseMethod<string>();
-			var deletedFacility = await accountRepository.DeleteAsync(request.Id).ConfigureAwait(false);
-			if (!deletedFacility)
+			var deletedAccount = await _accountRepository.DeleteAsync(request.Id).ConfigureAwait(false);
+			if (!deletedAccount)
 			{
 				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
 				result.StatusCode = (int)HttpStatusCode.NotFound;
