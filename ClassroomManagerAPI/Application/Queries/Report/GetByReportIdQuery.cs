@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using ClassroomManagerAPI.Application.Queries.Facility;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Enums;
-using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Models.Report;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -10,7 +8,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Report
 {
-	public class GetByReportIdQuery : IRequest<ResponseMethod<ReportModel>>
+    public class GetByReportIdQuery : IRequest<ResponseMethod<ReportModel>>
 	{
         public Guid Id { get; set; }
     }

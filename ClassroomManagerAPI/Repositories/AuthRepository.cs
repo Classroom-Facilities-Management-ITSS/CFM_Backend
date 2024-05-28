@@ -29,7 +29,7 @@ namespace ClassroomManagerAPI.Repositories
 			return _context.Accounts!.SingleOrDefault(u => u.Email == account.Email && !u.IsDeleted);
 		} 
 
-		public async Task<Guid> Register(Account account)
+		public async Task<Account> Register(Account account)
 		{
 			ArgumentNullException.ThrowIfNull(account, "newAccount");
 
@@ -38,9 +38,9 @@ namespace ClassroomManagerAPI.Repositories
 			{
 				var created =  await _context.Accounts!.AddAsync(account);
 				await _context.SaveChangesAsync(); 
-				return created.Entity.Id;
+				return created.Entity;
 			}
-			return Guid.Empty;
+			return default;
 		}
 		
 		public async Task<Account> GetByEmailAsync(string email)

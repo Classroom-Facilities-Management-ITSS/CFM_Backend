@@ -9,7 +9,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Account
 {
-	public class GetAccountByIdQuery : IRequest<ResponseMethod<AccountModel>>
+    public class GetAccountByIdQuery : IRequest<ResponseMethod<AccountModel>>
 	{
 		public Guid Id { get; set; }
 	}
@@ -35,7 +35,7 @@ namespace ClassroomManagerAPI.Application.Queries.Account
 				return result;
 			}
 			result.Data = _mapper.Map<AccountModel>(account);
-			result.StatusCode = (int)HttpStatusCode.OK;
+            result.StatusCode = (int)HttpStatusCode.OK;
 			return result;
 		}
 	}

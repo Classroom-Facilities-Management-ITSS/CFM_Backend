@@ -1,24 +1,23 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Configs.Mappers;
 using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Models.Account;
 using ClassroomManagerAPI.Models.Auth;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using ClassroomManagerAPI.Services.IServices;
 using MediatR;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 
 namespace ClassroomManagerAPI.Application.Commands.Auth
 {
-	public class AuthRegisterCommand : RegisterModel, IRequest<ResponseMethod<string>>
+    public class AuthRegisterCommand : RegisterModel, IRequest<ResponseMethod<AccountModel>>
 	{
 
 	}
 
-	public class RegisterCommandHandler : IRequestHandler<AuthRegisterCommand, ResponseMethod<string>>
+	public class RegisterCommandHandler : IRequestHandler<AuthRegisterCommand, ResponseMethod<AccountModel>>
 	{
 		private readonly IAuthRepository _authRepository;
 		private readonly IMapper _mapper;
@@ -41,21 +40,21 @@ namespace ClassroomManagerAPI.Application.Commands.Auth
 			_tokenService = tokenService;
 			_mailService = mailService;
 		}
-        public async Task<ResponseMethod<string>> Handle(AuthRegisterCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<AccountModel>> Handle(AuthRegisterCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			ResponseMethod<string> result = new ResponseMethod<string>();
+			ResponseMethod<AccountModel> result = new ResponseMethod<AccountModel>();
 			var newModel = _mapper.Map<Entities.Account>(request);
 			newModel.Password = _bCryptService.HashPassword(request.Password);
 			
 			var createdModel = await _authRepository.Register(newModel).ConfigureAwait(false);
-			if (createdModel == Guid.Empty)
+			if (createdModel == null)
 			{
 				result.AddBadRequest(nameof(ErrorSystemEnum.DataAlreadyExist));
 				result.StatusCode = StatusCodes.Status403Forbidden;
 				return result;
 			}
-			await _userRepository.AddAsync(new Entities.UserInfo { AccountId = createdModel});
+			await _userRepository.AddAsync(new Entities.UserInfo { AccountId = createdModel.Id});
 			var authClaims = new List<Claim>()
 				{
 					new Claim(ClaimTypes.Email, newModel.Email),
@@ -73,7 +72,7 @@ namespace ClassroomManagerAPI.Application.Commands.Auth
 			mailRequest.body = replacedHtmlContent;
 			mailRequest.subject = "Verify Account";
             await _mailService.SendMail(mailRequest);
-            result.Data = "Account created successfully!";
+			result.Data = _mapper.Map<AccountModel>(createdModel);
 			result.StatusCode = StatusCodes.Status201Created;		
 			return result;
 		}

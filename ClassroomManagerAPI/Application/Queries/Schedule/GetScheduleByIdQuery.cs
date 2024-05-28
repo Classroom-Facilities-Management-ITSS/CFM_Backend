@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using ClassroomManagerAPI.Application.Queries.Report;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Enums;
-using ClassroomManagerAPI.Models.Report;
 using ClassroomManagerAPI.Models.Schedule;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;

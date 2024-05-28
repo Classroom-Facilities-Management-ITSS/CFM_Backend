@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Report;
-using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Report
 {
-	public class SearchReportQuery : FilterModel, IRequest<ResponseMethod<IEnumerable<ReportModel>>>
+    public class SearchReportQuery : FilterModel, IRequest<ResponseMethod<IEnumerable<ReportModel>>>
 	{
         public string ClassNumber { get; set; }
     }

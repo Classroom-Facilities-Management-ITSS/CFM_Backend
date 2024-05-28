@@ -4,7 +4,7 @@ namespace ClassroomManagerAPI.Repositories.IRepositories
 {
     public interface IAuthRepository : IBaseRepository<Account>
     {
-        public Task<Guid> Register(Account user);
+        public Task<Account> Register(Account user);
         
         public Task<Account> LogIn(Account user);
 		public Task<bool> Active(string email);

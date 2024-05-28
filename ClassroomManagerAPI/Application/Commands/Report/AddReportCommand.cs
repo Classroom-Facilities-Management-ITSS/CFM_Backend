@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using ClassroomManagerAPI.Application.Commands.Facility;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Models.Report;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -9,7 +7,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Report
 {
-	public class AddReportCommand : AddReportModel, IRequest<ResponseMethod<ReportModel>>
+    public class AddReportCommand : AddReportModel, IRequest<ResponseMethod<ReportModel>>
 	{
 	}
 

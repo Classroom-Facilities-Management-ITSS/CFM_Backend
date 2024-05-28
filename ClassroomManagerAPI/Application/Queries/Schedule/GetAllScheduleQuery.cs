@@ -1,11 +1,9 @@
-﻿using ClassroomManagerAPI.Common;
+﻿using AutoMapper;
+using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Models;
-using MediatR;
 using ClassroomManagerAPI.Models.Schedule;
-using AutoMapper;
-using ClassroomManagerAPI.Application.Queries.Report;
-using ClassroomManagerAPI.Models.Report;
 using ClassroomManagerAPI.Repositories.IRepositories;
+using MediatR;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Schedule

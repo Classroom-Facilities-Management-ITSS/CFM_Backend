@@ -1,5 +1,4 @@
-﻿using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Enums;
+﻿using ClassroomManagerAPI.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace ClassroomManagerAPI.Entities

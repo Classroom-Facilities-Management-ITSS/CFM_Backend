@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using ClassroomManagerAPI.Application.Queries.Facility;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Models;
-using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Models.Report;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -10,7 +8,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Report
 {
-	public class GetAllReportsQuery : FilterModel, IRequest<ResponseMethod<IEnumerable<ReportModel>>>
+    public class GetAllReportsQuery : FilterModel, IRequest<ResponseMethod<IEnumerable<ReportModel>>>
 	{
 	}
 

@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Configs.Infastructure;
 using ClassroomManagerAPI.Enums;
-using ClassroomManagerAPI.Models.User;
+using ClassroomManagerAPI.Models.Account;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +10,11 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries
 {
-	public class GetProfileQuery : IRequest<ResponseMethod<UserModel>>
+	public class GetProfileQuery : IRequest<ResponseMethod<AccountModel>>
     {
     }
 
-    public class GetProfileQueryHandler : IRequestHandler<GetProfileQuery, ResponseMethod<UserModel>>
+    public class GetProfileQueryHandler : IRequestHandler<GetProfileQuery, ResponseMethod<AccountModel>>
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IMapper _mapper;
@@ -27,10 +26,10 @@ namespace ClassroomManagerAPI.Application.Queries
             _mapper = mapper;
             _authContext = authContext;
         }
-        public async Task<ResponseMethod<UserModel>> Handle(GetProfileQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<AccountModel>> Handle(GetProfileQuery request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            ResponseMethod<UserModel> result = new ResponseMethod<UserModel>();
+            ResponseMethod<AccountModel> result = new ResponseMethod<AccountModel>();
             var id = _authContext.GetCurrentId();
             if( id == null)
             {
@@ -47,8 +46,8 @@ namespace ClassroomManagerAPI.Application.Queries
                 result.StatusCode = (int)HttpStatusCode.NotFound;
                 return result;
             }
-
-            result.Data = _mapper.Map<UserModel>(user);
+            
+            result.Data = _mapper.Map<AccountModel>(user);
             result.StatusCode = (int)HttpStatusCode.OK;
             return result;
         }

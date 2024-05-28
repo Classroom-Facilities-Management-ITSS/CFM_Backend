@@ -1,15 +1,13 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Models.Classroom;
-using ClassroomManagerAPI.Models.Facility;
-using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Classroom
 {
-	public class AddClassroomCommand : AddClassroomModel, IRequest<ResponseMethod<ClassroomModel>>
+    public class AddClassroomCommand : AddClassroomModel, IRequest<ResponseMethod<ClassroomModel>>
 	{
 	}
 

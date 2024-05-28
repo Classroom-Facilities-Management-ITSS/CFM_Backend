@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ClassroomManagerAPI.Common;
+﻿using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;

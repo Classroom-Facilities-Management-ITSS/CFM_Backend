@@ -2,14 +2,13 @@
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Classroom;
-using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Classroom
 {
-	public class UpdateClassroomCommand : UpdateClassroomModel, IRequest<ResponseMethod<string>>
+    public class UpdateClassroomCommand : UpdateClassroomModel, IRequest<ResponseMethod<string>>
 	{
 	}
 

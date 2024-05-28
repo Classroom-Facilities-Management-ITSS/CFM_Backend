@@ -31,17 +31,6 @@ namespace ClassroomManagerAPI.Controllers
 			return result.GetResult();
 
 		}
-		
-		[HttpPost("sign_up")]
-		[ProducesResponseType(typeof(ResponseMethod<RegisterModel>), (int)HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> AuthRegister([FromBody] AuthRegisterCommand command)
-		{
-			var result = await _mediator.Send(command).ConfigureAwait(false);
-
-			return result.GetResult();
-		}
-
 
 		[HttpGet("active")]
 		[ProducesResponseType(typeof(ResponseMethod<RegisterModel>), (int)HttpStatusCode.OK)]

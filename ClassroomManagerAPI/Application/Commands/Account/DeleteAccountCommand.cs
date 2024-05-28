@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Enums;
-using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Account
 {
-	public class DeleteAccountCommand : IRequest<ResponseMethod<string>>
+    public class DeleteAccountCommand : IRequest<ResponseMethod<string>>
 	{
 		public Guid Id { get; set; }
 	}

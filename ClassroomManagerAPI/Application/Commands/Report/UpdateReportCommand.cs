@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
-using ClassroomManagerAPI.Application.Commands.Facility;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Enums;
-using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Models.Report;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -11,7 +8,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Report
 {
-	public class UpdateReportCommand : UpdateReportModel, IRequest<ResponseMethod<string>>
+    public class UpdateReportCommand : UpdateReportModel, IRequest<ResponseMethod<string>>
 	{
 	}
 

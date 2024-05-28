@@ -1,6 +1,8 @@
-﻿using ClassroomManagerAPI.Application.Queries;
+﻿using ClassroomManagerAPI.Application.Commands;
+using ClassroomManagerAPI.Application.Queries;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Models.Account;
 using ClassroomManagerAPI.Models.User;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +23,7 @@ namespace ClassroomManagerAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ResponseMethod<UserModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> getMyProfile()
         {
@@ -30,6 +32,23 @@ namespace ClassroomManagerAPI.Controllers
                 var result = await _mediator.Send(new GetProfileQuery { }).ConfigureAwait(false);
                 return result.GetResult();
             }catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+
+        [HttpPut]
+        [ProducesResponseType(typeof(ResponseMethod<IEnumerable<AccountModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> UpdateInfor([FromBody] UpdateProfileCommand command)
+        {
+            try
+            {
+                var result = await _mediator.Send(command).ConfigureAwait(false);
+                return result.GetResult();
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 throw;

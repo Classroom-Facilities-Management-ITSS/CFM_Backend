@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ClassroomManagerAPI.Entities
+﻿namespace ClassroomManagerAPI.Entities
 {
     public class Report : BaseEntity
     {

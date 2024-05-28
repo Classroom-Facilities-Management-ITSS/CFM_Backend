@@ -96,26 +96,6 @@ namespace ClassroomManagerAPI.Controllers
 			}
 		}
 
-		// Update an account
-		[HttpPut("{id}")]
-		[ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAccountCommand command)
-		{
-			try
-			{
-				command.Id = id;
-				// Map Dto to domain models
-				var result = await _mediator.Send(command).ConfigureAwait(false);
-				return result.GetResult();
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, ex.Message);
-				throw;
-			}
-		}
-
 		// Remove an account
 		[HttpDelete("{id}")]
 		[ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]

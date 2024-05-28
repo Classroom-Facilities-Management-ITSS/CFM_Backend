@@ -3,7 +3,6 @@ using ClassroomManagerAPI.Application.Queries.Classroom;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Models.Classroom;
-using ClassroomManagerAPI.Models.Facility;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -45,7 +44,7 @@ namespace ClassroomManagerAPI.Controllers
 		}
 
 		// Get by number
-		[HttpGet("{classrooomNumber}")]
+		[HttpGet("search")]
 		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetByNumber(string classroomNumber)

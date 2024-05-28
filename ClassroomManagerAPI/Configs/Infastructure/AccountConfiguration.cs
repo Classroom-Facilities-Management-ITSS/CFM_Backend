@@ -15,6 +15,11 @@ namespace ClassroomManagerAPI.Configs.Infastructure
 			builder.Property(e => e.Role)
 				.HasMaxLength(100)
 				.HasConversion(v => v.ToString(), v => v.EnumParse<RoleEnum>());
-		}
+
+            builder.HasOne(x => x.UserInfo)
+                    .WithOne(x => x.Account)
+                    .HasForeignKey<UserInfo>(x => x.AccountId)
+                    .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

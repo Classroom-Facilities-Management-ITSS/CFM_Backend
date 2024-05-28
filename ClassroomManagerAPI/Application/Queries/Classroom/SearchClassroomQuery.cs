@@ -3,15 +3,13 @@ using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Classroom;
-using ClassroomManagerAPI.Models.Facility;
-using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Classroom
 {
-	public class SearchClassroomQuery : FilterModel, IRequest<ResponseMethod<ClassroomModel>>
+    public class SearchClassroomQuery : FilterModel, IRequest<ResponseMethod<ClassroomModel>>
 	{
 		public string ClassNumber { get; set; }
 	}

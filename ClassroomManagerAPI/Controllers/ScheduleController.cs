@@ -1,19 +1,15 @@
-﻿using ClassroomManagerAPI.Application.Commands.Facility;
-using ClassroomManagerAPI.Application.Commands.Schedule;
-using ClassroomManagerAPI.Application.Queries.Facility;
+﻿using ClassroomManagerAPI.Application.Commands.Schedule;
 using ClassroomManagerAPI.Application.Queries.Schedule;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Models.Schedule;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace ClassroomManagerAPI.Controllers
 {
-	[ApiVersion(Settings.APIVersion)]
+    [ApiVersion(Settings.APIVersion)]
 	[Route(Settings.APIDefaultRoute + "/schedule")]
 	[ApiController]
 	public class ScheduleController : ControllerBase
@@ -61,11 +57,28 @@ namespace ClassroomManagerAPI.Controllers
 				throw;
 			}
 		}
+
 		// Search
+		[HttpGet("search")]
+        [ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> GetBySearch(Guid id)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetScheduleByIdQuery { Id = id }).ConfigureAwait(false);
+                return result.GetResult();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
 
 
-		// Create 
-		[HttpPost]
+        // Create 
+        [HttpPost]
 		[ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Create([FromBody] AddScheduleCommand command)

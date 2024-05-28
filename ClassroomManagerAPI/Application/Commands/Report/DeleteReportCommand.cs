@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using ClassroomManagerAPI.Application.Commands.Facility;
-using ClassroomManagerAPI.Common;
+﻿using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -8,7 +6,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Report
 {
-	public class DeleteReportCommand : IRequest<ResponseMethod<string>>
+    public class DeleteReportCommand : IRequest<ResponseMethod<string>>
 	{
 		public Guid Id { get; set; }
 	}
