@@ -28,7 +28,6 @@ namespace ClassroomManagerAPI.Repositories
 					.Skip(skip).Take((int)limit)
 					.ToListAsync()
 					.ConfigureAwait(false);
-				// the line below is not the correct code, need to rewrite
 				return classrooms.SelectMany(c => c.Reports).ToList();
 			} 
 			catch (Exception ex)

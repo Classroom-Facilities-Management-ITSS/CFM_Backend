@@ -1,17 +1,19 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
+using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Classroom;
+using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Classroom
 {
-    public class SearchClassroomQuery : FilterModel, IRequest<ResponseMethod<ClassroomModel>>
+    public class SearchClassroomQuery : SearchClassroomModel, IRequest<ResponseMethod<ClassroomModel>>
 	{
-		public string ClassNumber { get; set; }
+
 	}
 
 	public class GetByClassroomNumberQueryHandler : IRequestHandler<SearchClassroomQuery, ResponseMethod<ClassroomModel>>
@@ -28,15 +30,34 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<ClassroomModel> result = new ResponseMethod<ClassroomModel>();
-			var classroom = await _classroomRepository.GetByAddressAsync(request.ClassNumber, request.page, request.limit);
-			if (classroom == null)
+			var classroom = _classroomRepository.Queryable().AsQueryable();
+			if (request.ClassroomAddress != null)
 			{
-				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
-				result.StatusCode = (int)HttpStatusCode.NotFound;
-				return result;
+				classroom = classroom.Where(x => !x.IsDeleted && x.Address.ToLower().Trim().Contains(request.ClassroomAddress.ToLower().Trim()));
 			}
+			if (request.LastUsed != null)
+			{
+				classroom = classroom.Where(x => !x.IsDeleted && x.LastUsed > request.LastUsed);
+			}
+			if (request.FacilityAmount != null)
+			{
+				classroom = classroom.Where(x => !x.IsDeleted && x.FacilityAmount > request.FacilityAmount);
+			}
+			if (request.Note != null)
+			{
+				classroom = classroom.Where(x => !x.IsDeleted && x.Note.ToLower().Trim().Contains(request.Note.ToLower().Trim()));
+			}
+			if (request.Status != null)
+			{
+				classroom = classroom.Where(x => !x.IsDeleted && x.Status == request.Status);
+			}
+
+			var classroomResult = _classroomRepository.GetPaginationEntity(classroom, request.page, request.limit);
+
 			result.Data = _mapper.Map<ClassroomModel>(classroom);
 			result.StatusCode = (int)HttpStatusCode.OK;
+			result.AddPagination(_classroomRepository.PaginationEntity(classroom, request.page, request.limit));
+			result.AddFilter(request);
 			return result;
 		}
 	}

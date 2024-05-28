@@ -1,17 +1,19 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
+using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Facility
 {
-    public class SearchFacilityQuery : FilterModel ,IRequest<ResponseMethod<IEnumerable<FacilityModel>>>
+    public class SearchFacilityQuery : SearchFacilityModel ,IRequest<ResponseMethod<IEnumerable<FacilityModel>>>
     {
-        public string Name { get; set; }
-    }
+
+	}
 
     public class SearchNameQueryHandler : IRequestHandler<SearchFacilityQuery, ResponseMethod<IEnumerable<FacilityModel>>>
     {
@@ -27,9 +29,27 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
         {
             ArgumentNullException.ThrowIfNull(request);
             ResponseMethod<IEnumerable<FacilityModel>> result = new ResponseMethod<IEnumerable<FacilityModel>>();
-            var facility = await _facilityRepository.GetByNameAsync(request.Name, request.page, request.limit).ConfigureAwait(false);
+            var facility = _facilityRepository.Queryable().Include(x => x.Classroom).AsQueryable();
 
-            result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facility);
+            if (request.Name != null)
+            {
+                facility = facility.Where(x => !x.IsDeleted && x.Name.ToLower().Trim().Contains(request.Name.ToLower().Trim()));
+            }
+			if (request.Count != null)
+			{
+				facility = facility.Where(x => !x.IsDeleted && x.Count > 0);
+			}
+			if (request.Version != null)
+			{
+				facility = facility.Where(x => !x.IsDeleted && x.Version.ToLower().Trim().Contains(request.Version.ToLower().Trim()));
+			}
+            if (request.ClassroomAddress != null)
+            {
+                facility = facility.Where(x => !x.IsDeleted && x.Classroom.Address.ToLower().Trim().Contains(request.ClassroomAddress.ToLower().Trim()));
+            }
+            var facilityResult = _facilityRepository.GetPaginationEntity(facility, request.page, request.limit);
+
+			result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facility);
             result.StatusCode = (int)HttpStatusCode.OK;
             result.AddPagination(await _facilityRepository.Pagination(request.page, request.limit).ConfigureAwait(false));
             result.AddFilter(new FilterModel { page = request.page , limit = request.limit });
