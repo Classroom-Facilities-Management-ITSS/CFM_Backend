@@ -39,7 +39,7 @@ namespace ClassroomManagerAPI.Application.Queries.Schedule
 			}
 			if (request.FullName != null)
 			{
-				schedule = schedule.Where(x => !x.IsDeleted && x.Account.UserInfo.FullName.ToLower().Trim().Contains(request.UserName.ToLower().Trim()));
+				schedule = schedule.Where(x => !x.IsDeleted && x.Account.UserInfo.FullName.ToLower().Trim().Contains(request.FullName.ToLower().Trim()));
 			}
 			if(request.Date != null)
 			{

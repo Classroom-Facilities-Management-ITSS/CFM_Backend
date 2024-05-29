@@ -47,11 +47,11 @@ namespace ClassroomManagerAPI.Controllers
 		[HttpGet("search")]
 		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
-		public async Task<IActionResult> GetByNumber(string classroomNumber)
+		public async Task<IActionResult> GetByNumber([FromQuery] SearchClassroomQuery query)
 		{
 			try
 			{
-				var result = await _mediator.Send(new SearchClassroomQuery { ClassNumber = classroomNumber }).ConfigureAwait(false);
+				var result = await _mediator.Send(query).ConfigureAwait(false);
 				return result?.GetResult();
 			}
 			catch (Exception ex)
