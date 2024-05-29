@@ -11,5 +11,13 @@
         public const string ResourecesChangePassword = "Resources/change_password.html";
         public const string ResourecesChangeClass = "Resources/change_class.html";
         public const string ImageFile = "image/jpeg";
+        public static class Excels
+        {
+            public const string ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            public const string SheetName = "Sheet1";
+
+            public const string TableName = "Table1";
+        }
     }
 }

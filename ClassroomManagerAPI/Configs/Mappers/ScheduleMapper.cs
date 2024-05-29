@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ClassroomManagerAPI.Application.Commands.Schedule;
 using ClassroomManagerAPI.Entities;
 using ClassroomManagerAPI.Models.Schedule;
 
