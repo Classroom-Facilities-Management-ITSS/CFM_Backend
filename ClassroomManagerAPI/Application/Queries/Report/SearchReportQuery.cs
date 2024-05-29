@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Entities;
-using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Report;
-using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,13 +17,11 @@ namespace ClassroomManagerAPI.Application.Queries.Report
 	{
 		private readonly IMapper _mapper;
 		private readonly IReportRepository _reportRepository;
-		private readonly IClassroomRepository _classroomRepository;
 
-		public SearchReportQueryHandler(IMapper mapper, IReportRepository reportRepository, IClassroomRepository classroomRepository)
+		public SearchReportQueryHandler(IMapper mapper, IReportRepository reportRepository)
         {
 			_mapper = mapper;
 			_reportRepository = reportRepository;
-			_classroomRepository = classroomRepository;
 		}
         public async Task<ResponseMethod<IEnumerable<ReportModel>>> Handle(SearchReportQuery request, CancellationToken cancellationToken)
 		{
@@ -37,13 +32,13 @@ namespace ClassroomManagerAPI.Application.Queries.Report
 			{
 				reports = reports.Where(x => !x.IsDeleted && x.Classroom.Address.ToLower().Trim().Contains(request.ClassroomAddress.ToLower().Trim()));
 			}
-			if (request.AccountEmail != null)
+			if (request.Email != null)
 			{
-				reports = reports.Where(x => !x.IsDeleted && x.Account.Email.ToLower().Trim().Contains(request.AccountEmail.ToLower().Trim()));
+				reports = reports.Where(x => !x.IsDeleted && x.Account.Email.ToLower().Trim().Contains(request.Email.ToLower().Trim()));
 			}
-			if (request.UserName != null)
+			if (request.FullName != null)
 			{
-				reports = reports.Where(x => !x.IsDeleted && x.Account.UserInfo.FullName.ToLower().Trim().Contains(request.UserName.ToLower().Trim()));	
+				reports = reports.Where(x => !x.IsDeleted && x.Account.UserInfo.FullName.ToLower().Trim().Contains(request.FullName.ToLower().Trim()));	
 			}
 			if (request.Note != null)
 			{
@@ -51,10 +46,10 @@ namespace ClassroomManagerAPI.Application.Queries.Report
 			}
 			var reportsResult = _reportRepository.GetPaginationEntity(reports, request.page, request.limit);
 
-			result.Data = _mapper.Map<IEnumerable<ReportModel>>(reports);
+			result.Data = _mapper.Map<IEnumerable<ReportModel>>(reportsResult);
 			result.StatusCode = (int)HttpStatusCode.OK;
-			result.AddPagination(await _reportRepository.Pagination(request.page, request.limit).ConfigureAwait(false));
-			result.AddFilter(new FilterModel { page = request.page, limit = request.limit });
+			result.AddPagination(_reportRepository.PaginationEntity(reports, request.page, request.limit));
+			result.AddFilter(request);
 			return result;
 		}
 	}

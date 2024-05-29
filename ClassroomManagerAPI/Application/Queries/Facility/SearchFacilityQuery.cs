@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Entities;
-using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -37,7 +35,7 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
             }
 			if (request.Count != null)
 			{
-				facility = facility.Where(x => !x.IsDeleted && x.Count > 0);
+				facility = facility.Where(x => !x.IsDeleted && x.Count >= request.Count);
 			}
 			if (request.Version != null)
 			{
@@ -49,10 +47,10 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
             }
             var facilityResult = _facilityRepository.GetPaginationEntity(facility, request.page, request.limit);
 
-			result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facility);
+			result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facilityResult);
             result.StatusCode = (int)HttpStatusCode.OK;
-            result.AddPagination(await _facilityRepository.Pagination(request.page, request.limit).ConfigureAwait(false));
-            result.AddFilter(new FilterModel { page = request.page , limit = request.limit });
+            result.AddPagination(_facilityRepository.PaginationEntity(facility,request.page, request.limit));
+            result.AddFilter(request);
             return result;
         }
     }

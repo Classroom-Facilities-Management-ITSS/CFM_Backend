@@ -1,22 +1,18 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Entities;
-using ClassroomManagerAPI.Enums;
-using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Classroom;
-using ClassroomManagerAPI.Repositories;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Classroom
 {
-    public class SearchClassroomQuery : SearchClassroomModel, IRequest<ResponseMethod<ClassroomModel>>
+    public class SearchClassroomQuery : SearchClassroomModel, IRequest<ResponseMethod<IEnumerable<ClassroomModel>>>
 	{
 
 	}
 
-	public class GetByClassroomNumberQueryHandler : IRequestHandler<SearchClassroomQuery, ResponseMethod<ClassroomModel>>
+	public class GetByClassroomNumberQueryHandler : IRequestHandler<SearchClassroomQuery, ResponseMethod<IEnumerable<ClassroomModel>>>
 	{
 		private readonly IMapper _mapper;
 		private readonly IClassroomRepository _classroomRepository;
@@ -26,10 +22,10 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 			_mapper = mapper;
 			_classroomRepository = classroomRepository;
 		}
-        public async Task<ResponseMethod<ClassroomModel>> Handle(SearchClassroomQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<IEnumerable<ClassroomModel>>> Handle(SearchClassroomQuery request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			ResponseMethod<ClassroomModel> result = new ResponseMethod<ClassroomModel>();
+			var result = new ResponseMethod<IEnumerable<ClassroomModel>>();
 			var classroom = _classroomRepository.Queryable().AsQueryable();
 			if (request.ClassroomAddress != null)
 			{
@@ -37,11 +33,11 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 			}
 			if (request.LastUsed != null)
 			{
-				classroom = classroom.Where(x => !x.IsDeleted && x.LastUsed > request.LastUsed);
+				classroom = classroom.Where(x => !x.IsDeleted && x.LastUsed >= request.LastUsed);
 			}
 			if (request.FacilityAmount != null)
 			{
-				classroom = classroom.Where(x => !x.IsDeleted && x.FacilityAmount > request.FacilityAmount);
+				classroom = classroom.Where(x => !x.IsDeleted && x.FacilityAmount >= request.FacilityAmount);
 			}
 			if (request.Note != null)
 			{
@@ -54,7 +50,7 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 
 			var classroomResult = _classroomRepository.GetPaginationEntity(classroom, request.page, request.limit);
 
-			result.Data = _mapper.Map<ClassroomModel>(classroom);
+			result.Data = _mapper.Map<IEnumerable<ClassroomModel>>(classroomResult);
 			result.StatusCode = (int)HttpStatusCode.OK;
 			result.AddPagination(_classroomRepository.PaginationEntity(classroom, request.page, request.limit));
 			result.AddFilter(request);

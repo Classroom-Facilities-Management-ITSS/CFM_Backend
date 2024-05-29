@@ -10,16 +10,14 @@ namespace ClassroomManagerAPI.Services
     public class JobService : IJobService
     {
         private readonly IMailService _mailService;
-        private readonly IBackgroundJobClient _jobClient;
         private readonly IRecurringJobManager _recurringJob;
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IClassroomRepository _classroomRepostitory;
 
-        public JobService(IMailService mailService, IBackgroundJobClient jobClient, 
+        public JobService(IMailService mailService, 
             IRecurringJobManager recurringJob, IScheduleRepository scheduleRepository, IClassroomRepository classroomRepository)
         {
             _mailService = mailService;
-            _jobClient = jobClient;
             _recurringJob = recurringJob;
             _scheduleRepository = scheduleRepository;
             _classroomRepostitory = classroomRepository;
