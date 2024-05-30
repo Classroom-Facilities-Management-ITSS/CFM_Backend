@@ -2,7 +2,7 @@
 {
     public class FilterModel
     {
-        public int page { get; set; }
-        public int limit { get; set; }
+        public int? page { get; set; }
+        public int? limit { get; set; }
     }
 }

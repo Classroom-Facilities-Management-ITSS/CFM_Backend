@@ -9,5 +9,6 @@ namespace ClassroomManagerAPI.Models.Facility
         public FacilityStatusEnum? Status { get; set; }
         public string? Version { get; set; }
         public string? Note { get; set; }
+        public Guid? ClassroomId { get; set; }
     }
 }

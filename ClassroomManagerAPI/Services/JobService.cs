@@ -1,9 +1,12 @@
-﻿using ClassroomManagerAPI.Enums;
+﻿using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Helpers;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using ClassroomManagerAPI.Services.IServices;
 using Hangfire;
 using Hangfire.Storage;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace ClassroomManagerAPI.Services
 {
@@ -22,6 +25,28 @@ namespace ClassroomManagerAPI.Services
             _scheduleRepository = scheduleRepository;
             _classroomRepostitory = classroomRepository;
         }
+        public async Task NotifiSchedule()
+        {
+            var now = DateTime.Now;
+            var schedules = _scheduleRepository.Queryable().Include(x => x.Account).Include(x => x.Classroom).Where(x => !x.IsDeleted && x.StartTime.Date == now.Date).GroupBy(x => x.Account.Email).ToList();
+            foreach(var schedule in schedules)
+            {
+                var pathHtml = Path.Combine(Directory.GetCurrentDirectory(), Settings.ResourecesNotification);
+                string htmlContent = File.ReadAllText(pathHtml);
+                var body = string.Empty;
+                foreach(var item in schedule)
+                {
+                    body += string.Format(CultureInfo.InvariantCulture, Settings.NotificationBody, item?.Subject, item?.Classroom?.Address ,item?.StartTime.GetTime(), item?.EndTime.GetTime());
+                }
+                string replacedHtmlContent = htmlContent.Replace("{{body}}", body);
+                await _mailService.SendMail(new Common.MailRequest
+                {
+                    body = replacedHtmlContent,
+                    subject = "Class Notification",
+                    toEmail = schedule.Key
+                });
+            }
+        }
         public async Task CheckUpdateStatusClass()
         {
             var classroom = _classroomRepostitory.Queryable().Where(x => !x.IsDeleted && x.Status != ClassroomStatusEnum.FIXING);
@@ -29,6 +54,11 @@ namespace ClassroomManagerAPI.Services
             foreach (var item in classroom) { 
                 if(now >= 19 || now <= 6)
                 {
+                    var lastUsed = _scheduleRepository.Queryable().FirstOrDefault(x => !x.IsDeleted && x.ClassroomId == item.Id && x.EndTime.Date == DateTime.Now && x.EndTime.Hour <= now);
+                    if(lastUsed != null)
+                    {
+                        item.LastUsed = lastUsed.EndTime;
+                    }
                     item.Status = ClassroomStatusEnum.CLOSED;
                 }else
                 {
@@ -50,7 +80,7 @@ namespace ClassroomManagerAPI.Services
 
         public void RecurringJobDaily()
         {
-            _recurringJob.AddOrUpdate(Guid.NewGuid().ToString(), () => Console.WriteLine("Hello"), Cron.Minutely);
+            _recurringJob.AddOrUpdate("NotificationClass", () => NotifiSchedule(), Cron.Daily(6));
         }
         public void RemoveRecurringAllJob()
         {

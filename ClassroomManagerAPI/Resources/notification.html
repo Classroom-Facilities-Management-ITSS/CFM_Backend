@@ -180,9 +180,7 @@
                 "
               >
                 <p style="margin: 20">Hôm nay bạn có các tiết dạy:</p>
-                <p style="margin: 20">
-                  {subject_name} tại phòng {class_name} vào lúc {time}.
-                </p>
+                {{body}}
                 <p style="margin: 20">
                   Vui lòng chú ý lịch để thực hiện việc giảng dạy đúng thời gian
                   và địa điểm.
@@ -203,7 +201,6 @@
                           >
                             <a
                               id="activeAccount"
-                              href="http://localhost:4200/active?token={{token}}"
                               target="_blank"
                               style="
                                 display: inline-block;

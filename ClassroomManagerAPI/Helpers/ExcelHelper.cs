@@ -22,66 +22,86 @@ namespace ClassroomManagerAPI.Helpers
         }
         public static ImportAndValidateModel<T> ImportAndValidateExcel<T>(this IFormFile file, Func<T, IList<T>, int, IList<ValidateExcelModel>, Task<bool>>? validateDataFunc)
         {
-            Func<T, IList<T>, int, IList<ValidateExcelModel>, Task<bool>> validateDataFunc2 = validateDataFunc;
-            ArgumentNullException.ThrowIfNull(file, "file");
+            ArgumentNullException.ThrowIfNull(file, nameof(file));
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            ImportAndValidateModel<T> model = new ImportAndValidateModel<T>();
-            using (ExcelPackage excelPackage = new ExcelPackage(file.OpenReadStream()))
+            var model = new ImportAndValidateModel<T>();
+            using (var memoryStream = new MemoryStream())
             {
-                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
-                int rows = worksheet.Dimension.Rows;
-                bool flag = false;
-                List<PropertyInfo> list = (from x in typeof(T).GetProperties()
-                                           where x.GetCustomAttribute<EpplusTableColumnAttribute>() != null
-                                           select x).ToList();
-                Dictionary<string, int?> dictionary = list.ToDictionary((PropertyInfo x) => x.Name, (PropertyInfo x) => GetColumnIndexFromAttribute(x, worksheet));
-                for (int row = 2; row <= rows; row++)
+                file.CopyTo(memoryStream);
+                memoryStream.Position = 0;
+
+                using (var excelPackage = new ExcelPackage(memoryStream))
                 {
-                    T data = Activator.CreateInstance<T>();
-                    List<ValidateExcelModel> errors = new List<ValidateExcelModel>();
-                    foreach (PropertyInfo item in list)
+                    var worksheet = excelPackage.Workbook.Worksheets[0];
+                    int rows = worksheet.Dimension.Rows;
+                    bool hasErrors = false;
+                    var properties = typeof(T).GetProperties()
+                                              .Where(p => p.GetCustomAttribute<EpplusTableColumnAttribute>() != null)
+                                              .ToList();
+                    var columnIndices = properties.ToDictionary(p => p.Name, p => GetColumnIndexFromAttribute(p, worksheet));
+
+                    for (int row = 2; row <= rows; row++)
                     {
-                        int? num = dictionary[item.Name];
-                        if (num.HasValue)
+                        var data = Activator.CreateInstance<T>();
+                        var errors = new List<ValidateExcelModel>();
+                        foreach (var property in properties)
                         {
-                            dynamic value = worksheet.Cells[row, num.Value].Value;
-                            dynamic val = Convert.ChangeType(value, item.PropertyType);
-                            item.SetValue(data, val);
+                            int? columnIndex = columnIndices[property.Name];
+                            if (columnIndex.HasValue)
+                            {
+                                var cellValue = worksheet.Cells[row, columnIndex.Value].Value;
+                                object value;
+
+                                if (property.PropertyType == typeof(TimeSpan) && cellValue != null)
+                                {
+                                    if (TimeSpan.TryParse(cellValue.ToString(), out TimeSpan timeValue))
+                                    {
+                                        value = timeValue;
+                                    }
+                                    else
+                                    {
+                                        value = TimeSpan.Zero;
+                                        errors.Add(new ValidateExcelModel { RowIndex = row, ColumnName = property.Name, Message = "Invalid time format" });
+                                    }
+                                }
+                                else
+                                {
+                                    value = Convert.ChangeType(cellValue, property.PropertyType);
+                                }
+
+                                property.SetValue(data, value);
+                            }
+                        }
+
+                        model.Datas.Add(data);
+                        if (validateDataFunc != null && !Task.Run(() => validateDataFunc(data, model.Datas, row, errors)).Result)
+                        {
+                            hasErrors = true;
+                            foreach (var error in errors)
+                            {
+                                if (columnIndices.TryGetValue(error.ColumnName ?? string.Empty, out int? colIdx) && colIdx.HasValue)
+                                {
+                                    worksheet.Cells[error.RowIndex, colIdx.Value].AddComment(error.Message, "Validation");
+                                    worksheet.Cells[error.RowIndex, colIdx.Value].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    worksheet.Cells[error.RowIndex, colIdx.Value].Style.Fill.BackgroundColor.SetColor(Color.Red);
+                                }
+                            }
                         }
                     }
 
-                    model.Datas.Add(data);
-                    if (validateDataFunc2 == null || Task.Run(() => validateDataFunc2(data, model.Datas, row, errors)).Result)
+                    if (hasErrors)
                     {
-                        continue;
-                    }
-
-                    flag = true;
-                    foreach (ValidateExcelModel item2 in errors)
-                    {
-                        string columnName = item2.ColumnName;
-                        int rowIndex = item2.RowIndex;
-                        string message = item2.Message;
-                        int? num2 = dictionary[columnName ?? string.Empty];
-                        if (num2.HasValue)
+                        using (var errorStream = new MemoryStream(excelPackage.GetAsByteArray()))
                         {
-                            worksheet.Cells[rowIndex, num2.Value].AddComment(message);
-                            _ = worksheet.Dimension.Columns;
-                            worksheet.Cells[rowIndex, num2.Value].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            worksheet.Cells[rowIndex, num2.Value].Style.Fill.BackgroundColor.SetColor(Color.Red);
+                            model.Stream = new MemoryStream(errorStream.ToArray());
                         }
                     }
-                }
-
-                if (flag)
-                {
-                    MemoryStream stream = new MemoryStream(excelPackage.GetAsByteArray());
-                    model.Stream = stream;
                 }
             }
 
             return model;
         }
+
 
         private static void GenerateExcelStyle(this ExcelWorksheet workSheet, int columnNumber)
         {

@@ -130,5 +130,26 @@ namespace ClassroomManagerAPI.Controllers
 				throw;
 			}
 		}
-	}
+
+        [HttpPost("import")]
+        [ProducesResponseType(typeof(ResponseMethod<string>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> PostSchedule(UploadScheduleCommand command)
+        {
+			try
+			{
+                ResponseMethod<Stream> commandResult = await _mediator.Send(command).ConfigureAwait(false);
+                if (!commandResult.IsOk)
+                {
+                    return File(commandResult.Data, Settings.Excels.ContentType, "Schedule_import.xlsx");
+                }
+                return commandResult.GetResult();
+            }
+            catch (Exception ex)
+			{
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+    }
 }

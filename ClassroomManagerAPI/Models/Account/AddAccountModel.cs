@@ -1,8 +1,8 @@
-﻿namespace ClassroomManagerAPI.Models.Account
+﻿using ClassroomManagerAPI.Models.Auth;
+
+namespace ClassroomManagerAPI.Models.Account
 {
-	public class AddAccountModel
+    public class AddAccountModel : RegisterModel
 	{
-		public string Email { get; set; }
-		public string Password { get; set; }
 	}
 }

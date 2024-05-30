@@ -5,7 +5,7 @@ namespace ClassroomManagerAPI.Models.Schedule
 {
     public class ImportScheduleModel
     {
-        [EpplusTableColumn(Header = "Môn học")]
+        [EpplusTableColumn(Header = "Môn Học")]
         public string? Subject { get; set; }
         [EpplusTableColumn(Header = "Lớp")]
         public string? Class { get; set; }
@@ -21,6 +21,6 @@ namespace ClassroomManagerAPI.Models.Schedule
         [EpplusTableColumn(Header = "Ngày Bắt Đầu Học")]
         public string? DateStart { get; set; }
         [EpplusTableColumn(Header = "Số Lượng SV")]
-        public int? CountStudent { get; set; }
+        public string? CountStudent { get; set; }
     }
 }

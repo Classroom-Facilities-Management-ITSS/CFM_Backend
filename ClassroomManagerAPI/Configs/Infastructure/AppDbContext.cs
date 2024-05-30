@@ -102,7 +102,7 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                 {
                     Id = Guid.Parse("be72d844-8670-48e6-9d6b-859d407f2a5f"),
                     Address = "D9-401",
-                    LastUsed = null,
+                    LastUsed = DateTime.Now,
                     FacilityAmount = 1,
                     Note = null
                 },
@@ -110,7 +110,7 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                 {
                     Id = Guid.Parse("42d228cd-fa56-49ba-b429-f753e34a01f0"),
                     Address = "D9-402",
-                    LastUsed = null,
+                    LastUsed = DateTime.Now,
                     FacilityAmount = 2,
                     Note = null
                 }

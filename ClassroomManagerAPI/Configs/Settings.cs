@@ -11,6 +11,8 @@
         public const string ResourecesChangePassword = "Resources/change_password.html";
         public const string ResourecesChangeClass = "Resources/change_class.html";
         public const string ImageFile = "image/jpeg";
+        public const string ResourecesNotification = "Resources/notification.html";
+        public const string NotificationBody = "< p style = \"margin: 20\" >{0} tại phòng {1}vào lúc {2} đến {3}</p>";
         public static class Excels
         {
             public const string ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";

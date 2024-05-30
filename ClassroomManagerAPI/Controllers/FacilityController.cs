@@ -133,5 +133,21 @@ namespace ClassroomManagerAPI.Controllers
 				throw;
 			}
 		}
-	}
+
+		[HttpGet("export")]
+        [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> ExportReportFacility([FromQuery] ExportFacilityQuery query)
+		{
+            try
+            {
+                var result = await _mediator.Send(query).ConfigureAwait(false);
+                return result.GetResult();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+    }
 }
