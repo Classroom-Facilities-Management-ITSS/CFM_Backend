@@ -11,7 +11,6 @@ namespace ClassroomManagerAPI.Entities
         public DateTime UpdatedAt { get; set; }
         [DefaultValue(false)]
         public bool IsDeleted { get; set; }
-
         protected BaseEntity() { 
             Id = Guid.Empty;
             CreatedAt = UpdatedAt = DateTime.Now;
