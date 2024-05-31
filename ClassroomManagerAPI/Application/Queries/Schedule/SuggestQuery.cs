@@ -11,12 +11,12 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Schedule
 {
-	public class SuggestQuery : SuggestModel,  IRequest<ResponseMethod<IEnumerable<ScheduleModel>>>
+	public class SuggestQuery : SuggestModel,  IRequest<ResponseMethod<IEnumerable<ClassroomModel>>>
 	{
 
     }
 
-	public class SuggestQueryHandler : IRequestHandler<SuggestQuery, ResponseMethod<IEnumerable<ScheduleModel>>>
+	public class SuggestQueryHandler : IRequestHandler<SuggestQuery, ResponseMethod<IEnumerable<ClassroomModel>>>
 	{
 		private readonly IMapper _mapper;
 		private readonly IScheduleRepository _scheduleRepository;
@@ -30,23 +30,32 @@ namespace ClassroomManagerAPI.Application.Queries.Schedule
 			_classroomRepository = classroomRepository;
 			_facilityRepository = facilityRepository;
 		}
-        public async Task<ResponseMethod<IEnumerable<ScheduleModel>>> Handle(SuggestQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<IEnumerable<ClassroomModel>>> Handle(SuggestQuery request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			ResponseMethod<IEnumerable<ScheduleModel>> result = new ResponseMethod<IEnumerable<ScheduleModel>>();
-			var scheduleByID = await _scheduleRepository.GetByIDAsync(request.ScheduleId); 
-			var schedules = _scheduleRepository.Queryable().AsQueryable();
-			var classrooms = await _classroomRepository.Queryable().Include(c => c.Facilities).AsQueryable().FirstOrDefaultAsync(c => c.Id == scheduleByID.ClassroomId);
-			var facilities = classrooms.Facilities;
+			ResponseMethod<IEnumerable<ClassroomModel>> result = new ResponseMethod<IEnumerable<ClassroomModel>>();
+			var scheduleByID = await _scheduleRepository.GetByIDAsync(request.ScheduleId);
+			if (scheduleByID == null)
+			{
+				result.StatusCode = (int)HttpStatusCode.NotFound;
+				result.Message = "Schedule not found";
+				return result;
+			}
+			var targetClassrooms = await _classroomRepository.Queryable().Include(c => c.Facilities).FirstOrDefaultAsync(c => c.Id == scheduleByID.ClassroomId);
+			var targetFacilities = targetClassrooms.Facilities;
+			var classrooms = _classroomRepository.Queryable().Include(c => c.Facilities).Where(x => !x.IsDeleted && 
+																								x.MaxSize * 1.2 >= targetClassrooms.MaxSize && 
+																								x.FacilityAmount <= targetClassrooms.FacilityAmount && 
+																								x.Facilities.Any(f => targetFacilities.
+																									Any(tf => tf.Name == f.Name && tf.Count >= f.Count))).AsQueryable();
+
 			// if the schedule.studentcount of any schedule is >= the schedule.studentcount of the schedule with the input id, return it
 			// if the schedule.facilityamount of any schedule is >= the schedule.facilityamount of the schedule with the input id, return it
-			schedules = schedules.Where(x => !x.IsDeleted && x.CountStudent <= scheduleByID.CountStudent && x.Classroom.MaxSize * 1.2 >= scheduleByID.Classroom.MaxSize && x.Classroom.FacilityAmount <= scheduleByID.Classroom.FacilityAmount && x.Classroom.Facilities.Any(f => facilities.Any(tf => tf.Name == f.Name && tf.Count >= f.Count))).AsQueryable();
-			var schedulesList = await schedules.ToListAsync();
-			var scheduleModels = _mapper.Map<IEnumerable<ScheduleModel>>(schedulesList);
+			var classroomResult = _classroomRepository.GetPaginationEntity(classrooms, request.page, request.limit);
 
-			result.Data = scheduleModels;
+			result.Data = _mapper.Map<IEnumerable<ClassroomModel>>(classroomResult);
 			result.StatusCode = (int)HttpStatusCode.OK;
-			result.AddPagination(_scheduleRepository.PaginationEntity(schedulesList, request.page, request.limit));
+			result.AddPagination(_classroomRepository.PaginationEntity(classrooms, request.page, request.limit));
 			result.AddFilter(request);
 			return result;
 		}
