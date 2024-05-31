@@ -48,6 +48,11 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 				classroom = classroom.Where(x => !x.IsDeleted && x.Status == request.Status);
 			}
 
+			if(request.MaxSize != null)
+			{
+				classroom = classroom.Where(x => !x.IsDeleted && x.MaxSize >= request.MaxSize);
+			}
+
 			var classroomResult = _classroomRepository.GetPaginationEntity(classroom, request.page, request.limit);
 
 			result.Data = _mapper.Map<IEnumerable<ClassroomModel>>(classroomResult);
