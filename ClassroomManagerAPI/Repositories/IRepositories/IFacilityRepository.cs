@@ -7,6 +7,5 @@ namespace ClassroomManagerAPI.Repositories.IRepositories
     {
         public Task<IEnumerable<Facility>> GetByNameAsync(string name, int? page, int? limit);
         public Task<int> CountFacilitiesByStatusAsync(Guid classroomId, FacilityStatusEnum status);
-		public Task<int> CountFacilitiesByStatusAsync(string ClassroomAddress, FacilityStatusEnum status);
 	}
 }

@@ -6,16 +6,17 @@ using ClassroomManagerAPI.Models.Classroom;
 using ClassroomManagerAPI.Models.Schedule;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Schedule
 {
-	public class SuggestQuery : SuggestModel,  IRequest<ResponseMethod<IEnumerable<ClassroomModel>>>
+	public class SuggestQuery : SuggestModel,  IRequest<ResponseMethod<IEnumerable<ScheduleModel>>>
 	{
 
     }
 
-	public class SuggestQueryHandler : IRequestHandler<SuggestQuery, ResponseMethod<IEnumerable<ClassroomModel>>>
+	public class SuggestQueryHandler : IRequestHandler<SuggestQuery, ResponseMethod<IEnumerable<ScheduleModel>>>
 	{
 		private readonly IMapper _mapper;
 		private readonly IScheduleRepository _scheduleRepository;
@@ -29,30 +30,23 @@ namespace ClassroomManagerAPI.Application.Queries.Schedule
 			_classroomRepository = classroomRepository;
 			_facilityRepository = facilityRepository;
 		}
-        public async Task<ResponseMethod<IEnumerable<ClassroomModel>>> Handle(SuggestQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<IEnumerable<ScheduleModel>>> Handle(SuggestQuery request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			ResponseMethod<IEnumerable<ClassroomModel>> result = new ResponseMethod<IEnumerable<ClassroomModel>>();
-			
-			var classroomList = _classroomRepository.Queryable().AsQueryable();
-			// if the number of facilities that are usable of any classroom is equal or higher than the number of facilities this current room has that are usable, return it
-			// if the maxstudent any classroom has is equal or higher than the maxstudent of the current room, return it
-			if (request.ClassroomId != null)
-			{
-				var usableFacilities = await _facilityRepository.CountFacilitiesByStatusAsync(request.ClassroomId, FacilityStatusEnum.NEW).ConfigureAwait(false);
-				classroomList = classroomList.Where(x => !x.IsDeleted && x.Facilities.Where(f => f.Status == FacilityStatusEnum.NEW).Count() <= usableFacilities);
-			}
-			if (request.ClassroomAddress != null)
-			{
-				var usableFacilities = await _facilityRepository.CountFacilitiesByStatusAsync(request.ClassroomAddress, FacilityStatusEnum.NEW).ConfigureAwait(false);
-				classroomList = classroomList.Where(x => !x.IsDeleted && x.Facilities.Where(f => f.Status == FacilityStatusEnum.NEW).Count() <= usableFacilities);
-			}
+			ResponseMethod<IEnumerable<ScheduleModel>> result = new ResponseMethod<IEnumerable<ScheduleModel>>();
+			var scheduleByID = await _scheduleRepository.GetByIDAsync(request.ScheduleId); 
+			var schedules = _scheduleRepository.Queryable().AsQueryable();
+			var classrooms = await _classroomRepository.Queryable().Include(c => c.Facilities).AsQueryable().FirstOrDefaultAsync(c => c.Id == scheduleByID.ClassroomId);
+			var facilities = classrooms.Facilities;
+			// if the schedule.studentcount of any schedule is >= the schedule.studentcount of the schedule with the input id, return it
+			// if the schedule.facilityamount of any schedule is >= the schedule.facilityamount of the schedule with the input id, return it
+			schedules = schedules.Where(x => !x.IsDeleted && x.CountStudent <= scheduleByID.CountStudent && x.Classroom.MaxSize * 1.2 >= scheduleByID.Classroom.MaxSize && x.Classroom.FacilityAmount <= scheduleByID.Classroom.FacilityAmount && x.Classroom.Facilities.Any(f => facilities.Any(tf => tf.Name == f.Name && tf.Count >= f.Count))).AsQueryable();
+			var schedulesList = await schedules.ToListAsync();
+			var scheduleModels = _mapper.Map<IEnumerable<ScheduleModel>>(schedulesList);
 
-			var classroomResult = _classroomRepository.GetPaginationEntity(classroomList, request.page, request.limit);
-
-			result.Data = _mapper.Map<IEnumerable<ClassroomModel>>(classroomResult);
+			result.Data = scheduleModels;
 			result.StatusCode = (int)HttpStatusCode.OK;
-			result.AddPagination(_classroomRepository.PaginationEntity(classroomList, request.page, request.limit));
+			result.AddPagination(_scheduleRepository.PaginationEntity(schedulesList, request.page, request.limit));
 			result.AddFilter(request);
 			return result;
 		}

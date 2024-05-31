@@ -23,15 +23,6 @@ namespace ClassroomManagerAPI.Repositories
 			catch (Exception ex) { throw; }
 		}
 
-		public async Task<int> CountFacilitiesByStatusAsync(string ClassroomAddress, FacilityStatusEnum status)
-		{
-			try
-			{
-				return await _dbContext.Facilities.Where(c => c.Classroom.Address == ClassroomAddress && c.Status == status).CountAsync();
-			}
-			catch (Exception ex) { throw; }
-		}
-
 		public async Task<IEnumerable<Facility>> GetByNameAsync(string name, int? page, int? limit)
         {
             page = page <= 0 ? 1 : page ?? 1;
