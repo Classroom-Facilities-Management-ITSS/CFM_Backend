@@ -49,10 +49,10 @@ namespace ClassroomManagerAPI.Services
         }
         public async Task CheckUpdateStatusClass()
         {
-            var classroom = _classroomRepostitory.Queryable().Where(x => !x.IsDeleted && x.Status != ClassroomStatusEnum.FIXING);
+            var classroom = _classroomRepostitory.Queryable().Where(x => !x.IsDeleted && x.Status != ClassroomStatusEnum.FIXING).ToList();
             var now = DateTime.Now.Hour;
             foreach (var item in classroom) { 
-                if(now >= 19 || now <= 6)
+                if(now >= 18 || now <= 6)
                 {
                     var lastUsed = _scheduleRepository.Queryable().FirstOrDefault(x => !x.IsDeleted && x.ClassroomId == item.Id && x.EndTime.Date == DateTime.Now && x.EndTime.Hour <= now);
                     if(lastUsed != null)
@@ -75,12 +75,12 @@ namespace ClassroomManagerAPI.Services
 
         public void ReccuringJobHourly()
         {
-            _recurringJob.AddOrUpdate("UpdateClass", () =>  CheckUpdateStatusClass(), Cron.Hourly);
+            _recurringJob.AddOrUpdate("UpdateClass", () => CheckUpdateStatusClass(), "*/30 * * * *", TimeZoneInfo.Local);
         }
 
         public void RecurringJobDaily()
         {
-            _recurringJob.AddOrUpdate("NotificationClass", () => NotifiSchedule(), Cron.Daily(6));
+            _recurringJob.AddOrUpdate("NotificationClass", () => NotifiSchedule(), "0 6 * * *", TimeZoneInfo.Local);
         }
         public void RemoveRecurringAllJob()
         {

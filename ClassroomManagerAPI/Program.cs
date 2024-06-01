@@ -1,3 +1,4 @@
+using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Configs.Infastructure;
 using ClassroomManagerAPI.Repositories;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -35,6 +37,7 @@ builder.Services.AddCors(delegate (CorsOptions options)
     options.AddDefaultPolicy(delegate (CorsPolicyBuilder builder)
     {
         builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials()
+        .AllowAnyOrigin()
             .SetIsOriginAllowed((string _) => true);
     });
     options.AddPolicy("CorsPolicy", delegate (CorsPolicyBuilder builder)
@@ -137,7 +140,6 @@ builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IJobService, JobService>();
 #endregion
 
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -146,7 +148,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseMiddleware<ErrorResponeHandle>();
 
 app.UseHangfireDashboard("/dashboard");
 

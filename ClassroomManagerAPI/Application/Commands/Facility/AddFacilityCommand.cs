@@ -17,13 +17,16 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
     public class AddFacilityCommandHandler : IRequestHandler<AddFacilityCommand, ResponseMethod<FacilityModel>>
     {
         private readonly IFacilityRepository _facilityRepository;
-		private readonly IClassroomRepository _classroomRepository;
-		private readonly IMapper _mapper;
-        public AddFacilityCommandHandler(IMapper mapper, IFacilityRepository facilityRepository, IClassroomRepository classroomRepository)
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
+        private readonly IClassroomRepository _classroomRepository;
+
+        public AddFacilityCommandHandler(IMapper mapper, IFacilityRepository facilityRepository, IMediator mediator, IClassroomRepository classroomRepository)
         {
             _facilityRepository = facilityRepository;
-			_classroomRepository = classroomRepository;
-			_mapper = mapper;
+            _mapper = mapper;
+            _mediator = mediator;
+            _classroomRepository = classroomRepository;
         }
 
         public async Task<ResponseMethod<FacilityModel>> Handle(AddFacilityCommand request, CancellationToken cancellationToken)
@@ -53,7 +56,7 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
             await _classroomRepository.UpdateAsync(classroom).ConfigureAwait(false);
 
             var createdFacility = await _facilityRepository.AddAsync(newFacillity).ConfigureAwait(false);
-
+            var classroom = _classroomRepository;
             result.StatusCode = (int) HttpStatusCode.Created;
             result.Data = _mapper.Map<FacilityModel>(createdFacility);
             return result;
