@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
+using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Report;
 using ClassroomManagerAPI.Repositories.IRepositories;
@@ -16,15 +17,22 @@ namespace ClassroomManagerAPI.Application.Commands.Report
 	{
 		private readonly IReportRepository _reportRepository;
 		private readonly IMapper _mapper;
-		public UpdateReportCommandHandler(IMapper mapper, IReportRepository reportRepository)
+        private readonly AuthContext _authContext;
+
+        public UpdateReportCommandHandler(IMapper mapper, IReportRepository reportRepository, AuthContext authContext)
 		{
 			_reportRepository = reportRepository;
 			_mapper = mapper;
+			_authContext = authContext;
 		}
 		public async Task<ResponseMethod<string>> Handle(UpdateReportCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<string> result = new ResponseMethod<string>();
+			if (request.AccountId == null)
+			{
+				request.AccountId = _authContext.GetCurrentId();
+			}
 			var updatedFacility = await _reportRepository.UpdateAsync( _mapper.Map<Entities.Report>(request)).ConfigureAwait(false);
 			if (updatedFacility == null)
 			{

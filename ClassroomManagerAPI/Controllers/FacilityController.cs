@@ -141,7 +141,7 @@ namespace ClassroomManagerAPI.Controllers
             try
             {
                 var result = await _mediator.Send(query).ConfigureAwait(false);
-                return result.GetResult();
+                return File( result.Data , Settings.Excels.ContentType, "Facility_export.xlsx");
             }
             catch (Exception ex)
             {

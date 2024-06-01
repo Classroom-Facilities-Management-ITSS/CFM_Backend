@@ -21,5 +21,10 @@ namespace ClassroomManagerAPI.Common
         {
             Message = ErrorMessage = message;
         }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }
