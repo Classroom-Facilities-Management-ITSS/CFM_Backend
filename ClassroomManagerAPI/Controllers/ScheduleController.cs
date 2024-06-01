@@ -2,6 +2,7 @@
 using ClassroomManagerAPI.Application.Queries.Schedule;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Classroom;
 using ClassroomManagerAPI.Models.Schedule;
 using MediatR;
@@ -182,6 +183,7 @@ namespace ClassroomManagerAPI.Controllers
 			}
 			catch(Exception ex)
 			{
+				return BadRequest(nameof(ErrorSystemEnum.ServerError));
 				_logger.LogError(ex, ex.Message);
 				throw;
 			}

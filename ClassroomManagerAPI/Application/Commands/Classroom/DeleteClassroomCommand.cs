@@ -3,6 +3,7 @@ using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Classroom
@@ -24,6 +25,13 @@ namespace ClassroomManagerAPI.Application.Commands.Classroom
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<string> result = new ResponseMethod<string>();
+			var classroom = _classroomRepository.Queryable().Where(x => (!x.IsDeleted) && (x.FacilityAmount != 0 || x.Schedules.Where(f => f.EndTime <= DateTime.Now.AddDays(7)).Any()));
+			if (classroom != null)
+			{
+				result.AddBadRequest(nameof(ErrorSystemEnum.DataAlreadyExist));
+				result.StatusCode = (int)HttpStatusCode.Conflict;
+				return result;
+			}
 			var deletedClassrooom = await _classroomRepository.DeleteAsync(request.Id).ConfigureAwait(false);
 			if (!deletedClassrooom)
 			{

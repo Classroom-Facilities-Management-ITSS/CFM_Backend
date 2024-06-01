@@ -1,7 +1,14 @@
-﻿namespace ClassroomManagerAPI.Models.Classroom
+﻿using ClassroomManagerAPI.Enums;
+
+namespace ClassroomManagerAPI.Models.Classroom
 {
-	public class UpdateClassroomModel : AddClassroomModel
+	public class UpdateClassroomModel 
 	{
         public Guid? Id { get; set; }
-    }
+		public string? Address { get; set; }
+		public DateTime LastUsed { get; set; }
+		public int? FacilityAmount { get; set; }
+		public string? Note { get; set; }
+		public ClassroomStatusEnum Status { get; set; }
+	}
 }

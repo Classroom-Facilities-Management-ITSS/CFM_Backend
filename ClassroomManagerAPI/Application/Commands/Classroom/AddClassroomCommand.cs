@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Classroom;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Classroom
@@ -26,6 +28,15 @@ namespace ClassroomManagerAPI.Application.Commands.Classroom
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<ClassroomModel> result = new ResponseMethod<ClassroomModel>();
 			var newClassroom = _mapper.Map<Entities.Classroom>(request);
+			var existingClassroom = await _classroomRepository.Queryable()
+				.Where(a => a.Address == request.Address && !a.IsDeleted)
+				.FirstOrDefaultAsync();
+			if (existingClassroom != null)
+			{
+				result.AddBadRequest(nameof(ErrorSystemEnum.DataAlreadyExist));
+				result.StatusCode = (int)HttpStatusCode.Conflict;
+				return result;
+			}
 			var createdClassroom = await _classroomRepository.AddAsync(newClassroom).ConfigureAwait(false);
 			result.StatusCode = (int)HttpStatusCode.Created;
 			result.Data = _mapper.Map<ClassroomModel>(createdClassroom);
