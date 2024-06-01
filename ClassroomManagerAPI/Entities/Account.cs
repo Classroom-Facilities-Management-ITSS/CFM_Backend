@@ -12,7 +12,6 @@ namespace ClassroomManagerAPI.Entities
         public string? Password { get; set; }
         public RoleEnum Role { get; set; } = RoleEnum.USER;
         public bool Active { get; set; } = false;
-
         public UserInfo? UserInfo { get; set; }
         public ICollection<Report>? Reports { get; set; }
         public ICollection<Schedule>? Schedules { get; set; }
