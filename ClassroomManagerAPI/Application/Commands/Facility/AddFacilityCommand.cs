@@ -56,7 +56,6 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
             await _classroomRepository.UpdateAsync(classroom).ConfigureAwait(false);
 
             var createdFacility = await _facilityRepository.AddAsync(newFacillity).ConfigureAwait(false);
-            var classroom = _classroomRepository;
             result.StatusCode = (int) HttpStatusCode.Created;
             result.Data = _mapper.Map<FacilityModel>(createdFacility);
             return result;
