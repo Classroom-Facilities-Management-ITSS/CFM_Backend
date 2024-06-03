@@ -7,9 +7,9 @@ namespace ClassroomManagerAPI.Configs.Mappers
     public class ClassroomMapper : Profile
     {
         public ClassroomMapper() {
-            CreateMap<ClassroomModel, Classroom>().ReverseMap();
-            CreateMap<AddClassroomModel, Classroom>().ReverseMap();
-            CreateMap<UpdateClassroomModel, Classroom>().ReverseMap();
+            CreateMap<ClassroomModel, Classroom>().ReverseMap().IgnoreAllNonExisting();
+            CreateMap<AddClassroomModel, Classroom>().ForMember(x => x.Facilities, opt => opt.Ignore()).ReverseMap().IgnoreAllNonExisting();
+            CreateMap<UpdateClassroomModel, Classroom>().ForMember(x => x.Facilities, opt => opt.Ignore()).ReverseMap().IgnoreAllNonExisting();
         }
     }
 }

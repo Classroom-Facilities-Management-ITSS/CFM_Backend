@@ -7,8 +7,8 @@ namespace ClassroomManagerAPI.Configs.Mappers
     public class UserMapper : Profile
     {
         public UserMapper() {
-            CreateMap<UserInfo, UserModel>().ReverseMap();
-            CreateMap<UpdateUserModel, UserInfo>().ReverseMap();
+            CreateMap<UserInfo, UserModel>().ReverseMap().IgnoreAllNonExisting();
+            CreateMap<UpdateUserModel, UserInfo>().ReverseMap().IgnoreAllNonExisting();
         }
     }
 }

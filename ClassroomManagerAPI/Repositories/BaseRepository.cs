@@ -121,27 +121,61 @@ namespace ClassroomManagerAPI.Repositories
         {
             try
             {
-                var e = await _set.SingleOrDefaultAsync((T c) => c.Id == entity.Id && !c.IsDeleted).ConfigureAwait(continueOnCapturedContext: false);
-                if (e == null) return default;
+                var existingEntity = await _set.SingleOrDefaultAsync(e => e.Id == entity.Id && !e.IsDeleted)
+                    .ConfigureAwait(continueOnCapturedContext: false);
+                if (existingEntity == null)
+                {
+                    return default;
+                }
                 else
                 {
                     entity.UpdatedAt = DateTime.Now;
-                    PropertyInfo[] properties = e.GetType().GetProperties();
+                    PropertyInfo[] properties = entity.GetType().GetProperties();
+
                     foreach (var property in properties)
                     {
                         if (property.CanRead && property.CanWrite && property.Name != "Id")
                         {
-                            object value = property.GetValue(entity);
-                            property.SetValue(e, value);
+                            object newValue = property.GetValue(entity);
+                            object oldValue = property.GetValue(existingEntity);
+
+                            if (!object.Equals(newValue, oldValue))
+                            {
+                                property.SetValue(existingEntity, newValue);
+                            }
                         }
                     }
-                    var updatedEntity = _set.Update(e);
+
+                    var foreignKeyProperties = _context.Model.FindEntityType(typeof(T)).GetForeignKeys()
+                        .SelectMany(fk => fk.Properties)
+                        .Select(p => p.Name);
+
+                    foreach (var fkProperty in foreignKeyProperties)
+                    {
+                        var property = properties.SingleOrDefault(p => p.Name == fkProperty);
+                        if (property != null)
+                        {
+                            object newValue = property.GetValue(entity);
+                            object oldValue = property.GetValue(existingEntity);
+
+                            if (!object.Equals(newValue, oldValue))
+                            {
+                                property.SetValue(existingEntity, newValue);
+                            }
+                        }
+                    }
+
+                    _context.Entry(existingEntity).State = EntityState.Modified;
                     await _context.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
-                    return updatedEntity.Entity;
+                    return existingEntity;
                 }
             }
-            catch (Exception ex) { throw; }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
+
 
         public PaginationModel PaginationEntity(IEnumerable<T> entity, int? page, int? limit)
         {

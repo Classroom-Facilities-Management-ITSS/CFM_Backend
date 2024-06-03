@@ -8,9 +8,9 @@ namespace ClassroomManagerAPI.Configs.Mappers
 	{
 		public AccountMapper()
 		{
-			CreateMap<AccountModel, Account>().ForMember(x => x.UserInfo, opt => opt.MapFrom(src => src.User)).ReverseMap();
-			CreateMap<UpdateAccountModel, Account>().ReverseMap();
-			CreateMap<AddAccountModel, Account>().ReverseMap();
+			CreateMap<AccountModel, Account>().ForMember(x => x.UserInfo, opt => opt.MapFrom(src => src.User)).ReverseMap().IgnoreAllNonExisting();
+			CreateMap<UpdateAccountModel, Account>().ReverseMap().IgnoreAllNonExisting();
+			CreateMap<AddAccountModel, Account>().ReverseMap().IgnoreAllNonExisting();
 		}
 	}
 }
