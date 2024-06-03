@@ -41,9 +41,9 @@ namespace ClassroomManagerAPI.Application.Queries.Schedule
 				result.Message = "Schedule not found";
 				return result;
 			}
-			var targetClassrooms = await _classroomRepository.Queryable().Include(c => c.Facilities).FirstOrDefaultAsync(c => c.Id == scheduleByID.ClassroomId);
+			var targetClassrooms = await _classroomRepository.Queryable.Include(c => c.Facilities).FirstOrDefaultAsync(c => c.Id == scheduleByID.ClassroomId);
 			var targetFacilities = targetClassrooms.Facilities;
-			var classrooms = _classroomRepository.Queryable().Include(c => c.Facilities).Where(x => !x.IsDeleted && 
+			var classrooms = _classroomRepository.Queryable.Include(c => c.Facilities).Where(x => !x.IsDeleted && 
 																								x.MaxSize * 1.2 >= targetClassrooms.MaxSize && 
 																								x.FacilityAmount <= targetClassrooms.FacilityAmount && 
 																								x.Facilities.Any(f => targetFacilities.

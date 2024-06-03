@@ -36,10 +36,10 @@ namespace ClassroomManagerAPI.Application.Queries
                 return result;
             }
 
-            var listSuggestion = _classroomRepository.Queryable().Include(x => x.Schedules).Include(x => x.Facilities).AsQueryable();
+            var listSuggestion = _classroomRepository.Queryable.Include(x => x.Schedules).Include(x => x.Facilities).AsQueryable();
             listSuggestion = listSuggestion.Where(x => classroom.MaxSize >= x.MaxSize && x.MaxSize <= classroom.MaxSize * 1.2);
             listSuggestion = listSuggestion.Where(x => x.Schedules.Where(x => x.StartTime == DateTime.Now) == null);
-            var facilities = _facilityRepository.Queryable().Where(x => x.ClassroomId == request.Id).AsQueryable();
+            var facilities = _facilityRepository.Queryable.Where(x => x.ClassroomId == request.Id).AsQueryable();
             var listResult = new List<Entities.Classroom>();
             foreach (var item in listSuggestion)
             {

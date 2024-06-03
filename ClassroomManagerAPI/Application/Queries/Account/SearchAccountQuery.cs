@@ -27,7 +27,7 @@ namespace ClassroomManagerAPI.Application.Queries.Account
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<IEnumerable<AccountModel>> result = new ResponseMethod<IEnumerable<AccountModel>>();
-			var account =  _accountRepository.Queryable().Include(x => x.UserInfo).AsQueryable();
+			var account =  _accountRepository.Queryable.Include(x => x.UserInfo).AsQueryable();
 			if(request.FullName != null) {
 				account = account.Where(x => !x.IsDeleted && x.UserInfo.FullName.ToLower().Trim().Contains(request.FullName.ToLower().Trim()));
 			}

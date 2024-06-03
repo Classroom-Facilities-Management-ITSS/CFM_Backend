@@ -113,10 +113,6 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                     LastUsed = DateTime.Now,
                     FacilityAmount = 2,
                     Note = null
-                },
-                new Classroom
-                {
-                    
                 }
             };
             // Seed to the database

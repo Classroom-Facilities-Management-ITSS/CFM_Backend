@@ -26,7 +26,7 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
         {
             ArgumentNullException.ThrowIfNull(request);
             var result = new ResponseMethod<Stream>();
-            var facility = _facilityRepository.Queryable().Include(x => x.Classroom).AsQueryable();
+            var facility = _facilityRepository.Queryable.Include(x => x.Classroom).AsQueryable();
 
             if (request.Name != null)
             {

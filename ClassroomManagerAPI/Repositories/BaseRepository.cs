@@ -108,10 +108,13 @@ namespace ClassroomManagerAPI.Repositories
             return pagination;
         }
 
-        public virtual IQueryable<T?> Queryable()
+        public virtual IQueryable<T?> Queryable
         {
-            IQueryable<T> queryable = _set.AsQueryable();
-            return queryable;
+            get
+            {
+                IQueryable<T> queryable = _context.Set<T>().AsQueryable();
+                return queryable;
+            }   
         }
 
         public virtual async Task<T?> UpdateAsync(T entity)

@@ -63,8 +63,8 @@ namespace ClassroomManagerAPI.Application.Commands.Schedule
                     string[] dates = schedule.WeekStudy.Split("-");
                     DateTime DateStart = DateTime.ParseExact(dates[0].Trim(), format, CultureInfo.InvariantCulture);
                     DateTime DateEnd = DateTime.ParseExact(dates[1].Trim(), format, CultureInfo.InvariantCulture);
-                    var classId = await _classroomRepository.Queryable().FirstOrDefaultAsync(x => x.Address.ToLower().Trim().Equals(schedule.Class.ToLower().Trim()),cancellationToken);
-                    var accountId = await _authRepostitory.Queryable().FirstOrDefaultAsync(x => x.Email.ToLower().Trim().Equals(schedule.Email.ToLower().Trim()));
+                    var classId = await _classroomRepository.Queryable.FirstOrDefaultAsync(x => x.Address.ToLower().Trim().Equals(schedule.Class.ToLower().Trim()),cancellationToken);
+                    var accountId = await _authRepostitory.Queryable.FirstOrDefaultAsync(x => x.Email.ToLower().Trim().Equals(schedule.Email.ToLower().Trim()));
                     var Start = DateTime.Parse(schedule.DateStart);
                     while(Start.Date >= DateStart.Date && Start.Date <= DateEnd.Date)
                     {

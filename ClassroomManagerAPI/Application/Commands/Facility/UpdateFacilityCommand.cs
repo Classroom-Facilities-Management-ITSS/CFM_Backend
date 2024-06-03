@@ -37,7 +37,7 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
                 return result;
             }
 
-            if(await _facilityRepository.Queryable().AnyAsync(x => !x.IsDeleted && x.Name.ToLower().Trim().Equals(request.Name.ToLower().Trim())).ConfigureAwait(false))
+            if(await _facilityRepository.Queryable.AnyAsync(x => !x.IsDeleted && x.Name.ToLower().Trim().Equals(request.Name.ToLower().Trim())).ConfigureAwait(false))
             {
                 result.AddBadRequest(nameof(ErrorSystemEnum.DataAlreadyExist));
                 result.StatusCode = (int)HttpStatusCode.Conflict;

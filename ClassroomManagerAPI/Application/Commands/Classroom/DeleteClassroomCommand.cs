@@ -25,7 +25,7 @@ namespace ClassroomManagerAPI.Application.Commands.Classroom
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<string> result = new ResponseMethod<string>();
-			var classroom = _classroomRepository.Queryable().Include(x => x.Schedules).Any(x => (!x.IsDeleted) && (x.FacilityAmount != 0 || x.Schedules.Any(f => f.EndTime <= DateTime.Now.AddDays(7))));
+			var classroom = _classroomRepository.Queryable.Include(x => x.Schedules).Any(x => (!x.IsDeleted) && (x.FacilityAmount != 0 || x.Schedules.Any(f => f.EndTime <= DateTime.Now.AddDays(7))));
 			if (classroom)
 			{
 				result.AddBadRequest(nameof(ErrorClassEnum.ConflictSchedule));

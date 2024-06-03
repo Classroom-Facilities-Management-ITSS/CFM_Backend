@@ -29,7 +29,7 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<ClassroomModel> result = new ResponseMethod<ClassroomModel>();
 			//TODO: query including Facilities ID and Reports ID
-			var classroom = await _classroomRepository.Queryable()
+			var classroom = await _classroomRepository.Queryable
 				.Include(c => c.Facilities)
 				.Include(c => c.Reports)
 				.FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken)

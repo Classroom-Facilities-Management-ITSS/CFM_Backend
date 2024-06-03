@@ -28,7 +28,7 @@ namespace ClassroomManagerAPI.Application.Commands.Account
             ArgumentNullException.ThrowIfNull(request);
             ResponseMethod<string> result = new ResponseMethod<string>();
             var account = _mapper.Map<Entities.Account>(request);
-            var existingAccount = await _accountRepository.Queryable()
+            var existingAccount = await _accountRepository.Queryable
                 .Where(a => a.Email == request.Email && !a.IsDeleted && a.Id != request.Id)
                 .FirstOrDefaultAsync();
             if (existingAccount != null)
