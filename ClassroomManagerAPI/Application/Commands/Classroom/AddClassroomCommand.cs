@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Classroom;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -33,7 +33,7 @@ namespace ClassroomManagerAPI.Application.Commands.Classroom
 				.FirstOrDefaultAsync();
 			if (existingClassroom != null)
 			{
-				result.AddBadRequest(nameof(ErrorSystemEnum.DataAlreadyExist));
+				result.AddBadRequest(nameof(ErrorClassEnum.ClassroomAlreadyExist));
 				result.StatusCode = (int)HttpStatusCode.Conflict;
 				return result;
 			}

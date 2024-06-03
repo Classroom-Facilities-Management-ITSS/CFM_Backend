@@ -2,7 +2,7 @@
 using ClassroomManagerAPI.Application.Queries.Schedule;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Classroom;
 using ClassroomManagerAPI.Models.Schedule;
 using MediatR;

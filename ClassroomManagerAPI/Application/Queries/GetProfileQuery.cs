@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Account;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -10,7 +10,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries
 {
-	public class GetProfileQuery : IRequest<ResponseMethod<AccountModel>>
+    public class GetProfileQuery : IRequest<ResponseMethod<AccountModel>>
     {
     }
 

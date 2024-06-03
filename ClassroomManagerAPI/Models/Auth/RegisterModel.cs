@@ -1,9 +1,9 @@
-﻿using ClassroomManagerAPI.Enums;
+﻿using ClassroomManagerAPI.Enums.ErrorCodes;
 using System.ComponentModel.DataAnnotations;
 
 namespace ClassroomManagerAPI.Models.Auth
 {
-	public class RegisterModel
+    public class RegisterModel
 	{
 		[EmailAddress]
 		public string? Email { get; set; }

@@ -1,12 +1,12 @@
 ﻿using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using ClassroomManagerAPI.Services.IServices;
 using MediatR;
 
 namespace ClassroomManagerAPI.Application.Queries.Auth
 {
-	public class AuthActiveQuery : IRequest<ResponseMethod<bool>>
+    public class AuthActiveQuery : IRequest<ResponseMethod<bool>>
 	{
         public string token { get; set; }
     }

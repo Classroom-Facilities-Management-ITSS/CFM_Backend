@@ -1,4 +1,4 @@
-﻿using ClassroomManagerAPI.Enums;
+﻿using ClassroomManagerAPI.Enums.ErrorCodes;
 
 namespace ClassroomManagerAPI.Common
 {
