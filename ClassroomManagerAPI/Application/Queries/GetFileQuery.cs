@@ -1,5 +1,5 @@
 ﻿using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Helpers;
 using MediatR;
 

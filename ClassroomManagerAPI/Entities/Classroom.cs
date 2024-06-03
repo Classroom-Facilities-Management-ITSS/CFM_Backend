@@ -1,4 +1,5 @@
 ﻿using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using System.ComponentModel.DataAnnotations;
 
 namespace ClassroomManagerAPI.Entities

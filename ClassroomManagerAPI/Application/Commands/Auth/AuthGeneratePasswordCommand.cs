@@ -1,6 +1,6 @@
 ﻿using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using ClassroomManagerAPI.Services.IServices;
 using MediatR;

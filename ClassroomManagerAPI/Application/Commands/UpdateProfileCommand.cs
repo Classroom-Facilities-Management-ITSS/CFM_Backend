@@ -2,7 +2,7 @@
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Entities;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.User;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;

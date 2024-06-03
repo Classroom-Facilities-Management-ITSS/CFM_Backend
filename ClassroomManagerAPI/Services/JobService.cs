@@ -38,7 +38,7 @@ namespace ClassroomManagerAPI.Services
                 {
                     body += string.Format(CultureInfo.InvariantCulture, Settings.NotificationBody, item?.Subject, item?.Classroom?.Address ,item?.StartTime.GetTime(), item?.EndTime.GetTime());
                 }
-                string replacedHtmlContent = htmlContent.Replace("{{body}}", body);
+                string replacedHtmlContent = htmlContent.Replace("{{body}}", body).Replace("{{email}}", schedule.Key);
                 await _mailService.SendMail(new Common.MailRequest
                 {
                     body = replacedHtmlContent,
