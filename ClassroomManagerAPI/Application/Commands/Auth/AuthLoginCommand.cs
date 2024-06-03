@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Auth;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using ClassroomManagerAPI.Services;
@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace ClassroomManagerAPI.Application.Commands.Auth
 {
-	public class AuthLoginCommand : LoginModel, IRequest<ResponseMethod<AuthModel>>
+    public class AuthLoginCommand : LoginModel, IRequest<ResponseMethod<AuthModel>>
 	{
 	}
 

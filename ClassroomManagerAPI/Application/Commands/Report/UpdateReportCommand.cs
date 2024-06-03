@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Report;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;

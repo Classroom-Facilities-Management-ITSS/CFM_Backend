@@ -2,6 +2,8 @@
 using ClassroomManagerAPI.Application.Queries.Schedule;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Enums.ErrorCodes;
+using ClassroomManagerAPI.Models.Classroom;
 using ClassroomManagerAPI.Models.Schedule;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -151,5 +153,40 @@ namespace ClassroomManagerAPI.Controllers
                 throw;
             }
         }
+
+		[HttpGet("suggestion")]
+		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ClassroomModel>>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> Suggest([FromQuery] SuggestQuery suggestQuery)
+		{
+			try
+			{
+				var result = await _mediator.Send(suggestQuery).ConfigureAwait(false);
+				return result.GetResult();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, ex.Message);
+				throw;
+			}
+		}
+
+		[HttpPut("change_classroom")]
+		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ScheduleModel>>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+		public async Task<IActionResult> ChangeClassroom([FromBody] ChangeClassroomCommand command)
+		{
+			try
+			{
+				var result = await _mediator.Send(command).ConfigureAwait(false);
+				return result.GetResult();
+			}
+			catch(Exception ex)
+			{
+				return BadRequest(nameof(ErrorSystemEnum.ServerError));
+				_logger.LogError(ex, ex.Message);
+				throw;
+			}
+		}
     }
 }

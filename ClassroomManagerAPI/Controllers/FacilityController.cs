@@ -2,6 +2,7 @@
 using ClassroomManagerAPI.Application.Queries.Facility;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Facility;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

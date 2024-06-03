@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Classroom;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -9,7 +9,7 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Classroom
 {
-	public class GetClassroomByIdQuery : IRequest<ResponseMethod<ClassroomModel>>
+    public class GetClassroomByIdQuery : IRequest<ResponseMethod<ClassroomModel>>
 	{
 		public Guid Id { get; set; }
 	}

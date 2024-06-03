@@ -1,6 +1,6 @@
 ﻿using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Auth;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using ClassroomManagerAPI.Services.IServices;
@@ -8,7 +8,7 @@ using MediatR;
 
 namespace ClassroomManagerAPI.Application.Commands.Auth
 {
-	public class AuthUpdatePasswordCommand : UpdateModel, IRequest<ResponseMethod<string>>
+    public class AuthUpdatePasswordCommand : UpdateModel, IRequest<ResponseMethod<string>>
 	{
 
 	}

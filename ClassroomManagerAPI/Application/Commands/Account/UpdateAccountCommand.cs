@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Account;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Account
@@ -27,6 +28,15 @@ namespace ClassroomManagerAPI.Application.Commands.Account
             ArgumentNullException.ThrowIfNull(request);
             ResponseMethod<string> result = new ResponseMethod<string>();
             var account = _mapper.Map<Entities.Account>(request);
+            var existingAccount = await _accountRepository.Queryable()
+                .Where(a => a.Email == request.Email && !a.IsDeleted && a.Id != request.Id)
+                .FirstOrDefaultAsync();
+            if (existingAccount != null)
+            {
+                result.AddBadRequest(nameof(ErrorSystemEnum.DataAlreadyExist));
+                result.StatusCode = (int)HttpStatusCode.Conflict;
+                return result;
+            }
             var updatedAccount = await _accountRepository.UpdateAsync(account).ConfigureAwait(false);
             if (updatedAccount == null)
             {
