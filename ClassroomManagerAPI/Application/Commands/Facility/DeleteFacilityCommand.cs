@@ -15,26 +15,40 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
     {
         private readonly IFacilityRepository _facilityRepository;
         private readonly IClassroomRepository _classroomRepository;
+        private readonly Guid _storageClassroomId;
 
         public DeleteFacilityCommandHandler(IFacilityRepository facilityRepository, IClassroomRepository classroomRepository)
         {
             _facilityRepository = facilityRepository;
             _classroomRepository = classroomRepository;
+            _storageClassroomId = Guid.Parse("0540dec7-c15c-4d3d-9b24-a1cfca346209");
         }
         public async Task<ResponseMethod<string>> Handle(DeleteFacilityCommand request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
             ResponseMethod<string> result = new ResponseMethod<string>();
-            var exsiting = await _facilityRepository.GetByIDAsync(request.Id);
-            if(exsiting == null)
+            var existingFacility = await _facilityRepository.GetByIDAsync(request.Id);
+            if(existingFacility == null)
             {
                 result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
                 result.StatusCode = (int)HttpStatusCode.NotFound;
                 return result;
             }
-            var classroom = await _classroomRepository.GetByIDAsync(exsiting.ClassroomId).ConfigureAwait(false);
-            classroom.FacilityAmount -= exsiting.Count;
-            await _classroomRepository.UpdateAsync(classroom).ConfigureAwait(false);
+            var currentClassroom = await _classroomRepository.GetByIDAsync(existingFacility.ClassroomId).ConfigureAwait(false);
+			currentClassroom.FacilityAmount -= existingFacility.Count;
+            await _classroomRepository.UpdateAsync(currentClassroom).ConfigureAwait(false);
+            var storageClassroom = await _classroomRepository.GetByIDAsync(_storageClassroomId).ConfigureAwait(false);
+            if(storageClassroom == null)
+            {
+				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
+				result.StatusCode = (int)HttpStatusCode.NotFound;
+				return result;
+			}
+            existingFacility.ClassroomId = _storageClassroomId;
+            await _facilityRepository.UpdateAsync(existingFacility).ConfigureAwait(false);
+            storageClassroom.FacilityAmount += existingFacility.Count;
+            await _classroomRepository.UpdateAsync(storageClassroom).ConfigureAwait(false);
+
             await _facilityRepository.DeleteAsync(request.Id).ConfigureAwait(false);
             result.StatusCode = (int) HttpStatusCode.OK;
             result.Data = $"Delete facility with id {request.Id} sucessfully";
