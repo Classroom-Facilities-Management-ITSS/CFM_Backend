@@ -1,40 +1,61 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Facility
 {
-    public class UpdateFacilityCommand : UpdateFacilityModel ,IRequest<ResponseMethod<string>>
+    public class UpdateFacilityCommand : UpdateFacilityModel ,IRequest<ResponseMethod<FacilityModel>>
     {
     }
 
-    public class UpdateFacilityCommandHandler : IRequestHandler<UpdateFacilityCommand, ResponseMethod<string>>
+    public class UpdateFacilityCommandHandler : IRequestHandler<UpdateFacilityCommand, ResponseMethod<FacilityModel>>
     {
         private readonly IFacilityRepository _facilityRepository;
-        private readonly IMapper _mapper;
-        public UpdateFacilityCommandHandler(IMapper mapper, IFacilityRepository facilityRepository)
+		private readonly IClassroomRepository _classroomRepository;
+		private readonly IMapper _mapper;
+        public UpdateFacilityCommandHandler(IMapper mapper, IFacilityRepository facilityRepository, IClassroomRepository classroomRepository)
         {
             _facilityRepository = facilityRepository;
-            _mapper = mapper;
+			_classroomRepository = classroomRepository;
+			_mapper = mapper;
         }
-        public async Task<ResponseMethod<string>> Handle(UpdateFacilityCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<FacilityModel>> Handle(UpdateFacilityCommand request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            ResponseMethod<string> result = new ResponseMethod<string>();
-            var facility = _mapper.Map<Entities.Facility>(request);
-            var updatedFacility = await _facilityRepository.UpdateAsync(facility).ConfigureAwait(false);
-            if (updatedFacility == null)
+            var result = new ResponseMethod<FacilityModel>();
+
+            var classroomExsiting = await _classroomRepository.GetByIDAsync(request.ClassroomId).ConfigureAwait(false);
+            if (classroomExsiting == null)
+            {
+                result.AddBadRequest(nameof(ErrorClassEnum.ClassroomNotExist));
+                result.StatusCode = (int)HttpStatusCode.NotFound;
+                return result;
+            }
+            var existingFacility = await _facilityRepository.GetByIDAsync(request.Id);
+            if (existingFacility == null)
             {
                 result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
                 result.StatusCode = (int)HttpStatusCode.NotFound;
                 return result;
             }
+            var facilityExist = await _facilityRepository.Queryable.AnyAsync(x => !x.IsDeleted && x.ClassroomId == request.ClassroomId && x.Id != request.Id && x.Name.ToLower().Trim().Equals(request.Name.ToLower().Trim())).ConfigureAwait(false);
+            if (facilityExist)
+            {
+                result.AddBadRequest(nameof(ErrorSystemEnum.DataAlreadyExist));
+                result.StatusCode = (int)HttpStatusCode.Conflict;
+                return result;
+            }
+            classroomExsiting.FacilityAmount += request.Count - existingFacility.Count;
+            var newClass = await _classroomRepository.UpdateAsync(classroomExsiting).ConfigureAwait(false);
+            var facility = _mapper.Map<Entities.Facility>(request);
+            var updatedFacility = await _facilityRepository.UpdateAsync(facility).ConfigureAwait(false);            
             result.StatusCode = (int)HttpStatusCode.OK;
-            result.Data = $"update facility with id {request.Id} sucessfully";
+            result.Data = _mapper.Map<FacilityModel>(updatedFacility);
             return result;
         }
     }

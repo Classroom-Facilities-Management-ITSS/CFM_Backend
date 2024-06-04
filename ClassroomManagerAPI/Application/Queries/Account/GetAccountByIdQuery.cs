@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
-using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Account;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -27,7 +27,7 @@ namespace ClassroomManagerAPI.Application.Queries.Account
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<AccountModel> result = new ResponseMethod<AccountModel>();
-			var account = await _accountRepository.Queryable().Include(x =>x.UserInfo).FirstOrDefaultAsync(x => x.Id == request.Id,cancellationToken);
+			var account = await _accountRepository.Queryable.Include(x =>x.UserInfo).FirstOrDefaultAsync(x => x.Id == request.Id,cancellationToken);
 			if (account == null)
 			{
 				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));

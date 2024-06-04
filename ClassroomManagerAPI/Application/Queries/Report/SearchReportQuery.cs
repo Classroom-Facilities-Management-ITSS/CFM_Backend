@@ -27,7 +27,7 @@ namespace ClassroomManagerAPI.Application.Queries.Report
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<IEnumerable<ReportModel>> result = new ResponseMethod<IEnumerable<ReportModel>>();
-			var reports = _reportRepository.Queryable().Include(x => x.Classroom).Include(x => x.Account).AsQueryable();
+			var reports = _reportRepository.Queryable.Include(x => x.Classroom).Include(x => x.Account).AsQueryable();
 			if (request.ClassroomAddress != null)
 			{
 				reports = reports.Where(x => !x.IsDeleted && x.Classroom.Address.ToLower().Trim().Contains(request.ClassroomAddress.ToLower().Trim()));

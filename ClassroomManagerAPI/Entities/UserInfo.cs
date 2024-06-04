@@ -1,10 +1,10 @@
-﻿using ClassroomManagerAPI.Enums;
+﻿using ClassroomManagerAPI.Enums.ErrorCodes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ClassroomManagerAPI.Entities
 {
-	public class UserInfo : BaseEntity
+    public class UserInfo : BaseEntity
 	{
 		[MaxLength(100, ErrorMessage = nameof(ErrorSystemEnum.MaxLength))]
         public string? FirstName { get; set; }

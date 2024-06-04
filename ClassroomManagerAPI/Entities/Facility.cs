@@ -1,4 +1,5 @@
 ﻿using ClassroomManagerAPI.Enums;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using System.ComponentModel.DataAnnotations;
 
 namespace ClassroomManagerAPI.Entities
@@ -12,7 +13,7 @@ namespace ClassroomManagerAPI.Entities
         public FacilityStatusEnum Status { get; set; }
         public string? Version { get; set; }
         public string? Note { get; set; }
-        public Guid? ClassroomId { get; set; }
+        public Guid ClassroomId { get; set; }
         public Classroom? Classroom { get; set; }
 
     }

@@ -8,7 +8,7 @@ namespace ClassroomManagerAPI.Configs.Mappers
 	{
 		public AuthMapper()
 		{
-			CreateMap<RegisterModel, Account>().ReverseMap();
+			CreateMap<RegisterModel, Account>().ReverseMap().IgnoreAllNonExisting();
 		}
 	}
 }

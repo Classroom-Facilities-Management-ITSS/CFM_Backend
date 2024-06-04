@@ -1,4 +1,4 @@
-﻿namespace ClassroomManagerAPI.Enums
+﻿namespace ClassroomManagerAPI.Enums.ErrorCodes
 {
     public enum ErrorSystemEnum
     {

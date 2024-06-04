@@ -26,7 +26,7 @@ namespace ClassroomManagerAPI.Application.Queries.Classroom
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			var result = new ResponseMethod<IEnumerable<ClassroomModel>>();
-			var classroom = _classroomRepository.Queryable().AsQueryable();
+			var classroom = _classroomRepository.Queryable.AsQueryable();
 			if (request.ClassroomAddress != null)
 			{
 				classroom = classroom.Where(x => !x.IsDeleted && x.Address.ToLower().Trim().Contains(request.ClassroomAddress.ToLower().Trim()));
