@@ -8,12 +8,12 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Facility
 {
-	public class DeleteFacilityCommand : IRequest<ResponseMethod<string>>
+	public class DeleteFacilityCommand : IRequest<ResponseMethod<bool>>
 	{
 		public Guid Id { get; set; }
 	}
 
-	public class DeleteFacilityCommandHandler : IRequestHandler<DeleteFacilityCommand, ResponseMethod<string>>
+	public class DeleteFacilityCommandHandler : IRequestHandler<DeleteFacilityCommand, ResponseMethod<bool>>
 	{
 		private readonly IFacilityRepository _facilityRepository;
 		private readonly IClassroomRepository _classroomRepository;
@@ -25,15 +25,16 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
 			_classroomRepository = classroomRepository;
 			_mediator = mediator;
 		}
-		public async Task<ResponseMethod<string>> Handle(DeleteFacilityCommand request, CancellationToken cancellationToken)
+		public async Task<ResponseMethod<bool>> Handle(DeleteFacilityCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			ResponseMethod<string> result = new ResponseMethod<string>();
+			ResponseMethod<bool> result = new ResponseMethod<bool>();
 			var existingFacility = await _facilityRepository.GetByIDAsync(request.Id);
 			if (existingFacility == null)
 			{
 				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
 				result.StatusCode = (int)HttpStatusCode.NotFound;
+				result.Data = false;
 				return result;
 			}
 			var currentClassroom = await _classroomRepository.GetByIDAsync(existingFacility.ClassroomId).ConfigureAwait(false);
@@ -49,7 +50,7 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
 
 			await _facilityRepository.DeleteAsync(request.Id).ConfigureAwait(false);
 			result.StatusCode = (int)HttpStatusCode.OK;
-			result.Data = $"Delete facility with id {request.Id} sucessfully";
+			result.Data = true;
 			return result;
 		}
 	}

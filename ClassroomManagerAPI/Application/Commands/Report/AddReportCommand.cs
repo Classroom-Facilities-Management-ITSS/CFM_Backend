@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Report;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
@@ -8,19 +9,23 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Report
 {
-    public class AddReportCommand : AddReportModel, IRequest<ResponseMethod<ReportModel>>
+	public class AddReportCommand : AddReportModel, IRequest<ResponseMethod<ReportModel>>
 	{
 	}
 
 	public class AddReportCommandHandler : IRequestHandler<AddReportCommand, ResponseMethod<ReportModel>>
 	{
 		private readonly IReportRepository _reportRepository;
+		private readonly IAccountRepository _accountRepository;
+		private readonly IClassroomRepository _classroomRepository;
 		private readonly IMapper _mapper;
-        private readonly AuthContext _authContext;
+		private readonly AuthContext _authContext;
 
-        public AddReportCommandHandler(IMapper mapper, IReportRepository reportRepository, AuthContext authContext)
+		public AddReportCommandHandler(IMapper mapper, IReportRepository reportRepository, IAccountRepository accountRepository, IClassroomRepository classroomRepository, AuthContext authContext)
 		{
 			_reportRepository = reportRepository;
+			_accountRepository = accountRepository;
+			_classroomRepository = classroomRepository;
 			_mapper = mapper;
 			_authContext = authContext;
 		}
@@ -29,11 +34,34 @@ namespace ClassroomManagerAPI.Application.Commands.Report
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<ReportModel> result = new ResponseMethod<ReportModel>();
-			if(request.AccountId == null)
+
+			if (request.AccountId == null)
 			{
 				request.AccountId = _authContext.GetCurrentId();
 			}
-			var createdReport = await _reportRepository.AddAsync(_mapper.Map<Entities.Report>(request)).ConfigureAwait(false);
+
+			var account = await _accountRepository.GetByIDAsync(request.AccountId.Value);
+			if (account == null)
+			{
+				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
+				result.StatusCode = (int)HttpStatusCode.NotFound;
+				return result;
+			}
+
+			if (request.ClassroomId.HasValue)
+			{
+				var classroom = await _classroomRepository.GetByIDAsync(request.ClassroomId.Value);
+				if (classroom == null)
+				{
+					result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
+					result.StatusCode = (int)HttpStatusCode.NotFound;
+					return result;
+				}
+			}
+
+			var reportEntity = _mapper.Map<Entities.Report>(request);
+			var createdReport = await _reportRepository.AddAsync(reportEntity).ConfigureAwait(false);
+
 			result.StatusCode = (int)HttpStatusCode.Created;
 			result.Data = _mapper.Map<ReportModel>(createdReport);
 			return result;
