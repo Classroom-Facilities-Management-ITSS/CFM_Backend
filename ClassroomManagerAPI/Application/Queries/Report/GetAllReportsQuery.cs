@@ -4,6 +4,7 @@ using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Report;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Report
@@ -24,8 +25,14 @@ namespace ClassroomManagerAPI.Application.Queries.Report
 		public async Task<ResponseMethod<IEnumerable<ReportModel>>> Handle(GetAllReportsQuery request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			ResponseMethod<IEnumerable<ReportModel>> result = new ResponseMethod<IEnumerable<ReportModel>>();
-			var report = await _reportRepository.GetAllAsync(request.page, request.limit).ConfigureAwait(false);
+			var result = new ResponseMethod<IEnumerable<ReportModel>>();
+			var reports = await _reportRepository.Queryable
+				.Include(x => x.Account)
+				.ThenInclude(x => x.UserInfo)
+				.Include(x => x.Classroom)
+                .Where(x => !x.IsDeleted)
+                .ToListAsync().ConfigureAwait(false);
+			var report = _reportRepository.GetPaginationEntity(reports, request.page, request.limit);
 			result.Data = _mapper.Map<IEnumerable<ReportModel>>(report);
 			result.StatusCode = (int)HttpStatusCode.OK;
 			result.AddPagination(await _reportRepository.Pagination(request.page, request.limit).ConfigureAwait(false));

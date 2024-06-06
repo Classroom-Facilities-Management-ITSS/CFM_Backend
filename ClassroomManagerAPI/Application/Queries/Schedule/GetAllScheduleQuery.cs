@@ -4,6 +4,7 @@ using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Schedule;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Schedule
@@ -25,8 +26,14 @@ namespace ClassroomManagerAPI.Application.Queries.Schedule
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<IEnumerable<ScheduleModel>> result = new ResponseMethod<IEnumerable<ScheduleModel>>();
-			var report = await _scheduleRepository.GetAllAsync(request.page, request.limit).ConfigureAwait(false);
-			result.Data = _mapper.Map<IEnumerable<ScheduleModel>>(report);
+			var schedules = await _scheduleRepository.Queryable
+				.Include(x => x.Classroom)
+				.Include(x => x.Account)
+				.ThenInclude(x => x.UserInfo)
+				.Where(x => !x.IsDeleted)
+                .ToListAsync().ConfigureAwait(false);
+			var schedule = _scheduleRepository.GetPaginationEntity(schedules, request.page, request.limit);
+			result.Data = _mapper.Map<IEnumerable<ScheduleModel>>(schedule);
 			result.StatusCode = (int)HttpStatusCode.OK;
 			result.AddPagination(await _scheduleRepository.Pagination(request.page, request.limit).ConfigureAwait(false));
 			result.AddFilter(request);

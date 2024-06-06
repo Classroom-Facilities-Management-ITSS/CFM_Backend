@@ -4,6 +4,7 @@ using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Account;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Account
@@ -25,7 +26,8 @@ namespace ClassroomManagerAPI.Application.Queries.Account
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<IEnumerable<AccountModel>> result = new ResponseMethod<IEnumerable<AccountModel>>();
-			var accountResult = await _accountRepository.GetAllAsync(request.page, request.limit).ConfigureAwait(false);
+			var account = await _accountRepository.Queryable.Include(x => x.UserInfo).Where(x => !x.IsDeleted).ToListAsync().ConfigureAwait(false);
+			var accountResult = _accountRepository.GetPaginationEntity(account, request.page, request.limit);
 			result.Data = _mapper.Map<IEnumerable<AccountModel>>(accountResult);
 			result.StatusCode = (int)HttpStatusCode.OK;
 			result.AddPagination(await _accountRepository.Pagination(request.page, request.limit).ConfigureAwait(false));
