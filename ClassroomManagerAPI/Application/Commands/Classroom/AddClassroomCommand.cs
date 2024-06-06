@@ -28,7 +28,7 @@ namespace ClassroomManagerAPI.Application.Commands.Classroom
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<ClassroomModel> result = new ResponseMethod<ClassroomModel>();
 			var newClassroom = _mapper.Map<Entities.Classroom>(request);
-			var existingClassroom = await _classroomRepository.Queryable()
+			var existingClassroom = await _classroomRepository.Queryable
 				.Where(a => a.Address == request.Address && !a.IsDeleted)
 				.FirstOrDefaultAsync();
 			if (existingClassroom != null)

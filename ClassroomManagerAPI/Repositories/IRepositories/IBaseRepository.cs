@@ -5,7 +5,7 @@ namespace ClassroomManagerAPI.Repositories.IRepositories
 {
     public interface IBaseRepository<T> where T : BaseEntity
     {
-        IQueryable<T?> Queryable ();
+        IQueryable<T?> Queryable { get; }
         Task<T?> GetByIDAsync(Guid id);
         Task<T?> AddAsync(T entity);
         Task<T?> UpdateAsync(T entity);

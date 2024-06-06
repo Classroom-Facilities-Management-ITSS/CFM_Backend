@@ -30,7 +30,7 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
         {
             ArgumentNullException.ThrowIfNull(request);
             ResponseMethod<FacilityModel> result = new ResponseMethod<FacilityModel>();
-            var existingFacility = await _facilityRepository.Queryable()
+            var existingFacility = await _facilityRepository.Queryable
                 .Where(a => a.Name.ToLower().Trim().Equals(request.Name.ToLower().Trim()) && a.ClassroomId == request.ClassroomId && !a.IsDeleted)
                 .AnyAsync(cancellationToken);
             if (existingFacility)

@@ -38,7 +38,7 @@ namespace ClassroomManagerAPI.Application.Queries
                 return result;
             }
 
-            var user = await _accountRepository.Queryable().Include(x => x.UserInfo).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            var user = await _accountRepository.Queryable.Include(x => x.UserInfo).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
             if(user == null )
             {

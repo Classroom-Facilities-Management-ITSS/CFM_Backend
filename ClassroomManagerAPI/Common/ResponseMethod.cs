@@ -19,8 +19,8 @@ namespace ClassroomManagerAPI.Common
 
         public void AddFilter(FilterModel filter)
         {
-            filter.page = filter.page <= 0 ? 1 : filter.page;
-            filter.limit = filter.limit <= 0 ? 10 : filter.limit;
+            filter.page = filter.page <= 0 || !filter.page.HasValue ? 1 : filter.page;
+            filter.limit = filter.limit <= 0 || !filter.limit.HasValue ? 10 : filter.limit;
             Filter = filter;
         }
         public override IActionResult GetResult()

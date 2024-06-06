@@ -4,6 +4,7 @@ using ClassroomManagerAPI.Models;
 using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Facility
@@ -23,9 +24,10 @@ namespace ClassroomManagerAPI.Application.Queries.Facility
         public async Task<ResponseMethod<IEnumerable<FacilityModel>>> Handle(GetAllFacilityQuery request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            ResponseMethod<IEnumerable<FacilityModel>> result = new ResponseMethod<IEnumerable<FacilityModel>>();
-            var facilityResult = await _facilityRepository.GetAllAsync(request.page, request.limit).ConfigureAwait(false);
-            result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facilityResult);
+            var result = new ResponseMethod<IEnumerable<FacilityModel>>();
+            var facilityResult = await _facilityRepository.Queryable.Include(x => x.Classroom).Where(x => !x.IsDeleted).ToListAsync().ConfigureAwait(false);
+            var facilities = _facilityRepository.GetPaginationEntity(facilityResult, request.page , request.limit);
+            result.Data = _mapper.Map<IEnumerable<FacilityModel>>(facilities);
             result.StatusCode = (int) HttpStatusCode.OK;
             result.AddPagination(await _facilityRepository.Pagination(request.page, request.limit).ConfigureAwait(false));
             result.AddFilter(request);

@@ -27,7 +27,7 @@ namespace ClassroomManagerAPI.Application.Queries.Schedule
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<IEnumerable<ScheduleModel>> result = new ResponseMethod<IEnumerable<ScheduleModel>>();
-			var schedule = _scheduleRepository.Queryable().Include(x => x.Classroom).Include(x => x.Account).AsQueryable();
+			var schedule = _scheduleRepository.Queryable.Include(x => x.Classroom).Include(x => x.Account).ThenInclude(x => x.UserInfo).AsQueryable();
 			if (request.ClassroomAddress != null)
 			{
 				schedule = schedule.Where(x => !x.IsDeleted && x.Classroom.Address.ToLower().Trim().Contains(request.ClassroomAddress.ToLower().Trim()));

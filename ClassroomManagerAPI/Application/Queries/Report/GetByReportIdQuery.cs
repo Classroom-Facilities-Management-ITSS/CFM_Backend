@@ -4,6 +4,7 @@ using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Report;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Report
@@ -26,8 +27,13 @@ namespace ClassroomManagerAPI.Application.Queries.Report
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<ReportModel> result = new ResponseMethod<ReportModel>();
-			var report = await _reportRepository.GetByIDAsync(request.Id);
-			if (report == null)
+            var report = await _reportRepository.Queryable
+                .Include(x => x.Account)
+                .ThenInclude(x => x.UserInfo)
+                .Include(x => x.Classroom)
+				.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == request.Id)
+				.ConfigureAwait(false);
+            if (report == null)
 			{
 				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
 				result.StatusCode = (int)HttpStatusCode.NotFound;

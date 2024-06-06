@@ -8,11 +8,11 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Schedule
 {
-    public class UpdateScheduleCommand : UpdateScheduleModel, IRequest<ResponseMethod<string>>
+    public class UpdateScheduleCommand : UpdateScheduleModel, IRequest<ResponseMethod<ScheduleModel>>
 	{
 	}
 
-	public class UpdateScheduleCommandHandler : IRequestHandler<UpdateScheduleCommand, ResponseMethod<string>>
+	public class UpdateScheduleCommandHandler : IRequestHandler<UpdateScheduleCommand, ResponseMethod<ScheduleModel>>
 	{
 		private readonly IScheduleRepository _scheduleRepository;
 		private readonly IMapper _mapper;
@@ -21,10 +21,10 @@ namespace ClassroomManagerAPI.Application.Commands.Schedule
 			_scheduleRepository = scheduleRepository;
 			_mapper = mapper;
 		}
-		public async Task<ResponseMethod<string>> Handle(UpdateScheduleCommand request, CancellationToken cancellationToken)
+		public async Task<ResponseMethod<ScheduleModel>> Handle(UpdateScheduleCommand request, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(request);
-			ResponseMethod<string> result = new ResponseMethod<string>();
+			var result = new ResponseMethod<ScheduleModel>();
 			var schedule = _mapper.Map<Entities.Schedule>(request);
 			var updatedSchedule = await _scheduleRepository.UpdateAsync(schedule).ConfigureAwait(false);
 			if (updatedSchedule == null)
@@ -34,7 +34,7 @@ namespace ClassroomManagerAPI.Application.Commands.Schedule
 				return result;
 			}
 			result.StatusCode = (int)HttpStatusCode.OK;
-			result.Data = $"update schedule with id {request.Id} sucessfully";
+			result.Data = _mapper.Map<ScheduleModel>(updatedSchedule);
 			return result;
 		}
 	}

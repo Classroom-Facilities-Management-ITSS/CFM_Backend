@@ -4,6 +4,7 @@ using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Models.Schedule;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Queries.Schedule
@@ -25,14 +26,20 @@ namespace ClassroomManagerAPI.Application.Queries.Schedule
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<ScheduleModel> result = new ResponseMethod<ScheduleModel>();
-			var report = await _scheduleRepository.GetByIDAsync(request.Id);
-			if (report == null)
+			var schedule = await _scheduleRepository.Queryable
+				.Include(x => x.Classroom)
+				.Include(x => x.Account)
+				.ThenInclude(x => x.UserInfo)
+				.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == request.Id)
+				.ConfigureAwait(false);
+
+            if (schedule == null)
 			{
 				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
 				result.StatusCode = (int)HttpStatusCode.NotFound;
 				return result;
 			}
-			result.Data = _mapper.Map<ScheduleModel>(report);
+			result.Data = _mapper.Map<ScheduleModel>(schedule);
 			result.StatusCode = (int)HttpStatusCode.OK;
 			return result;
 		}

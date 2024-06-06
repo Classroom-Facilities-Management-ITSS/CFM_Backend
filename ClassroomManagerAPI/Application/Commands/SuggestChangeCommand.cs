@@ -36,10 +36,10 @@ namespace ClassroomManagerAPI.Application.Commands
         {
             ArgumentNullException.ThrowIfNull(request);
             var result = new ResponseMethod<bool>();    
-            var currentClass = _classRepository.Queryable().Any(x => x.Id == request.CurrentClassId);
-            var changeClass = _classRepository.Queryable().Any(x => x.Id == request.ChangeClassId);
+            var currentClass = _classRepository.Queryable.Any(x => x.Id == request.CurrentClassId);
+            var changeClass = _classRepository.Queryable.Any(x => x.Id == request.ChangeClassId);
             if(currentClass && changeClass) {
-                var schedules = _scheduleRepository.Queryable().Where(x => x.StartTime == DateTime.Now && x.ClassroomId == request.CurrentClassId);
+                var schedules = _scheduleRepository.Queryable.Where(x => x.StartTime == DateTime.Now && x.ClassroomId == request.CurrentClassId);
                 foreach( var schedule in schedules )
                 {
                     await _mediator.Send(new UpdateScheduleCommand
@@ -48,8 +48,8 @@ namespace ClassroomManagerAPI.Application.Commands
                         ClassroomId = request.ChangeClassId
                     }).ConfigureAwait(false);
 
-                    var classroomName = await _classRepository.Queryable().FirstOrDefaultAsync(x => x.Id == schedule.ClassroomId, cancellationToken);
-                    var mail = await _accountRepostiory.Queryable().FirstOrDefaultAsync(x => x.Id == schedule.AccountId, cancellationToken);
+                    var classroomName = await _classRepository.Queryable.FirstOrDefaultAsync(x => x.Id == schedule.ClassroomId, cancellationToken);
+                    var mail = await _accountRepostiory.Queryable.FirstOrDefaultAsync(x => x.Id == schedule.AccountId, cancellationToken);
                     var pathHtml = Path.Combine(Directory.GetCurrentDirectory(), Settings.ResourecesChangeClass);
                     string htmlContent = File.ReadAllText(pathHtml);
                     string replacedHtmlContent = htmlContent
