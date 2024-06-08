@@ -8,6 +8,6 @@ namespace ClassroomManagerAPI.Models.Classroom
         public DateTime LastUsed { get; set; }
         public int? MaxSize { get; set; } = 0;
         public string? Note { get; set; }
-        public ClassroomStatusEnum Status { get; set; }
+        public ClassroomStatusEnum? Status { get; set; }
     }
 }

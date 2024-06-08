@@ -1,17 +1,19 @@
-﻿using ClassroomManagerAPI.Common;
+﻿using ClassroomManagerAPI.Application.Commands.Classroom;
+using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Facility
 {
-    public class DeleteFacilityCommand : IRequest<ResponseMethod<string>>
+    public class DeleteFacilityCommand : IRequest<ResponseMethod<bool>>
     {
         public Guid Id { get; set; }
     }
 
-    public class DeleteFacilityCommandHandler : IRequestHandler<DeleteFacilityCommand, ResponseMethod<string>>
+    public class DeleteFacilityCommandHandler : IRequestHandler<DeleteFacilityCommand, ResponseMethod<bool>>
     {
         private readonly IFacilityRepository _facilityRepository;
         private readonly IClassroomRepository _classroomRepository;
@@ -21,23 +23,32 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
             _facilityRepository = facilityRepository;
             _classroomRepository = classroomRepository;
         }
-        public async Task<ResponseMethod<string>> Handle(DeleteFacilityCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseMethod<bool>> Handle(DeleteFacilityCommand request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
-            ResponseMethod<string> result = new ResponseMethod<string>();
-            var exsiting = await _facilityRepository.GetByIDAsync(request.Id);
-            if(exsiting == null)
+            ResponseMethod<bool> result = new ResponseMethod<bool>();
+            var existingFacility = await _facilityRepository.GetByIDAsync(request.Id);
+            if (existingFacility == null)
             {
                 result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
                 result.StatusCode = (int)HttpStatusCode.NotFound;
+                result.Data = false;
                 return result;
             }
-            var classroom = await _classroomRepository.GetByIDAsync(exsiting.ClassroomId).ConfigureAwait(false);
-            classroom.FacilityAmount -= exsiting.Count;
-            await _classroomRepository.UpdateAsync(classroom).ConfigureAwait(false);
-            await _facilityRepository.DeleteAsync(request.Id).ConfigureAwait(false);
-            result.StatusCode = (int) HttpStatusCode.OK;
-            result.Data = $"Delete facility with id {request.Id} sucessfully";
+            var currentClassroom = await _classroomRepository.GetByIDAsync(existingFacility.ClassroomId).ConfigureAwait(false);
+
+            currentClassroom.FacilityAmount -= existingFacility.Count;
+            await _classroomRepository.UpdateAsync(currentClassroom).ConfigureAwait(false);
+            var storageClassroom = await _classroomRepository.GetByIDAsync(Configs.Settings.StorageClassId).ConfigureAwait(false);
+
+            existingFacility.ClassroomId = storageClassroom.Id;
+            await _facilityRepository.UpdateAsync(existingFacility).ConfigureAwait(false);
+
+            storageClassroom.FacilityAmount += existingFacility.Count;
+            await _classroomRepository.UpdateAsync(storageClassroom).ConfigureAwait(false);
+            
+            result.StatusCode = (int)HttpStatusCode.OK;
+            result.Data = true;
             return result;
         }
     }

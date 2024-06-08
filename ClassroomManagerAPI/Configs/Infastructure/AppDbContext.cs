@@ -113,6 +113,14 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                     LastUsed = DateTime.Now,
                     FacilityAmount = 2,
                     Note = null
+                },
+                new Classroom
+                {
+                    Id = Settings.StorageClassId,
+                    Address = Settings.StorageClass,
+                    LastUsed = DateTime.Now,
+                    FacilityAmount = 0,
+                    Note = null
                 }
             };
             // Seed to the database
