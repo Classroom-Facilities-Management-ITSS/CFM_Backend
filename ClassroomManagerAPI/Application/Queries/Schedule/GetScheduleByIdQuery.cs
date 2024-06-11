@@ -27,11 +27,11 @@ namespace ClassroomManagerAPI.Application.Queries.Schedule
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<ScheduleModel> result = new ResponseMethod<ScheduleModel>();
 			var schedule = await _scheduleRepository.Queryable
-				.Include(x => x.Classroom)
-				.Include(x => x.Account)
-				.ThenInclude(x => x.UserInfo)
-				.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == request.Id)
-				.ConfigureAwait(false);
+													.Include(x => x.Classroom)
+													.Include(x => x.Account)
+													.ThenInclude(x => x.UserInfo)
+													.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == request.Id)
+													.ConfigureAwait(false);
 
             if (schedule == null)
 			{

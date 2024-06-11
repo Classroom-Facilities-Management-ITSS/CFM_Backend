@@ -15,17 +15,36 @@ namespace ClassroomManagerAPI.Configs
 
         public string GetCurrentEmail()
         {
-            return User?.FindFirst(ClaimTypes.Email)?.Value;
+            try
+            {
+                return User?.FindFirst(ClaimTypes.Email)?.Value;
+            } catch {
+                return string.Empty;
+            }
         }
 
         public Guid GetCurrentId()
-        {           
-            return Guid.Parse(User?.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        {
+            try
+            {
+                return Guid.Parse(User?.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            }
+            catch
+            {
+                return Guid.Empty;
+            }
         }
 
         public string GetCurrentRole()
         {
-            return User?.FindFirst(ClaimTypes.Role)?.Value;
+            try
+            {
+                return User?.FindFirst(ClaimTypes.Role)?.Value;
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 }
