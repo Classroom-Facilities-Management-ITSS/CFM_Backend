@@ -7,11 +7,9 @@ using ClassroomManagerAPI.Services;
 using ClassroomManagerAPI.Services.IServices;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -29,25 +27,7 @@ var logger = new LoggerConfiguration()
 
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
-#endregion
-
-#region cors
-builder.Services.AddCors(delegate (CorsOptions options)
-{
-    options.AddDefaultPolicy(delegate (CorsPolicyBuilder builder)
-    {
-        builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials()
-        .AllowAnyOrigin()
-            .SetIsOriginAllowed((string _) => true);
-    });
-    options.AddPolicy("CorsPolicy", delegate (CorsPolicyBuilder builder)
-    {
-        builder.SetIsOriginAllowed((string _) => true).SetIsOriginAllowedToAllowWildcardSubdomains().AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
-});
-#endregion
+#endregion  
 
 #region service_dependency
 builder.Services.AddHttpContextAccessor();
@@ -151,6 +131,11 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ErrorResponeHandle>();
 
 app.UseHangfireDashboard("/dashboard");
+
+app.UseCors(options =>
+{
+    options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+});
 
 app.UseAuthorization();
 
