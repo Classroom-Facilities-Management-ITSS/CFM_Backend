@@ -62,11 +62,11 @@ namespace ClassroomManagerAPI.Controllers
 		[HttpGet("search")]
         [ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> GetBySearch(Guid id)
+        public async Task<IActionResult> GetBySearch([FromQuery] SearchScheduleQuery query)
         {
             try
             {
-                var result = await _mediator.Send(new GetScheduleByIdQuery { Id = id }).ConfigureAwait(false);
+                var result = await _mediator.Send(query).ConfigureAwait(false);
                 return result.GetResult();
             }
             catch (Exception ex)
