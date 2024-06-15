@@ -38,13 +38,13 @@ namespace ClassroomManagerAPI.Application.Queries
 
             var listSuggestion = _classroomRepository.Queryable.Include(x => x.Schedules).Include(x => x.Facilities).Where(x => x.Id != request.Id).AsQueryable();
             listSuggestion = listSuggestion.Where(x => classroom.MaxSize >= x.MaxSize && x.MaxSize <= classroom.MaxSize * 1.2);
-            listSuggestion = listSuggestion.Where(x => x.Schedules.Where(x => x.StartTime == DateTime.Now) == null);
+            listSuggestion = listSuggestion.Where(x => !x.Schedules.Any(x => x.StartTime == DateTime.Now));
             var facilities = _facilityRepository.Queryable.Where(x => x.ClassroomId == request.Id).AsQueryable();
             var listResult = new List<Entities.Classroom>();
-            foreach (var item in listSuggestion)
+            foreach (var item in listSuggestion.ToList())
             {
                 bool found = true;
-                foreach (var facility in facilities)
+                foreach (var facility in facilities.ToList())
                 {
                     if(!item.Facilities.Any(x => x.Name.ToLower().Trim().Equals(facility.Name.ToLower().Trim())))
                     {

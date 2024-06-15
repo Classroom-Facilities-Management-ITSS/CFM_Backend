@@ -41,7 +41,7 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
             await _classroomRepository.UpdateAsync(currentClassroom).ConfigureAwait(false);
             var storageClassroom = await _classroomRepository.GetByIDAsync(Configs.Settings.StorageClassId).ConfigureAwait(false);
 
-            existingFacility.ClassroomId = storageClassroom.Id;
+            existingFacility.ClassroomId = Configs.Settings.StorageClassId;
             await _facilityRepository.UpdateAsync(existingFacility).ConfigureAwait(false);
 
             storageClassroom.FacilityAmount += existingFacility.Count;
