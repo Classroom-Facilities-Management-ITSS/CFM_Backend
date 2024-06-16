@@ -48,7 +48,8 @@ namespace ClassroomManagerAPI.Application.Commands.Schedule
                 return result;
             }
 
-            var schedule = _mapper.Map<Entities.Schedule>(request);
+            var schedule = await _scheduleRepository.GetByIDAsync(request.Id).ConfigureAwait(false);
+            _mapper.Map(request, schedule);
             var updatedSchedule = await _scheduleRepository.UpdateAsync(schedule).ConfigureAwait(false);
             if (updatedSchedule == null)
             {

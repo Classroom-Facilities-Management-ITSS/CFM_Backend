@@ -1,6 +1,7 @@
 ﻿namespace ClassroomManagerAPI.Models.Facility
 {
-    public class UpdateFacilityModel : FacilityModel
+    public class UpdateFacilityModel : AddFacilityModel
     {
+        public Guid Id { get; set; }
     }
 }

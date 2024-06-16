@@ -43,15 +43,15 @@ namespace ClassroomManagerAPI.Application.Queries.Schedule
 			}
 			if(request.Date != null)
 			{
-				schedule = schedule.Where(x => !x.IsDeleted && DateOnly.FromDateTime(x.StartTime) == request.Date);
+				schedule = schedule.Where(x => !x.IsDeleted && DateOnly.FromDateTime(x.StartTime.Value) == request.Date);
 			}
 			if (request.StartTime != null)
 			{
-				schedule = schedule.Where(x => !x.IsDeleted && TimeOnly.FromDateTime(x.StartTime) >= request.StartTime);
+				schedule = schedule.Where(x => !x.IsDeleted && TimeOnly.FromDateTime(x.StartTime.Value) >= request.StartTime);
 			}
 			if (request.EndTime != null)
 			{
-				schedule = schedule.Where(x => !x.IsDeleted && request.EndTime <= TimeOnly.FromDateTime(x.EndTime));
+				schedule = schedule.Where(x => !x.IsDeleted && request.EndTime <= TimeOnly.FromDateTime(x.EndTime.Value));
 			}
 			if (request.CountStudent != null)
 			{

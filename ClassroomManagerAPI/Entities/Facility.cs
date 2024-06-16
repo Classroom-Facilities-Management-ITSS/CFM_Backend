@@ -1,5 +1,6 @@
 ﻿using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Enums.ErrorCodes;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace ClassroomManagerAPI.Entities
@@ -9,6 +10,8 @@ namespace ClassroomManagerAPI.Entities
         [Required(ErrorMessage = nameof(ErrorSystemEnum.Required))]
         public string? Name { get; set; }
         [Required(ErrorMessage = nameof(ErrorSystemEnum.Required))]
+
+        [DefaultValue(1)]
         public int Count { get; set; }
         public FacilityStatusEnum Status { get; set; }
         public string? Version { get; set; }
