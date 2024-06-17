@@ -1,9 +1,7 @@
-﻿using ClassroomManagerAPI.Application.Commands.Classroom;
-using ClassroomManagerAPI.Common;
+﻿using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Enums.ErrorCodes;
 using ClassroomManagerAPI.Repositories.IRepositories;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Facility
@@ -37,7 +35,7 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
             }
             var currentClassroom = await _classroomRepository.GetByIDAsync(existingFacility.ClassroomId).ConfigureAwait(false);
 
-            currentClassroom.FacilityAmount -= existingFacility.Count;
+            currentClassroom.FacilityAmount = currentClassroom.FacilityAmount - existingFacility.Count;
             await _classroomRepository.UpdateAsync(currentClassroom).ConfigureAwait(false);
             var storageClassroom = await _classroomRepository.GetByIDAsync(Configs.Settings.StorageClassId).ConfigureAwait(false);
 

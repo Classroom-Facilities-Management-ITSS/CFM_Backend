@@ -26,7 +26,7 @@ namespace ClassroomManagerAPI.Application.Queries.Account
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<IEnumerable<AccountModel>> result = new ResponseMethod<IEnumerable<AccountModel>>();
-			var account = await _accountRepository.Queryable.Include(x => x.UserInfo).Where(x => !x.IsDeleted).ToListAsync().ConfigureAwait(false);
+			var account = await _accountRepository.Queryable.Include(x => x.UserInfo).Where(x => !x.IsDeleted && x.Role != Enums.RoleEnum.ADMIN).ToListAsync().ConfigureAwait(false);
 			var accountResult = _accountRepository.GetPaginationEntity(account, request.page, request.limit);
 			result.Data = _mapper.Map<IEnumerable<AccountModel>>(accountResult);
 			result.StatusCode = (int)HttpStatusCode.OK;
