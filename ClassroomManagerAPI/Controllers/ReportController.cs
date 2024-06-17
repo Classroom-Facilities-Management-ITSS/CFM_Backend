@@ -4,9 +4,11 @@ using ClassroomManagerAPI.Application.Queries.Facility;
 using ClassroomManagerAPI.Application.Queries.Report;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Facility;
 using ClassroomManagerAPI.Models.Report;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -29,6 +31,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Get all
 		[HttpGet]
+		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ReportModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetAll([FromQuery] GetAllReportsQuery query)
@@ -47,6 +50,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		//get by id
 		[HttpGet("{id}")]
+		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetById(Guid id)
@@ -65,6 +69,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Get by classroom address
 		[HttpGet("search")]
+		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ReportModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetByName([FromQuery] SearchReportQuery search)
@@ -83,7 +88,8 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Create
 		[HttpPost]
-		[ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
+        [Authorize]
+        [ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Create([FromBody] AddReportCommand command)
 		{
@@ -101,7 +107,8 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Update
 		[HttpPut("{id}")]
-		[ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
+        [Authorize]
+        [ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateReportCommand command)
 		{
@@ -120,7 +127,8 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Delete
 		[HttpDelete("{id}")]
-		[ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
+        [Authorize]
+        [ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Delete(Guid id)
 		{

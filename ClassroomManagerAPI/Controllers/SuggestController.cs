@@ -2,8 +2,10 @@
 using ClassroomManagerAPI.Application.Queries;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Classroom;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -24,6 +26,7 @@ namespace ClassroomManagerAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(nameof(RoleEnum.ADMIN))]
         [ProducesResponseType(typeof(ResponseMethod<IEnumerable<ClassroomModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> GetSuggestion([FromQuery] GetSuggestClassQuery query)
@@ -41,6 +44,7 @@ namespace ClassroomManagerAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(nameof(RoleEnum.ADMIN))]
         [ProducesResponseType(typeof(ResponseMethod<bool>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> ChangeSuggestion([FromBody] SuggestChangeCommand command)

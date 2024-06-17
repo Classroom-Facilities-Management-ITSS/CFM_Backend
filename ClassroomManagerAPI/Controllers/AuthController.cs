@@ -4,6 +4,7 @@ using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Models.Auth;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -45,6 +46,7 @@ namespace ClassroomManagerAPI.Controllers
 		
 
 		[HttpPut("update_password")]
+		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<AuthModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> UpdatePassword([FromBody] AuthUpdatePasswordCommand command)

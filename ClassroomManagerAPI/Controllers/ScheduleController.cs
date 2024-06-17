@@ -2,8 +2,10 @@
 using ClassroomManagerAPI.Application.Queries.Schedule;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Schedule;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -24,6 +26,7 @@ namespace ClassroomManagerAPI.Controllers
 		}
 		// Get all
 		[HttpGet]
+		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ScheduleModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetAll([FromQuery] GetAllScheduleQuery query)
@@ -42,6 +45,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by id
 		[HttpGet("{id}")]
+		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetById(Guid id)
@@ -60,6 +64,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Search
 		[HttpGet("search")]
+		[Authorize]
         [ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> GetBySearch([FromQuery] SearchScheduleQuery query)
@@ -79,7 +84,8 @@ namespace ClassroomManagerAPI.Controllers
 
         // Create 
         [HttpPost]
-		[ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
+        [Authorize(nameof(RoleEnum.ADMIN))]
+        [ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Create([FromBody] AddScheduleCommand command)
 		{
@@ -96,7 +102,8 @@ namespace ClassroomManagerAPI.Controllers
 		}
 		// Update 
 		[HttpPut("{id}")]
-		[ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
+        [Authorize(nameof(RoleEnum.ADMIN))]
+        [ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateScheduleCommand command)
 		{
@@ -115,7 +122,8 @@ namespace ClassroomManagerAPI.Controllers
 		}
 		// Remove
 		[HttpDelete("{id}")]
-		[ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
+        [Authorize(nameof(RoleEnum.ADMIN))]
+        [ProducesResponseType(typeof(ResponseMethod<ScheduleModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Delete(Guid id)
 		{

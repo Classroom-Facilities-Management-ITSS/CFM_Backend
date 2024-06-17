@@ -2,8 +2,10 @@
 using ClassroomManagerAPI.Application.Queries.Account;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Account;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -25,6 +27,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Get all accounts
 		[HttpGet]
+		[Authorize(nameof(RoleEnum.ADMIN))]
 		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<AccountModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetAll([FromQuery] GetAllAccountQuery query)
@@ -43,6 +46,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by id
 		[HttpGet("{id}")]
+		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetById([FromRoute] Guid id)
@@ -62,6 +66,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by name
 		[HttpGet("search")]
+		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<AccountModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetByName([FromQuery] SearchAccountQuery search)
@@ -80,7 +85,8 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Create an account
 		[HttpPost]
-		[ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]
+        [Authorize(nameof(RoleEnum.ADMIN))]
+        [ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Create([FromBody] AddAccountCommand command)
 		{
@@ -98,6 +104,7 @@ namespace ClassroomManagerAPI.Controllers
 
         // Update an account
         [HttpPut("{id}")]
+        [Authorize(nameof(RoleEnum.ADMIN))]
         [ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAccountCommand command)
@@ -118,7 +125,8 @@ namespace ClassroomManagerAPI.Controllers
 
         // Remove an account
         [HttpDelete("{id}")]
-		[ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]
+        [Authorize(nameof(RoleEnum.ADMIN))]
+        [ProducesResponseType(typeof(ResponseMethod<AccountModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Delete(Guid id)
 		{
