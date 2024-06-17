@@ -50,10 +50,21 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
                 result.StatusCode = (int)HttpStatusCode.Conflict;
                 return result;
             }
-            classroomExsiting.FacilityAmount += request.Count - existingFacility.Count;
+
+            if(classroomExsiting.Id == existingFacility.ClassroomId)
+            {
+                classroomExsiting.FacilityAmount += request.Count - existingFacility.Count;
+            }
+            else
+            {
+                var CurrentClass = await _classroomRepository.GetByIDAsync(existingFacility.ClassroomId).ConfigureAwait(false);
+                CurrentClass.FacilityAmount -= existingFacility.Count;
+                await _classroomRepository.UpdateAsync(CurrentClass).ConfigureAwait(false);
+                classroomExsiting.FacilityAmount += request.Count;
+            }
             var newClass = await _classroomRepository.UpdateAsync(classroomExsiting).ConfigureAwait(false);
-            var facility = _mapper.Map<Entities.Facility>(request);
-            var updatedFacility = await _facilityRepository.UpdateAsync(facility).ConfigureAwait(false);            
+            _mapper.Map(request, existingFacility);
+            var updatedFacility = await _facilityRepository.UpdateAsync(existingFacility).ConfigureAwait(false);            
             result.StatusCode = (int)HttpStatusCode.OK;
             result.Data = _mapper.Map<FacilityModel>(updatedFacility);
             return result;

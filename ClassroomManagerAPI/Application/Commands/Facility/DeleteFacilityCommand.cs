@@ -33,9 +33,10 @@ namespace ClassroomManagerAPI.Application.Commands.Facility
                 result.Data = false;
                 return result;
             }
+
             var currentClassroom = await _classroomRepository.GetByIDAsync(existingFacility.ClassroomId).ConfigureAwait(false);
 
-            currentClassroom.FacilityAmount = currentClassroom.FacilityAmount - existingFacility.Count;
+            currentClassroom.FacilityAmount -= existingFacility.Count;
             await _classroomRepository.UpdateAsync(currentClassroom).ConfigureAwait(false);
             var storageClassroom = await _classroomRepository.GetByIDAsync(Configs.Settings.StorageClassId).ConfigureAwait(false);
 
