@@ -116,8 +116,8 @@ namespace ClassroomManagerAPI.Configs.Infastructure
                 },
                 new Classroom
                 {
-                    Id = Guid.Parse("0540dec7-c15c-4d3d-9b24-a1cfca346209"),
-                    Address = Configs.Settings.StorageClass,
+                    Id = Settings.StorageClassId,
+                    Address = Settings.StorageClass,
                     LastUsed = DateTime.Now,
                     FacilityAmount = 0,
                     Note = null

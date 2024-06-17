@@ -29,10 +29,10 @@ namespace ClassroomManagerAPI.Application.Commands.Auth
 		{
 			ArgumentNullException.ThrowIfNull(request);
 			ResponseMethod<string> response = new ResponseMethod<string>();
-			if (String.IsNullOrEmpty(request.Email))
+			if (string.IsNullOrEmpty(request.Email))
 			{
 				request.Email = _authContext.GetCurrentEmail();
-				if (String.IsNullOrEmpty(request.Email))
+				if (string.IsNullOrEmpty(request.Email))
 				{
 					response.AddBadRequest(nameof(ErrorAuthEnum.AccountNotExist));
 					response.StatusCode = StatusCodes.Status404NotFound;

@@ -4,6 +4,7 @@
     {
         ClassroomAlreadyExist,
         ClassroomNotExist,
-        ConflictSchedule
+        ConflictSchedule,
+        DeleteStorageError
     }
 }

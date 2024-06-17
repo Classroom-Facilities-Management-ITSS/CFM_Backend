@@ -8,49 +8,39 @@ using System.Net;
 
 namespace ClassroomManagerAPI.Application.Commands.Facility
 {
-	public class DeleteFacilityCommand : IRequest<ResponseMethod<string>>
-	{
-		public Guid Id { get; set; }
-	}
+    public class DeleteFacilityCommand : IRequest<ResponseMethod<bool>>
+    {
+        public Guid Id { get; set; }
+    }
 
-	public class DeleteFacilityCommandHandler : IRequestHandler<DeleteFacilityCommand, ResponseMethod<string>>
-	{
-		private readonly IFacilityRepository _facilityRepository;
-		private readonly IClassroomRepository _classroomRepository;
-		private readonly IMediator _mediator;
+    public class DeleteFacilityCommandHandler : IRequestHandler<DeleteFacilityCommand, ResponseMethod<string>>
+    {
+        private readonly IFacilityRepository _facilityRepository;
+        private readonly IClassroomRepository _classroomRepository;
 
-		public DeleteFacilityCommandHandler(IFacilityRepository facilityRepository, IClassroomRepository classroomRepository, IMediator mediator)
-		{
-			_facilityRepository = facilityRepository;
-			_classroomRepository = classroomRepository;
-			_mediator = mediator;
-		}
-		public async Task<ResponseMethod<string>> Handle(DeleteFacilityCommand request, CancellationToken cancellationToken)
-		{
-			ArgumentNullException.ThrowIfNull(request);
-			ResponseMethod<string> result = new ResponseMethod<string>();
-			var existingFacility = await _facilityRepository.GetByIDAsync(request.Id);
-			if (existingFacility == null)
-			{
-				result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
-				result.StatusCode = (int)HttpStatusCode.NotFound;
-				return result;
-			}
-			var currentClassroom = await _classroomRepository.GetByIDAsync(existingFacility.ClassroomId).ConfigureAwait(false);
-			currentClassroom.FacilityAmount -= existingFacility.Count;
-			// await _classroomRepository.UpdateAsync(currentClassroom).ConfigureAwait(false);
-			var storageClassroom = await _classroomRepository.Queryable.FirstOrDefaultAsync(x => x.Address.Equals(Configs.Settings.StorageClass)).ConfigureAwait(false);
-			existingFacility.ClassroomId = storageClassroom.Id;
-			// await _facilityRepository.UpdateAsync(existingFacility).ConfigureAwait(false);
-			await _mediator.Send(new UpdateFacilityCommand { Id = existingFacility.Id, ClassroomId = existingFacility.ClassroomId }).ConfigureAwait(false);
-			storageClassroom.FacilityAmount += existingFacility.Count;
-			// await _classroomRepository.UpdateAsync(storageClassroom).ConfigureAwait(false);
-			await _mediator.Send(new UpdateClassroomCommand { Address = storageClassroom.Address }).ConfigureAwait(false);
-
-			await _facilityRepository.DeleteAsync(request.Id).ConfigureAwait(false);
-			result.StatusCode = (int)HttpStatusCode.OK;
-			result.Data = $"Delete facility with id {request.Id} sucessfully";
-			return result;
-		}
-	}
+        public DeleteFacilityCommandHandler(IFacilityRepository facilityRepository, IClassroomRepository classroomRepository)
+        {
+            _facilityRepository = facilityRepository;
+            _classroomRepository = classroomRepository;
+        }
+        public async Task<ResponseMethod<string>> Handle(DeleteFacilityCommand request, CancellationToken cancellationToken)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+            ResponseMethod<string> result = new ResponseMethod<string>();
+            var exsiting = await _facilityRepository.GetByIDAsync(request.Id);
+            if(exsiting == null)
+            {
+                result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
+                result.StatusCode = (int)HttpStatusCode.NotFound;
+                return result;
+            }
+            var classroom = await _classroomRepository.GetByIDAsync(exsiting.ClassroomId).ConfigureAwait(false);
+            classroom.FacilityAmount -= exsiting.Count;
+            await _classroomRepository.UpdateAsync(classroom).ConfigureAwait(false);
+            await _facilityRepository.DeleteAsync(request.Id).ConfigureAwait(false);
+            result.StatusCode = (int) HttpStatusCode.OK;
+            result.Data = $"Delete facility with id {request.Id} sucessfully";
+            return result;
+        }
+    }
 }

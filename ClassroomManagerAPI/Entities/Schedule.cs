@@ -6,8 +6,8 @@
         public Guid? ClassroomId { get; set; }
         public Account? Account { get; set; }
         public Guid? AccountId { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public int CountStudent { get; set; }
         public string? Subject { get; set; }
     }

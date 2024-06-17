@@ -5,6 +5,7 @@ using ClassroomManagerAPI.Configs;
 using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Facility;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -143,6 +144,23 @@ namespace ClassroomManagerAPI.Controllers
             {
                 var result = await _mediator.Send(query).ConfigureAwait(false);
                 return File( result.Data , Settings.Excels.ContentType, "Facility_export.xlsx");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+
+		[HttpGet("storage")]
+        [ProducesResponseType(typeof(ResponseMethod<IEnumerable<FacilityModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> GetFacilityStorageClass([FromQuery] GetStorageFacilityQuery query)
+        {
+            try
+            {
+                var result = await _mediator.Send(query).ConfigureAwait(false);
+				return result.GetResult();
             }
             catch (Exception ex)
             {

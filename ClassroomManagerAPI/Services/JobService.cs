@@ -28,7 +28,7 @@ namespace ClassroomManagerAPI.Services
         public async Task NotifiSchedule()
         {
             var now = DateTime.Now;
-            var schedules = _scheduleRepository.Queryable.Include(x => x.Account).Include(x => x.Classroom).Where(x => !x.IsDeleted && x.StartTime.Date == now.Date).GroupBy(x => x.Account.Email).ToList();
+            var schedules = _scheduleRepository.Queryable.Include(x => x.Account).Include(x => x.Classroom).Where(x => !x.IsDeleted && x.StartTime.Value.Date == now.Date).GroupBy(x => x.Account.Email).ToList();
             foreach(var schedule in schedules)
             {
                 var pathHtml = Path.Combine(Directory.GetCurrentDirectory(), Settings.ResourecesNotification);
@@ -36,7 +36,7 @@ namespace ClassroomManagerAPI.Services
                 var body = string.Empty;
                 foreach(var item in schedule)
                 {
-                    body += string.Format(CultureInfo.InvariantCulture, Settings.NotificationBody, item?.Subject, item?.Classroom?.Address ,item?.StartTime.GetTime(), item?.EndTime.GetTime());
+                    body += string.Format(CultureInfo.InvariantCulture, Settings.NotificationBody, item?.Subject, item?.Classroom?.Address ,item?.StartTime.Value.GetTime(), item?.EndTime.Value.GetTime());
                 }
                 string replacedHtmlContent = htmlContent.Replace("{{body}}", body).Replace("{{email}}", schedule.Key);
                 await _mailService.SendMail(new Common.MailRequest
@@ -54,15 +54,15 @@ namespace ClassroomManagerAPI.Services
             foreach (var item in classroom) { 
                 if(now >= 18 || now <= 6)
                 {
-                    var lastUsed = _scheduleRepository.Queryable.FirstOrDefault(x => !x.IsDeleted && x.ClassroomId == item.Id && x.EndTime.Date == DateTime.Now && x.EndTime.Hour <= now);
+                    var lastUsed = _scheduleRepository.Queryable.FirstOrDefault(x => !x.IsDeleted && x.ClassroomId == item.Id && x.EndTime.Value.Date == DateTime.Now && x.EndTime.Value.Hour <= now);
                     if(lastUsed != null)
                     {
-                        item.LastUsed = lastUsed.EndTime;
+                        item.LastUsed = lastUsed.EndTime.Value;
                     }
                     item.Status = ClassroomStatusEnum.CLOSED;
                 }else
                 {
-                    var exsting = await _scheduleRepository.Queryable.FirstOrDefaultAsync(x => x.StartTime.Date == DateTime.Now && x.StartTime.Hour >= now && now <= x.EndTime.Hour && x.ClassroomId == item.Id);
+                    var exsting = await _scheduleRepository.Queryable.FirstOrDefaultAsync(x => x.StartTime.Value.Date == DateTime.Now && x.StartTime.Value.Hour >= now && now <= x.EndTime.Value.Hour && x.ClassroomId == item.Id);
                     if(exsting != null)
                     {
                         item.Status = ClassroomStatusEnum.STUDYING;

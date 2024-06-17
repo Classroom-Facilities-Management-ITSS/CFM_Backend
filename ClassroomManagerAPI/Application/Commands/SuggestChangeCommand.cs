@@ -39,12 +39,17 @@ namespace ClassroomManagerAPI.Application.Commands
             var currentClass = _classRepository.Queryable.Any(x => x.Id == request.CurrentClassId);
             var changeClass = _classRepository.Queryable.Any(x => x.Id == request.ChangeClassId);
             if(currentClass && changeClass) {
-                var schedules = _scheduleRepository.Queryable.Where(x => x.StartTime == DateTime.Now && x.ClassroomId == request.CurrentClassId);
+                var schedules = _scheduleRepository.Queryable.Where(x => x.ClassroomId == request.CurrentClassId && x.StartTime.HasValue && x.StartTime.Value.Date == DateTime.Now.Date).ToList();
                 foreach( var schedule in schedules )
                 {
                     await _mediator.Send(new UpdateScheduleCommand
                     {
                         Id = schedule.Id,
+                        Subject = schedule.Subject,
+                        StartTime = schedule.StartTime,
+                        CountStudent = schedule.CountStudent,
+                        AccountId = schedule.AccountId,
+                        EndTime = schedule.EndTime,
                         ClassroomId = request.ChangeClassId
                     }).ConfigureAwait(false);
 
@@ -54,7 +59,7 @@ namespace ClassroomManagerAPI.Application.Commands
                     string htmlContent = File.ReadAllText(pathHtml);
                     string replacedHtmlContent = htmlContent
                         .Replace("{{subject}}", schedule.Subject)
-                        .Replace("{{date}}", schedule.StartTime.GetDate())
+                        .Replace("{{date}}", schedule.StartTime.Value.GetDate())
                         .Replace("{{class_room}}", classroomName.Address)
                         .Replace("{{email}}", mail.Email)
                         ;
@@ -65,11 +70,16 @@ namespace ClassroomManagerAPI.Application.Commands
                         toEmail = mail.Email
                     });
                 }
+
+                result.Data = true;
+                result.StatusCode = StatusCodes.Status200OK;
+                return result;
             }
 
             result.AddBadRequest(nameof(ErrorSystemEnum.DataNotExist));
             result.StatusCode = StatusCodes.Status404NotFound;
             return result;
         }
+
     }
 }

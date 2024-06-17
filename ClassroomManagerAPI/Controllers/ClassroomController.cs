@@ -2,8 +2,10 @@
 using ClassroomManagerAPI.Application.Queries.Classroom;
 using ClassroomManagerAPI.Common;
 using ClassroomManagerAPI.Configs;
+using ClassroomManagerAPI.Enums;
 using ClassroomManagerAPI.Models.Classroom;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -45,6 +47,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by number
 		[HttpGet("search")]
+		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetByNumber([FromQuery] SearchClassroomQuery query)
@@ -81,7 +84,8 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Create classroom
 		[HttpPost]
-		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
+        [Authorize(nameof(RoleEnum.ADMIN))]
+        [ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Create([FromBody] AddClassroomCommand addClassroomCommand)
 		{
@@ -99,7 +103,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Update a classroom
 		[HttpPut("{id}")]
-		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateClassroomCommand updateClassroomCommand )
 		{
@@ -118,7 +122,7 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Remove a classroom
 		[HttpDelete("{id}")]
-		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Delete(Guid id)
 		{
