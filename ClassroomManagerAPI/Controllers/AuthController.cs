@@ -46,7 +46,6 @@ namespace ClassroomManagerAPI.Controllers
 		
 
 		[HttpPut("update_password")]
-		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<AuthModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> UpdatePassword([FromBody] AuthUpdatePasswordCommand command)

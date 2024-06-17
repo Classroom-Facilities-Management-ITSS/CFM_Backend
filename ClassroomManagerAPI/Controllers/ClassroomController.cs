@@ -27,7 +27,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get all classrooms
 		[HttpGet]
-		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ClassroomModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetAll([FromQuery] GetAllClassroomQuery query)
@@ -67,7 +66,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by id
 		[HttpGet("{id:guid}")]
-		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetById(Guid id)
@@ -105,7 +103,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Update a classroom
 		[HttpPut("{id}")]
-        [Authorize(nameof(RoleEnum.ADMIN))]
         [ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateClassroomCommand updateClassroomCommand )
@@ -125,7 +122,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Remove a classroom
 		[HttpDelete("{id}")]
-        [Authorize(nameof(RoleEnum.ADMIN))]
         [ProducesResponseType(typeof(ResponseMethod<ClassroomModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Delete(Guid id)

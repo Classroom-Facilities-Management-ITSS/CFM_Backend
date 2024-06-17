@@ -31,7 +31,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Get all
 		[HttpGet]
-		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ReportModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetAll([FromQuery] GetAllReportsQuery query)
@@ -50,7 +49,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		//get by id
 		[HttpGet("{id}")]
-		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetById(Guid id)
@@ -69,7 +67,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Get by classroom address
 		[HttpGet("search")]
-		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<ReportModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetByName([FromQuery] SearchReportQuery search)
@@ -88,7 +85,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Create
 		[HttpPost]
-        [Authorize]
         [ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Create([FromBody] AddReportCommand command)
@@ -107,7 +103,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Update
 		[HttpPut("{id}")]
-        [Authorize]
         [ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateReportCommand command)
@@ -127,7 +122,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		//Delete
 		[HttpDelete("{id}")]
-        [Authorize]
         [ProducesResponseType(typeof(ResponseMethod<ReportModel>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> Delete(Guid id)

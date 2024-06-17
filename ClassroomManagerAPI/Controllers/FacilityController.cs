@@ -27,7 +27,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get all
 		[HttpGet]
-		[Authorize]
 		[ProducesResponseType(typeof(ResponseMethod<IEnumerable<FacilityModel>>), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
 		public async Task<IActionResult> GetAll([FromQuery] GetAllFacilityQuery query)
@@ -46,7 +45,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by id
 		[HttpGet("{id}")]
-		[Authorize]
         [ProducesResponseType(typeof(ResponseMethod<FacilityModel>), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> GetById(Guid id)
@@ -65,7 +63,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Get by name
 		[HttpGet("search")]
-		[Authorize]
         [ProducesResponseType(typeof(ResponseMethod<IEnumerable<FacilityModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> GetByName([FromQuery] SearchFacilityQuery search)
@@ -85,7 +82,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Create facility
 		[HttpPost]
-        [Authorize(nameof(RoleEnum.ADMIN))]
         [ProducesResponseType(typeof(ResponseMethod<FacilityModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Create([FromBody] AddFacilityCommand command)
@@ -104,7 +100,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Update facility
 		[HttpPut("{id}")]
-        [Authorize(nameof(RoleEnum.ADMIN))]
         [ProducesResponseType(typeof(ResponseMethod<FacilityModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateFacilityCommand command)
@@ -125,7 +120,6 @@ namespace ClassroomManagerAPI.Controllers
 
 		// Remove a facility
 		[HttpDelete("{id}")]
-        [Authorize(nameof(RoleEnum.ADMIN))]
         [ProducesResponseType(typeof(ResponseMethod<FacilityModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Delete(Guid id)
